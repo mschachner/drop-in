@@ -85,8 +85,10 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  Divider
+  Divider,
+  Fab
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
 
 const COLORS = [
@@ -175,6 +177,11 @@ const Calendar = () => {
     return days;
   };
 
+  const isWeekend = (date) => {
+    const day = date.getDay();
+    return day === 0 || day === 6;
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
@@ -260,8 +267,10 @@ const Calendar = () => {
                     p: 2,
                     height: '100%',
                     cursor: 'pointer',
+                    backgroundColor: isWeekend(date) ? '#F5F5F5' : 'white',
+                    position: 'relative',
                     '&:hover': {
-                      backgroundColor: '#F5F5F5'
+                      backgroundColor: isWeekend(date) ? '#EEEEEE' : '#F5F5F5'
                     }
                   }}
                   onClick={() => handleDayClick(date)}
@@ -298,17 +307,38 @@ const Calendar = () => {
                         borderRadius: 1
                       }}
                     >
-                      <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
-                        {a.name}
-                      </Typography>
-                      <Typography variant="body2">
-                        {a.timeSlot}
-                      </Typography>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                          {a.name}
+                        </Typography>
+                        <Typography variant="body2">
+                          {a.timeSlot}
+                        </Typography>
+                      </Box>
                       <Typography variant="body2">
                         {a.location}
                       </Typography>
                     </Paper>
                   ))}
+                  <Fab
+                    size="small"
+                    color="primary"
+                    sx={{
+                      position: 'absolute',
+                      bottom: 16,
+                      right: 16,
+                      backgroundColor: '#4CAF50',
+                      '&:hover': {
+                        backgroundColor: '#388E3C'
+                      }
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDayClick(date);
+                    }}
+                  >
+                    <AddIcon />
+                  </Fab>
                 </Box>
               </Grid>
             );
