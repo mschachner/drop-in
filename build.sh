@@ -166,14 +166,14 @@ const Calendar = () => {
     }
   };
 
-  const handleDayClick = (date) => {
+  const handleDayClick = (date, section) => {
     if (!userPreferences.name) {
       setError('Please enter your name first');
       return;
     }
     setSelectedDate(date);
     setNewEvent({
-      timeSlot: '',
+      timeSlot: section === 'evening' ? '6-7pm' : '9-5',
       location: ''
     });
     setOpenDialog(true);
@@ -352,14 +352,11 @@ const Calendar = () => {
                   sx={{ 
                     p: 2,
                     height: '100%',
-                    cursor: 'pointer',
                     backgroundColor: isWeekend(date) ? '#F5F5F5' : 'white',
                     position: 'relative',
-                    '&:hover': {
-                      backgroundColor: isWeekend(date) ? '#EEEEEE' : '#F5F5F5'
-                    }
+                    display: 'flex',
+                    flexDirection: 'column'
                   }}
-                  onClick={() => handleDayClick(date)}
                 >
                   <Typography 
                     variant="subtitle2" 
@@ -389,7 +386,16 @@ const Calendar = () => {
                   <Divider sx={{ mb: 2 }} />
 
                   {/* Day Section */}
-                  <Box sx={{ mb: 2 }}>
+                  <Box 
+                    sx={{ 
+                      flex: 1,
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.02)'
+                      }
+                    }}
+                    onClick={() => handleDayClick(date, 'day')}
+                  >
                     {dayAvailabilities
                       .filter(a => !a.timeSlot.toLowerCase().includes('pm'))
                       .map((a, idx) => (
@@ -439,7 +445,7 @@ const Calendar = () => {
                   </Box>
 
                   {/* Evening Section */}
-                  <Box>
+                  <Box sx={{ mt: 2 }}>
                     <Typography 
                       variant="subtitle2" 
                       sx={{ 
@@ -451,52 +457,62 @@ const Calendar = () => {
                     >
                       Evening
                     </Typography>
-                    {dayAvailabilities
-                      .filter(a => a.timeSlot.toLowerCase().includes('pm'))
-                      .map((a, idx) => (
-                        <Paper
-                          key={idx}
-                          sx={{
-                            p: 1,
-                            mb: 1,
-                            backgroundColor: a.color,
-                            color: 'white',
-                            borderRadius: 1,
-                            position: 'relative',
-                            fontFamily: 'Nunito, sans-serif'
-                          }}
-                        >
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: 'Nunito, sans-serif' }}>
-                              {a.name}
-                            </Typography>
-                            <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
-                              {a.timeSlot}
-                            </Typography>
-                          </Box>
-                          <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
-                            {a.location}
-                          </Typography>
-                          <IconButton
-                            size="small"
+                    <Box 
+                      sx={{ 
+                        cursor: 'pointer',
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.02)'
+                        }
+                      }}
+                      onClick={() => handleDayClick(date, 'evening')}
+                    >
+                      {dayAvailabilities
+                        .filter(a => a.timeSlot.toLowerCase().includes('pm'))
+                        .map((a, idx) => (
+                          <Paper
+                            key={idx}
                             sx={{
-                              position: 'absolute',
-                              top: 0,
-                              right: 0,
+                              p: 1,
+                              mb: 1,
+                              backgroundColor: a.color,
                               color: 'white',
-                              '&:hover': {
-                                backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                              }
-                            }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDelete(a._id);
+                              borderRadius: 1,
+                              position: 'relative',
+                              fontFamily: 'Nunito, sans-serif'
                             }}
                           >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Paper>
-                    ))}
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: 'Nunito, sans-serif' }}>
+                                {a.name}
+                              </Typography>
+                              <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
+                                {a.timeSlot}
+                              </Typography>
+                            </Box>
+                            <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
+                              {a.location}
+                            </Typography>
+                            <IconButton
+                              size="small"
+                              sx={{
+                                position: 'absolute',
+                                top: 0,
+                                right: 0,
+                                color: 'white',
+                                '&:hover': {
+                                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                                }
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(a._id);
+                              }}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Paper>
+                      ))}
+                    </Box>
                   </Box>
 
                   <Fab
@@ -515,7 +531,7 @@ const Calendar = () => {
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDayClick(date);
+                      handleDayClick(date, 'day');
                     }}
                   >
                     <AddIcon />
