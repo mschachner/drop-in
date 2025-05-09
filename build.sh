@@ -17,6 +17,12 @@ cat > client/public/index.html << 'EOL'
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      window.onerror = function(msg, url, lineNo, columnNo, error) {
+        console.error('Error: ' + msg + '\nURL: ' + url + '\nLine: ' + lineNo + '\nColumn: ' + columnNo + '\nError object: ' + JSON.stringify(error));
+        return false;
+      };
+    </script>
   </body>
 </html>
 EOL
@@ -38,8 +44,8 @@ EOL
 
 # Create src/App.js
 cat > client/src/App.js << 'EOL'
-import React from 'react';
-import { ThemeProvider, createTheme, CssBaseline, Container } from '@mui/material';
+import React, { Suspense } from 'react';
+import { ThemeProvider, createTheme, CssBaseline, Container, CircularProgress, Box } from '@mui/material';
 import Calendar from './components/Calendar';
 
 const theme = createTheme({
@@ -54,14 +60,49 @@ const theme = createTheme({
   },
 });
 
+function ErrorFallback({ error }) {
+  return (
+    <Box sx={{ p: 4, textAlign: 'center' }}>
+      <h2>Something went wrong:</h2>
+      <pre style={{ color: 'red' }}>{error.message}</pre>
+    </Box>
+  );
+}
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <ErrorFallback error={this.state.error} />;
+    }
+    return this.props.children;
+  }
+}
+
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Container maxWidth="xl">
-        <Calendar />
-      </Container>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Container maxWidth="xl">
+          <Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>}>
+            <Calendar />
+          </Suspense>
+        </Container>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 
@@ -151,39 +192,56 @@ const Calendar = () => {
     name: '',
     color: '#4a6741'
   });
+  const [error, setError] = useState(null);
 
   const days = Array.from({ length: 7 }, (_, i) => addDays(new Date(), i));
 
   useEffect(() => {
-    fetchAvailabilities();
-    const savedPreferences = localStorage.getItem('userPreferences');
-    if (savedPreferences) {
-      setUserPreferences(JSON.parse(savedPreferences));
+    try {
+      fetchAvailabilities();
+      const savedPreferences = localStorage.getItem('userPreferences');
+      if (savedPreferences) {
+        setUserPreferences(JSON.parse(savedPreferences));
+      }
+    } catch (err) {
+      console.error('Error in useEffect:', err);
+      setError(err);
     }
   }, []);
 
   const handlePreferencesChange = (field, value) => {
-    const newPreferences = { ...userPreferences, [field]: value };
-    setUserPreferences(newPreferences);
-    localStorage.setItem('userPreferences', JSON.stringify(newPreferences));
+    try {
+      const newPreferences = { ...userPreferences, [field]: value };
+      setUserPreferences(newPreferences);
+      localStorage.setItem('userPreferences', JSON.stringify(newPreferences));
+    } catch (err) {
+      console.error('Error saving preferences:', err);
+      setError(err);
+    }
   };
 
   const fetchAvailabilities = async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/availability`);
       setAvailabilities(response.data);
-    } catch (error) {
-      console.error('Error fetching availabilities:', error);
+    } catch (err) {
+      console.error('Error fetching availabilities:', err);
+      setError(err);
     }
   };
 
   const handleAddAvailability = (date) => {
-    if (!userPreferences.name) {
-      alert('Please enter your name first');
-      return;
+    try {
+      if (!userPreferences.name) {
+        alert('Please enter your name first');
+        return;
+      }
+      setSelectedDate(date);
+      setOpenDialog(true);
+    } catch (err) {
+      console.error('Error adding availability:', err);
+      setError(err);
     }
-    setSelectedDate(date);
-    setOpenDialog(true);
   };
 
   const handleSubmit = async () => {
@@ -198,8 +256,9 @@ const Calendar = () => {
       setOpenDialog(false);
       setNewAvailability({ timeSlot: '', location: '' });
       fetchAvailabilities();
-    } catch (error) {
-      console.error('Error adding availability:', error);
+    } catch (err) {
+      console.error('Error submitting availability:', err);
+      setError(err);
     }
   };
 
@@ -207,29 +266,66 @@ const Calendar = () => {
     try {
       await axios.delete(`${process.env.REACT_APP_API_URL}/api/availability/${id}`);
       fetchAvailabilities();
-    } catch (error) {
-      console.error('Error deleting availability:', error);
+    } catch (err) {
+      console.error('Error deleting availability:', err);
+      setError(err);
     }
   };
 
   const getAvailabilitiesForDate = (date) => {
-    return availabilities.filter(avail => 
-      format(parseISO(avail.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
-    );
+    try {
+      return availabilities.filter(avail => 
+        format(parseISO(avail.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
+      );
+    } catch (err) {
+      console.error('Error getting availabilities for date:', err);
+      setError(err);
+      return [];
+    }
   };
 
   const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      handleSubmit();
+    try {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        handleSubmit();
+      }
+    } catch (err) {
+      console.error('Error handling key press:', err);
+      setError(err);
     }
   };
 
   const handleCellClick = (day, event) => {
-    if (event.target === event.currentTarget) {
-      handleAddAvailability(day);
+    try {
+      if (event.target === event.currentTarget) {
+        handleAddAvailability(day);
+      }
+    } catch (err) {
+      console.error('Error handling cell click:', err);
+      setError(err);
     }
   };
+
+  if (error) {
+    return (
+      <Box sx={{ p: 4, textAlign: 'center' }}>
+        <Typography color="error" variant="h6">
+          Something went wrong:
+        </Typography>
+        <Typography color="error">
+          {error.message}
+        </Typography>
+        <Button 
+          variant="contained" 
+          onClick={() => window.location.reload()}
+          sx={{ mt: 2 }}
+        >
+          Reload Page
+        </Button>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ 
@@ -470,6 +566,7 @@ EOL
 cat > client/.env << 'EOL'
 GENERATE_SOURCEMAP=false
 NODE_OPTIONS=--max-old-space-size=2048
+REACT_APP_API_URL=http://localhost:8080
 EOL
 
 # Install dependencies and build
