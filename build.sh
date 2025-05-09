@@ -118,6 +118,14 @@ const Calendar = () => {
   });
 
   useEffect(() => {
+    // Add Nunito font
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+  }, []);
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -212,18 +220,45 @@ const Calendar = () => {
       p: 4, 
       minHeight: '100vh',
       backgroundColor: '#E8F5E9', // Sage green background
-      borderRadius: 2
+      borderRadius: 2,
+      fontFamily: 'Nunito, sans-serif'
     }}>
-      <Typography variant="h4" gutterBottom sx={{ color: '#2E7D32' }}>
-        Next 7 Days
-      </Typography>
+      <Box sx={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        mb: 4,
+        gap: 2
+      }}>
+        <Typography 
+          variant="h3" 
+          sx={{ 
+            color: '#2E7D32',
+            fontWeight: 700,
+            fontFamily: 'Nunito, sans-serif',
+            letterSpacing: '-0.5px',
+            position: 'relative',
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              bottom: -8,
+              left: 0,
+              width: '100%',
+              height: '3px',
+              backgroundColor: '#4CAF50',
+              borderRadius: '2px'
+            }
+          }}
+        >
+          Next 7 Days
+        </Typography>
+      </Box>
       
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
+        <Alert severity="error" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>{error}</Alert>
       )}
 
       {/* User Preferences */}
-      <Paper sx={{ p: 2, mb: 3, borderRadius: 2 }}>
+      <Paper sx={{ p: 2, mb: 3, borderRadius: 2, fontFamily: 'Nunito, sans-serif' }}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={6}>
             <TextField
@@ -232,6 +267,12 @@ const Calendar = () => {
               value={userPreferences.name}
               onChange={(e) => setUserPreferences({ ...userPreferences, name: e.target.value })}
               required
+              InputProps={{
+                sx: { fontFamily: 'Nunito, sans-serif' }
+              }}
+              InputLabelProps={{
+                sx: { fontFamily: 'Nunito, sans-serif' }
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -260,7 +301,7 @@ const Calendar = () => {
       </Paper>
 
       {/* Calendar Row */}
-      <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
+      <Paper sx={{ borderRadius: 2, overflow: 'hidden', fontFamily: 'Nunito, sans-serif' }}>
         <Grid container sx={{ minHeight: '600px' }}>
           {getNextSevenDays().map((date, index) => {
             const dayAvailabilities = availabilities.filter(a => 
@@ -296,8 +337,9 @@ const Calendar = () => {
                     variant="subtitle2" 
                     align="center" 
                     sx={{ 
-                      fontWeight: 'bold',
-                      color: date.toDateString() === new Date().toDateString() ? '#4CAF50' : 'inherit'
+                      fontWeight: 600,
+                      color: date.toDateString() === new Date().toDateString() ? '#4CAF50' : 'inherit',
+                      fontFamily: 'Nunito, sans-serif'
                     }}
                   >
                     {date.toLocaleDateString('en-US', { weekday: 'short' })}
@@ -307,7 +349,9 @@ const Calendar = () => {
                     align="center"
                     sx={{ 
                       color: date.toDateString() === new Date().toDateString() ? '#4CAF50' : 'inherit',
-                      mb: 2
+                      mb: 2,
+                      fontFamily: 'Nunito, sans-serif',
+                      fontWeight: 700
                     }}
                   >
                     {date.getDate()}
@@ -322,18 +366,19 @@ const Calendar = () => {
                         backgroundColor: a.color,
                         color: 'white',
                         borderRadius: 1,
-                        position: 'relative'
+                        position: 'relative',
+                        fontFamily: 'Nunito, sans-serif'
                       }}
                     >
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: 'Nunito, sans-serif' }}>
                           {a.name}
                         </Typography>
-                        <Typography variant="body2">
+                        <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
                           {a.timeSlot}
                         </Typography>
                       </Box>
-                      <Typography variant="body2">
+                      <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
                         {a.location}
                       </Typography>
                       <IconButton
@@ -387,11 +432,12 @@ const Calendar = () => {
         onClose={() => setOpenDialog(false)}
         PaperProps={{
           sx: {
-            borderRadius: 4
+            borderRadius: 4,
+            fontFamily: 'Nunito, sans-serif'
           }
         }}
       >
-        <DialogTitle>
+        <DialogTitle sx={{ fontFamily: 'Nunito, sans-serif', fontWeight: 600 }}>
           What are your plans on {selectedDate?.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}?
         </DialogTitle>
         <DialogContent>
@@ -404,6 +450,12 @@ const Calendar = () => {
             onChange={(e) => setNewEvent({ ...newEvent, timeSlot: e.target.value })}
             onKeyPress={handleKeyPress}
             sx={{ mb: 2 }}
+            InputProps={{
+              sx: { fontFamily: 'Nunito, sans-serif' }
+            }}
+            InputLabelProps={{
+              sx: { fontFamily: 'Nunito, sans-serif' }
+            }}
           />
           <TextField
             margin="dense"
@@ -412,12 +464,22 @@ const Calendar = () => {
             value={newEvent.location}
             onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
             onKeyPress={handleKeyPress}
+            InputProps={{
+              sx: { fontFamily: 'Nunito, sans-serif' }
+            }}
+            InputLabelProps={{
+              sx: { fontFamily: 'Nunito, sans-serif' }
+            }}
           />
         </DialogContent>
         <DialogActions>
           <Button 
             onClick={() => setOpenDialog(false)}
-            sx={{ textTransform: 'none' }}
+            sx={{ 
+              textTransform: 'none',
+              fontFamily: 'Nunito, sans-serif',
+              fontWeight: 600
+            }}
           >
             cancel
           </Button>
@@ -427,7 +489,9 @@ const Calendar = () => {
             sx={{ 
               backgroundColor: '#4CAF50',
               textTransform: 'none',
-              borderRadius: 2
+              borderRadius: 2,
+              fontFamily: 'Nunito, sans-serif',
+              fontWeight: 600
             }}
           >
             add
