@@ -441,7 +441,7 @@ cat > client/package.json << 'EOL'
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -476,9 +476,10 @@ npm install
 echo "Contents of client directory before build:"
 ls -la
 
-# Run build with error checking
+# Run build with increased memory limit and error checking
 echo "Running React build..."
-CI=false npm run build || {
+export NODE_OPTIONS="--max-old-space-size=4096"
+CI=false GENERATE_SOURCEMAP=false npm run build || {
   echo "React build failed!"
   exit 1
 }
