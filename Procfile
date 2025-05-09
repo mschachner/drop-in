@@ -1,1 +1,1 @@
-web: cd /app && npm install && cd client && npm install && ls -la && CI=false npm run build && cd .. && node server.js 
+web: cd /app && npm install && cd client && npm install && mkdir -p public && echo '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Drop In</title></head><body><div id="root"></div></body></html>' > public/index.html && CI=false npm run build && cd .. && node server.js 
