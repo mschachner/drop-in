@@ -169,6 +169,12 @@ const Calendar = () => {
     }
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter' && newEvent.timeSlot && newEvent.location) {
+      handleSubmit();
+    }
+  };
+
   const handleDelete = async (eventId) => {
     try {
       await axios.delete(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}`);
@@ -319,7 +325,7 @@ const Calendar = () => {
                         position: 'relative'
                       }}
                     >
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
                           {a.name}
                         </Typography>
@@ -376,8 +382,18 @@ const Calendar = () => {
         </Grid>
       </Paper>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Add Event for {selectedDate?.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</DialogTitle>
+      <Dialog 
+        open={openDialog} 
+        onClose={() => setOpenDialog(false)}
+        PaperProps={{
+          sx: {
+            borderRadius: 4
+          }
+        }}
+      >
+        <DialogTitle>
+          What are your plans on {selectedDate?.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}?
+        </DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -386,6 +402,7 @@ const Calendar = () => {
             fullWidth
             value={newEvent.timeSlot}
             onChange={(e) => setNewEvent({ ...newEvent, timeSlot: e.target.value })}
+            onKeyPress={handleKeyPress}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -394,12 +411,26 @@ const Calendar = () => {
             fullWidth
             value={newEvent.location}
             onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
+            onKeyPress={handleKeyPress}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained" sx={{ backgroundColor: '#4CAF50' }}>
-            Add Event
+          <Button 
+            onClick={() => setOpenDialog(false)}
+            sx={{ textTransform: 'none' }}
+          >
+            cancel
+          </Button>
+          <Button 
+            onClick={handleSubmit} 
+            variant="contained" 
+            sx={{ 
+              backgroundColor: '#4CAF50',
+              textTransform: 'none',
+              borderRadius: 2
+            }}
+          >
+            add
           </Button>
         </DialogActions>
       </Dialog>
