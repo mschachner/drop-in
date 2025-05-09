@@ -1,1 +1,1 @@
-web: npm install && cd client && npm install && cp -r public/* build/ 2>/dev/null || true && CI=false npm run build && cd .. && node server.js 
+web: cd /app && npm install && cd client && npm install && mkdir -p build && cp -r public/* build/ && CI=false npm run build && cd .. && node server.js 
