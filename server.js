@@ -12,6 +12,12 @@ app.use(express.json());
 
 // Debug logging
 console.log('Current working directory:', process.cwd());
+console.log('Environment variables:', {
+  MONGODB_URI: process.env.MONGODB_URI ? 'Set (hidden)' : 'Not set',
+  PORT: process.env.PORT || 'Not set',
+  NODE_ENV: process.env.NODE_ENV || 'Not set'
+});
+
 console.log('Contents of /app directory:');
 require('child_process').execSync('ls -la /app').toString().split('\n').forEach(line => console.log(line));
 console.log('Contents of /app/client directory:');
@@ -24,12 +30,18 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Connect to MongoDB
 console.log('Attempting to connect to MongoDB...');
+if (!process.env.MONGODB_URI) {
+  console.error('MONGODB_URI environment variable is not set');
+  process.exit(1);
+}
+
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('Successfully connected to MongoDB');
   })
   .catch((error) => {
     console.error('Error connecting to MongoDB:', error);
+    process.exit(1);
   });
 
 // Define Availability Schema
