@@ -173,7 +173,7 @@ const Calendar = () => {
     }
     setSelectedDate(date);
     setNewEvent({
-      timeSlot: section === 'evening' ? '6-7pm' : '9-5',
+      timeSlot: '',
       location: ''
     });
     setOpenDialog(true);
@@ -573,6 +573,7 @@ const Calendar = () => {
             onChange={(e) => setNewEvent({ ...newEvent, timeSlot: e.target.value })}
             onKeyPress={handleKeyPress}
             sx={{ mb: 2 }}
+            placeholder={selectedDate ? (handleDayClick.toString().includes('evening') ? '6-7pm' : '9-5') : ''}
             InputProps={{
               sx: { fontFamily: 'Nunito, sans-serif' }
             }}
