@@ -86,9 +86,11 @@ import {
   DialogActions,
   TextField,
   Divider,
-  Fab
+  Fab,
+  IconButton
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 
 const COLORS = [
@@ -164,6 +166,15 @@ const Calendar = () => {
       fetchData();
     } catch (err) {
       setError(err.message || 'Failed to add event');
+    }
+  };
+
+  const handleDelete = async (eventId) => {
+    try {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}`);
+      fetchData();
+    } catch (err) {
+      setError(err.message || 'Failed to delete event');
     }
   };
 
@@ -304,7 +315,8 @@ const Calendar = () => {
                         mb: 1,
                         backgroundColor: a.color,
                         color: 'white',
-                        borderRadius: 1
+                        borderRadius: 1,
+                        position: 'relative'
                       }}
                     >
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -318,6 +330,24 @@ const Calendar = () => {
                       <Typography variant="body2">
                         {a.location}
                       </Typography>
+                      <IconButton
+                        size="small"
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          right: 0,
+                          color: 'white',
+                          '&:hover': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                          }
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(a._id);
+                        }}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
                     </Paper>
                   ))}
                   <Fab
