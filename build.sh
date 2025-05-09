@@ -330,7 +330,13 @@ const Calendar = () => {
 
       {/* Calendar Row */}
       <Paper sx={{ borderRadius: 2, overflow: 'hidden', fontFamily: 'Nunito, sans-serif' }}>
-        <Grid container sx={{ minHeight: '600px' }}>
+        <Grid 
+          container 
+          sx={{ 
+            minHeight: '600px',
+            flexDirection: { xs: 'column', sm: 'row' }
+          }}
+        >
           {getNextSevenDays().map((date, index) => {
             const dayAvailabilities = availabilities.filter(a => 
               new Date(a.date).toDateString() === date.toDateString()
@@ -339,19 +345,23 @@ const Calendar = () => {
             return (
               <Grid 
                 item 
-                xs 
+                xs={12}
+                sm
                 key={index}
                 sx={{
-                  borderRight: index < 6 ? '1px solid #e0e0e0' : 'none',
+                  borderRight: { sm: index < 6 ? '1px solid #e0e0e0' : 'none' },
+                  borderBottom: { xs: index < 6 ? '1px solid #e0e0e0' : 'none', sm: 'none' },
                   '&:last-child': {
-                    borderRight: 'none'
+                    borderRight: 'none',
+                    borderBottom: 'none'
                   }
                 }}
               >
                 <Box 
                   sx={{ 
                     p: 2,
-                    height: '100%',
+                    height: { xs: 'auto', sm: '100%' },
+                    minHeight: { xs: '300px', sm: '600px' },
                     backgroundColor: isWeekend(date) ? '#F5F5F5' : 'white',
                     position: 'relative',
                     display: 'flex',
@@ -388,7 +398,8 @@ const Calendar = () => {
                   {/* Day Section */}
                   <Box 
                     sx={{ 
-                      height: '45%',
+                      height: { xs: 'auto', sm: '45%' },
+                      minHeight: { xs: '120px', sm: 'auto' },
                       cursor: 'pointer',
                       '&:hover': {
                         backgroundColor: 'rgba(0, 0, 0, 0.02)'
@@ -446,9 +457,10 @@ const Calendar = () => {
 
                   {/* Evening Section */}
                   <Box sx={{ 
-                    height: '45%',
-                    mt: 'auto',
-                    mb: 'auto',
+                    height: { xs: 'auto', sm: '45%' },
+                    minHeight: { xs: '120px', sm: 'auto' },
+                    mt: { xs: 2, sm: 'auto' },
+                    mb: { xs: 2, sm: 'auto' },
                     display: 'flex',
                     flexDirection: 'column'
                   }}>
