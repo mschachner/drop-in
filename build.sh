@@ -466,6 +466,12 @@ cat > client/package.json << 'EOL'
 }
 EOL
 
+# Create .env file for client
+cat > client/.env << 'EOL'
+GENERATE_SOURCEMAP=false
+NODE_OPTIONS=--max-old-space-size=2048
+EOL
+
 # Install dependencies and build
 cd /app
 npm install
@@ -476,10 +482,9 @@ npm install
 echo "Contents of client directory before build:"
 ls -la
 
-# Run build with increased memory limit and error checking
+# Run build with memory optimizations
 echo "Running React build..."
-export NODE_OPTIONS="--max-old-space-size=4096"
-CI=false GENERATE_SOURCEMAP=false npm run build || {
+CI=false npm run build || {
   echo "React build failed!"
   exit 1
 }
