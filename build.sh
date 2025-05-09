@@ -111,15 +111,15 @@ const hexToRgb = (hex) => {
   } : null;
 };
 
-// Function to create pastel version of a color
+// Function to create a very light pastel version of a color
 const createPastelColor = (hex) => {
   const rgb = hexToRgb(hex);
   if (!rgb) return hex;
   
-  // Mix with white to create pastel
-  const pastelR = Math.round((rgb.r + 255) / 2);
-  const pastelG = Math.round((rgb.g + 255) / 2);
-  const pastelB = Math.round((rgb.b + 255) / 2);
+  // Mix with white to create a very light pastel (80% white, 20% color)
+  const pastelR = Math.round((rgb.r * 0.2) + (255 * 0.8));
+  const pastelG = Math.round((rgb.g * 0.2) + (255 * 0.8));
+  const pastelB = Math.round((rgb.b * 0.2) + (255 * 0.8));
   
   return `rgb(${pastelR}, ${pastelG}, ${pastelB})`;
 };
@@ -246,7 +246,8 @@ const Calendar = () => {
       minHeight: '100vh',
       backgroundColor: pastelColor,
       borderRadius: 2,
-      fontFamily: 'Nunito, sans-serif'
+      fontFamily: 'Nunito, sans-serif',
+      transition: 'background-color 0.5s ease'
     }}>
       <Box sx={{ 
         display: 'flex', 
@@ -262,6 +263,7 @@ const Calendar = () => {
             fontFamily: 'Nunito, sans-serif',
             letterSpacing: '-0.5px',
             position: 'relative',
+            transition: 'color 0.5s ease',
             '&::after': {
               content: '""',
               position: 'absolute',
@@ -270,7 +272,8 @@ const Calendar = () => {
               width: '100%',
               height: '3px',
               backgroundColor: userPreferences.color,
-              borderRadius: '2px'
+              borderRadius: '2px',
+              transition: 'background-color 0.5s ease'
             }
           }}
         >
@@ -313,9 +316,9 @@ const Calendar = () => {
                     borderRadius: '50%',
                     cursor: 'pointer',
                     border: userPreferences.color === color.value ? '3px solid #000' : 'none',
+                    transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'scale(1.1)',
-                      transition: 'transform 0.2s'
                     }
                   }}
                 />
@@ -364,7 +367,8 @@ const Calendar = () => {
                     sx={{ 
                       fontWeight: 600,
                       color: date.toDateString() === new Date().toDateString() ? userPreferences.color : 'inherit',
-                      fontFamily: 'Nunito, sans-serif'
+                      fontFamily: 'Nunito, sans-serif',
+                      transition: 'color 0.5s ease'
                     }}
                   >
                     {date.toLocaleDateString('en-US', { weekday: 'short' })}
@@ -376,7 +380,8 @@ const Calendar = () => {
                       color: date.toDateString() === new Date().toDateString() ? userPreferences.color : 'inherit',
                       mb: 2,
                       fontFamily: 'Nunito, sans-serif',
-                      fontWeight: 700
+                      fontWeight: 700,
+                      transition: 'color 0.5s ease'
                     }}
                   >
                     {date.getDate()}
@@ -434,6 +439,7 @@ const Calendar = () => {
                       bottom: 16,
                       right: 16,
                       backgroundColor: userPreferences.color,
+                      transition: 'all 0.5s ease',
                       '&:hover': {
                         backgroundColor: userPreferences.color,
                         opacity: 0.9
@@ -518,6 +524,7 @@ const Calendar = () => {
               borderRadius: 2,
               fontFamily: 'Nunito, sans-serif',
               fontWeight: 600,
+              transition: 'all 0.5s ease',
               '&:hover': {
                 backgroundColor: userPreferences.color,
                 opacity: 0.9
