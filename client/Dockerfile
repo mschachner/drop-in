@@ -11,6 +11,12 @@ RUN npm install
 # Copy the rest of the application
 COPY . .
 
+# Debug: List contents of current directory
+RUN ls -la
+
+# Debug: Show package.json contents
+RUN cat package.json
+
 # Build the application
 RUN npm run build
 
