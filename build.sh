@@ -101,6 +101,29 @@ const COLORS = [
   { value: '#F44336', label: 'Red' },
 ];
 
+// Function to convert hex to RGB
+const hexToRgb = (hex) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+};
+
+// Function to create pastel version of a color
+const createPastelColor = (hex) => {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return hex;
+  
+  // Mix with white to create pastel
+  const pastelR = Math.round((rgb.r + 255) / 2);
+  const pastelG = Math.round((rgb.g + 255) / 2);
+  const pastelB = Math.round((rgb.b + 255) / 2);
+  
+  return `rgb(${pastelR}, ${pastelG}, ${pastelB})`;
+};
+
 const Calendar = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -207,6 +230,8 @@ const Calendar = () => {
     return day === 0 || day === 6;
   };
 
+  const pastelColor = createPastelColor(userPreferences.color);
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
@@ -219,7 +244,7 @@ const Calendar = () => {
     <Box sx={{ 
       p: 4, 
       minHeight: '100vh',
-      backgroundColor: '#E8F5E9', // Sage green background
+      backgroundColor: pastelColor,
       borderRadius: 2,
       fontFamily: 'Nunito, sans-serif'
     }}>
@@ -232,7 +257,7 @@ const Calendar = () => {
         <Typography 
           variant="h3" 
           sx={{ 
-            color: '#2E7D32',
+            color: userPreferences.color,
             fontWeight: 700,
             fontFamily: 'Nunito, sans-serif',
             letterSpacing: '-0.5px',
@@ -244,7 +269,7 @@ const Calendar = () => {
               left: 0,
               width: '100%',
               height: '3px',
-              backgroundColor: '#4CAF50',
+              backgroundColor: userPreferences.color,
               borderRadius: '2px'
             }
           }}
@@ -260,7 +285,7 @@ const Calendar = () => {
       {/* User Preferences */}
       <Paper sx={{ p: 2, mb: 3, borderRadius: 2, fontFamily: 'Nunito, sans-serif' }}>
         <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <TextField
               label="Your Name"
               fullWidth
@@ -275,7 +300,7 @@ const Calendar = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={8}>
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
               {COLORS.map((color) => (
                 <Box
@@ -338,7 +363,7 @@ const Calendar = () => {
                     align="center" 
                     sx={{ 
                       fontWeight: 600,
-                      color: date.toDateString() === new Date().toDateString() ? '#4CAF50' : 'inherit',
+                      color: date.toDateString() === new Date().toDateString() ? userPreferences.color : 'inherit',
                       fontFamily: 'Nunito, sans-serif'
                     }}
                   >
@@ -348,7 +373,7 @@ const Calendar = () => {
                     variant="h6" 
                     align="center"
                     sx={{ 
-                      color: date.toDateString() === new Date().toDateString() ? '#4CAF50' : 'inherit',
+                      color: date.toDateString() === new Date().toDateString() ? userPreferences.color : 'inherit',
                       mb: 2,
                       fontFamily: 'Nunito, sans-serif',
                       fontWeight: 700
@@ -408,9 +433,10 @@ const Calendar = () => {
                       position: 'absolute',
                       bottom: 16,
                       right: 16,
-                      backgroundColor: '#4CAF50',
+                      backgroundColor: userPreferences.color,
                       '&:hover': {
-                        backgroundColor: '#388E3C'
+                        backgroundColor: userPreferences.color,
+                        opacity: 0.9
                       }
                     }}
                     onClick={(e) => {
@@ -487,11 +513,15 @@ const Calendar = () => {
             onClick={handleSubmit} 
             variant="contained" 
             sx={{ 
-              backgroundColor: '#4CAF50',
+              backgroundColor: userPreferences.color,
               textTransform: 'none',
               borderRadius: 2,
               fontFamily: 'Nunito, sans-serif',
-              fontWeight: 600
+              fontWeight: 600,
+              '&:hover': {
+                backgroundColor: userPreferences.color,
+                opacity: 0.9
+              }
             }}
           >
             add
