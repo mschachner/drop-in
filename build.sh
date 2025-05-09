@@ -388,7 +388,7 @@ const Calendar = () => {
                   {/* Day Section */}
                   <Box 
                     sx={{ 
-                      flex: 1,
+                      height: '45%',
                       cursor: 'pointer',
                       '&:hover': {
                         backgroundColor: 'rgba(0, 0, 0, 0.02)'
@@ -445,7 +445,11 @@ const Calendar = () => {
                   </Box>
 
                   {/* Evening Section */}
-                  <Box sx={{ mt: 2 }}>
+                  <Box sx={{ 
+                    height: '45%',
+                    mt: 'auto',
+                    mb: 'auto'
+                  }}>
                     <Typography 
                       variant="subtitle2" 
                       sx={{ 
