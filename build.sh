@@ -72,37 +72,128 @@ EOL
 # Create minimal src/components/Calendar.js
 cat > client/src/components/Calendar.js << 'EOL'
 import React, { useState, useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
+import { 
+  Box, 
+  Typography, 
+  Paper, 
+  Grid,
+  Button,
+  CircularProgress,
+  Alert
+} from '@mui/material';
 import axios from 'axios';
 
 const Calendar = () => {
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [availabilities, setAvailabilities] = useState([]);
+  const [currentDate] = useState(new Date());
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await axios.get(`${process.env.REACT_APP_API_URL}/api/availability`);
+        setLoading(true);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/availability`);
+        setAvailabilities(response.data);
+        setError(null);
       } catch (err) {
         console.error('Error:', err);
-        setError(err);
+        setError(err.message || 'Failed to load availabilities');
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
   }, []);
 
+  const getDaysInMonth = (date) => {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (date) => {
+    return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+  };
+
+  const renderCalendarGrid = () => {
+    const daysInMonth = getDaysInMonth(currentDate);
+    const firstDay = getFirstDayOfMonth(currentDate);
+    const days = [];
+    
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < firstDay; i++) {
+      days.push(<Grid item xs key={`empty-${i}`} />);
+    }
+    
+    // Add cells for each day of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+      const dayAvailabilities = availabilities.filter(a => 
+        new Date(a.date).toDateString() === date.toDateString()
+      );
+      
+      days.push(
+        <Grid item xs key={day}>
+          <Paper 
+            elevation={1} 
+            sx={{ 
+              p: 1, 
+              height: '100px',
+              backgroundColor: dayAvailabilities.length > 0 ? '#e3f2fd' : 'white'
+            }}
+          >
+            <Typography variant="subtitle2">{day}</Typography>
+            {dayAvailabilities.map((a, index) => (
+              <Typography 
+                key={index} 
+                variant="caption" 
+                display="block"
+                sx={{ 
+                  color: a.color || 'primary.main',
+                  fontSize: '0.7rem'
+                }}
+              >
+                {a.timeSlot}
+              </Typography>
+            ))}
+          </Paper>
+        </Grid>
+      );
+    }
+    
+    return days;
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   if (error) {
     return (
-      <Box sx={{ p: 4, textAlign: 'center' }}>
-        <Typography color="error">
-          {error.message}
-        </Typography>
+      <Box sx={{ p: 4 }}>
+        <Alert severity="error">{error}</Alert>
       </Box>
     );
   }
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h4">Calendar</Typography>
+      <Typography variant="h4" gutterBottom>
+        {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
+      </Typography>
+      <Grid container spacing={1} columns={7}>
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+          <Grid item xs key={day}>
+            <Typography variant="subtitle2" align="center" sx={{ fontWeight: 'bold' }}>
+              {day}
+            </Typography>
+          </Grid>
+        ))}
+        {renderCalendarGrid()}
+      </Grid>
     </Box>
   );
 };
