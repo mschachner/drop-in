@@ -448,7 +448,9 @@ const Calendar = () => {
                   <Box sx={{ 
                     height: '45%',
                     mt: 'auto',
-                    mb: 'auto'
+                    mb: 'auto',
+                    display: 'flex',
+                    flexDirection: 'column'
                   }}>
                     <Typography 
                       variant="subtitle2" 
@@ -463,6 +465,7 @@ const Calendar = () => {
                     </Typography>
                     <Box 
                       sx={{ 
+                        flex: 1,
                         cursor: 'pointer',
                         '&:hover': {
                           backgroundColor: 'rgba(0, 0, 0, 0.02)'
