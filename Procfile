@@ -1,1 +1,1 @@
-web: node server.js 
+web: cd client && npm install && CI=false npm run build && npx serve -s build -l $PORT & node server.js 
