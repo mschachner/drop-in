@@ -85,7 +85,6 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  MenuItem,
   Divider
 } from '@mui/material';
 import axios from 'axios';
@@ -201,8 +200,7 @@ const Calendar = () => {
 
       {/* User Preferences */}
       <Paper sx={{ p: 2, mb: 3, borderRadius: 2 }}>
-        <Typography variant="h6" gutterBottom>Your Preferences</Typography>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={6}>
             <TextField
               label="Your Name"
@@ -213,51 +211,54 @@ const Calendar = () => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              select
-              label="Your Color"
-              fullWidth
-              value={userPreferences.color}
-              onChange={(e) => setUserPreferences({ ...userPreferences, color: e.target.value })}
-            >
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
               {COLORS.map((color) => (
-                <MenuItem key={color.value} value={color.value}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Box
-                      sx={{
-                        width: 20,
-                        height: 20,
-                        backgroundColor: color.value,
-                        borderRadius: 1,
-                        mr: 1
-                      }}
-                    />
-                    {color.label}
-                  </Box>
-                </MenuItem>
+                <Box
+                  key={color.value}
+                  onClick={() => setUserPreferences({ ...userPreferences, color: color.value })}
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    backgroundColor: color.value,
+                    borderRadius: '50%',
+                    cursor: 'pointer',
+                    border: userPreferences.color === color.value ? '3px solid #000' : 'none',
+                    '&:hover': {
+                      transform: 'scale(1.1)',
+                      transition: 'transform 0.2s'
+                    }
+                  }}
+                />
               ))}
-            </TextField>
+            </Box>
           </Grid>
         </Grid>
       </Paper>
 
       {/* Calendar Row */}
-      <Paper sx={{ p: 2, borderRadius: 2 }}>
-        <Grid container spacing={1}>
+      <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
+        <Grid container sx={{ minHeight: '600px' }}>
           {getNextSevenDays().map((date, index) => {
             const dayAvailabilities = availabilities.filter(a => 
               new Date(a.date).toDateString() === date.toDateString()
             );
             
             return (
-              <Grid item xs key={index}>
-                <Paper 
-                  elevation={2} 
+              <Grid 
+                item 
+                xs 
+                key={index}
+                sx={{
+                  borderRight: index < 6 ? '1px solid #e0e0e0' : 'none',
+                  '&:last-child': {
+                    borderRight: 'none'
+                  }
+                }}
+              >
+                <Box 
                   sx={{ 
-                    p: 1,
-                    borderRadius: 2,
-                    backgroundColor: 'white',
-                    minHeight: '150px',
+                    p: 2,
+                    height: '100%',
                     cursor: 'pointer',
                     '&:hover': {
                       backgroundColor: '#F5F5F5'
@@ -279,33 +280,36 @@ const Calendar = () => {
                     variant="h6" 
                     align="center"
                     sx={{ 
-                      color: date.toDateString() === new Date().toDateString() ? '#4CAF50' : 'inherit'
+                      color: date.toDateString() === new Date().toDateString() ? '#4CAF50' : 'inherit',
+                      mb: 2
                     }}
                   >
                     {date.getDate()}
                   </Typography>
-                  <Divider sx={{ my: 1 }} />
+                  <Divider sx={{ mb: 2 }} />
                   {dayAvailabilities.map((a, idx) => (
                     <Paper
                       key={idx}
                       sx={{
-                        p: 0.5,
-                        mb: 0.5,
+                        p: 1,
+                        mb: 1,
                         backgroundColor: a.color,
                         color: 'white',
-                        borderRadius: 1,
-                        fontSize: '0.75rem'
+                        borderRadius: 1
                       }}
                     >
-                      <Typography variant="caption" display="block">
+                      <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                        {a.name}
+                      </Typography>
+                      <Typography variant="body2">
                         {a.timeSlot}
                       </Typography>
-                      <Typography variant="caption" display="block">
+                      <Typography variant="body2">
                         {a.location}
                       </Typography>
                     </Paper>
                   ))}
-                </Paper>
+                </Box>
               </Grid>
             );
           })}
