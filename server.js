@@ -32,7 +32,8 @@ mongoose.connect(process.env.MONGO_URL, {
   console.log('Successfully connected to MongoDB');
 }).catch((err) => {
   console.error('MongoDB connection error:', err);
-  process.exit(1);
+  // Don't exit on MongoDB connection error, just log it
+  console.log('Continuing without MongoDB connection...');
 });
 
 // Define Availability Schema
@@ -95,6 +96,6 @@ app.get('*', (req, res) => {
 });
 
 const port = process.env.PORT || 5001;
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Server is running on port ${port}`);
 }); 
