@@ -387,50 +387,118 @@ const Calendar = () => {
                     {date.getDate()}
                   </Typography>
                   <Divider sx={{ mb: 2 }} />
-                  {dayAvailabilities.map((a, idx) => (
-                    <Paper
-                      key={idx}
-                      sx={{
-                        p: 1,
-                        mb: 1,
-                        backgroundColor: a.color,
-                        color: 'white',
-                        borderRadius: 1,
-                        position: 'relative',
-                        fontFamily: 'Nunito, sans-serif'
+
+                  {/* Day Section */}
+                  <Box sx={{ mb: 2 }}>
+                    {dayAvailabilities
+                      .filter(a => !a.timeSlot.toLowerCase().includes('pm'))
+                      .map((a, idx) => (
+                        <Paper
+                          key={idx}
+                          sx={{
+                            p: 1,
+                            mb: 1,
+                            backgroundColor: a.color,
+                            color: 'white',
+                            borderRadius: 1,
+                            position: 'relative',
+                            fontFamily: 'Nunito, sans-serif'
+                          }}
+                        >
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: 'Nunito, sans-serif' }}>
+                              {a.name}
+                            </Typography>
+                            <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
+                              {a.timeSlot}
+                            </Typography>
+                          </Box>
+                          <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
+                            {a.location}
+                          </Typography>
+                          <IconButton
+                            size="small"
+                            sx={{
+                              position: 'absolute',
+                              top: 0,
+                              right: 0,
+                              color: 'white',
+                              '&:hover': {
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                              }
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(a._id);
+                            }}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Paper>
+                    ))}
+                  </Box>
+
+                  {/* Evening Section */}
+                  <Box>
+                    <Typography 
+                      variant="subtitle2" 
+                      sx={{ 
+                        mb: 1, 
+                        color: '#666',
+                        fontFamily: 'Nunito, sans-serif',
+                        fontWeight: 600
                       }}
                     >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: 'Nunito, sans-serif' }}>
-                          {a.name}
-                        </Typography>
-                        <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
-                          {a.timeSlot}
-                        </Typography>
-                      </Box>
-                      <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
-                        {a.location}
-                      </Typography>
-                      <IconButton
-                        size="small"
-                        sx={{
-                          position: 'absolute',
-                          top: 0,
-                          right: 0,
-                          color: 'white',
-                          '&:hover': {
-                            backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                          }
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(a._id);
-                        }}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Paper>
-                  ))}
+                      Evening
+                    </Typography>
+                    {dayAvailabilities
+                      .filter(a => a.timeSlot.toLowerCase().includes('pm'))
+                      .map((a, idx) => (
+                        <Paper
+                          key={idx}
+                          sx={{
+                            p: 1,
+                            mb: 1,
+                            backgroundColor: a.color,
+                            color: 'white',
+                            borderRadius: 1,
+                            position: 'relative',
+                            fontFamily: 'Nunito, sans-serif'
+                          }}
+                        >
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: 'Nunito, sans-serif' }}>
+                              {a.name}
+                            </Typography>
+                            <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
+                              {a.timeSlot}
+                            </Typography>
+                          </Box>
+                          <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
+                            {a.location}
+                          </Typography>
+                          <IconButton
+                            size="small"
+                            sx={{
+                              position: 'absolute',
+                              top: 0,
+                              right: 0,
+                              color: 'white',
+                              '&:hover': {
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                              }
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(a._id);
+                            }}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Paper>
+                    ))}
+                  </Box>
+
                   <Fab
                     size="small"
                     color="primary"
