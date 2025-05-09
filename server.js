@@ -13,7 +13,7 @@ app.use(express.json());
 // Debug logging
 console.log('Current working directory:', process.cwd());
 console.log('Environment variables:', {
-  MONGODB_URI: process.env.MONGODB_URI ? 'Set (hidden)' : 'Not set',
+  MONGO_URL: process.env.MONGO_URL ? 'Set (hidden)' : 'Not set',
   PORT: process.env.PORT || 'Not set',
   NODE_ENV: process.env.NODE_ENV || 'Not set'
 });
@@ -30,12 +30,12 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Connect to MongoDB
 console.log('Attempting to connect to MongoDB...');
-if (!process.env.MONGODB_URI) {
-  console.error('MONGODB_URI environment variable is not set');
+if (!process.env.MONGO_URL) {
+  console.error('MONGO_URL environment variable is not set');
   process.exit(1);
 }
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGO_URL)
   .then(() => {
     console.log('Successfully connected to MongoDB');
   })
