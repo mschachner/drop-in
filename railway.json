@@ -12,8 +12,6 @@
       "us-east4-eqdc4a": {
         "numReplicas": 1
       }
-    },
-    "restartPolicyType": "on-failure",
-    "restartPolicyMaxRetries": 10
+    }
   }
 } 
