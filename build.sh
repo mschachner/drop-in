@@ -581,7 +581,7 @@ EOL
 cat > client/.env << 'EOL'
 GENERATE_SOURCEMAP=false
 NODE_OPTIONS=--max-old-space-size=512
-REACT_APP_API_URL=https://drop-in-production.up.railway.app
+REACT_APP_API_URL=https://drop-in.up.railway.app
 EOL
 
 # Cleanup before starting
