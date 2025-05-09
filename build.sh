@@ -191,11 +191,22 @@ ls -la build
 # Create client/build directory and move files
 echo "Moving build files to the correct location..."
 mkdir -p /app/client/build
+
+# Copy all files from build directory
+echo "Copying build files..."
 cp -r build/* /app/client/build/
 
 # Debug: List contents of /app/client/build directory
 echo "Contents of /app/client/build directory:"
 ls -la /app/client/build
+
+# Debug: List contents of /app/client directory
+echo "Contents of /app/client directory:"
+ls -la /app/client
+
+# Debug: List contents of /app directory
+echo "Contents of /app directory:"
+ls -la /app
 
 # Cleanup after build
 cleanup
