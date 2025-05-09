@@ -3,6 +3,10 @@
 # Enable debug mode
 set -x
 
+# Set Node.js memory limits
+export NODE_OPTIONS="--max-old-space-size=1024"
+export GENERATE_SOURCEMAP=false
+
 # Create necessary directories
 mkdir -p client/public client/src/components
 
@@ -537,7 +541,7 @@ cat > client/package.json << 'EOL'
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=1024 react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -565,7 +569,7 @@ EOL
 # Create .env file for client
 cat > client/.env << 'EOL'
 GENERATE_SOURCEMAP=false
-NODE_OPTIONS=--max-old-space-size=2048
+NODE_OPTIONS=--max-old-space-size=1024
 REACT_APP_API_URL=http://localhost:8080
 EOL
 
@@ -581,7 +585,7 @@ ls -la
 
 # Run build with memory optimizations
 echo "Running React build..."
-CI=false npm run build || {
+CI=false NODE_OPTIONS=--max-old-space-size=1024 GENERATE_SOURCEMAP=false npm run build || {
   echo "React build failed!"
   exit 1
 }
