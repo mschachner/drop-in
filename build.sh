@@ -208,8 +208,12 @@ ls -la /app/client
 echo "Contents of /app directory:"
 ls -la /app
 
-# Cleanup after build
-cleanup
+# Cleanup after build but preserve /app/client/build
+echo "Cleaning up temporary files..."
+rm -rf node_modules
+rm -rf client/node_modules
+rm -rf client/build
+npm cache clean --force
 
 cd ..
 node server.js 
