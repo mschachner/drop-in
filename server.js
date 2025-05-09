@@ -12,13 +12,23 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
+console.log('Attempting to connect to MongoDB...');
+console.log('MONGO_URL:', process.env.MONGO_URL ? 'exists' : 'undefined');
+
+if (!process.env.MONGO_URL) {
+  console.error('MONGO_URL environment variable is not set');
+  process.exit(1);
+}
+
 mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000
 }).then(() => {
-  console.log('Connected to MongoDB');
+  console.log('Successfully connected to MongoDB');
 }).catch((err) => {
   console.error('MongoDB connection error:', err);
+  process.exit(1);
 });
 
 // Define Availability Schema
