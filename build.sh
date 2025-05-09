@@ -86,9 +86,8 @@ import {
   DialogActions,
   TextField,
   MenuItem,
-  IconButton
+  Divider
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
 
 const COLORS = [
@@ -106,11 +105,13 @@ const Calendar = () => {
   const [currentDate] = useState(new Date());
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [newEvent, setNewEvent] = useState({
+  const [userPreferences, setUserPreferences] = useState({
     name: '',
-    timeSlot: '',
-    location: '',
     color: COLORS[0].value
+  });
+  const [newEvent, setNewEvent] = useState({
+    timeSlot: '',
+    location: ''
   });
 
   useEffect(() => {
@@ -131,19 +132,21 @@ const Calendar = () => {
     }
   };
 
-  const handleAddEvent = (date) => {
+  const handleDayClick = (date) => {
+    if (!userPreferences.name) {
+      setError('Please enter your name first');
+      return;
+    }
     setSelectedDate(date);
     setNewEvent({
-      name: '',
       timeSlot: '',
-      location: '',
-      color: COLORS[0].value
+      location: ''
     });
     setOpenDialog(true);
   };
 
   const handleSubmit = async () => {
-    if (!newEvent.name || !newEvent.timeSlot || !newEvent.location) {
+    if (!newEvent.timeSlot || !newEvent.location) {
       setError('Please fill in all fields');
       return;
     }
@@ -151,6 +154,8 @@ const Calendar = () => {
     try {
       const eventData = {
         ...newEvent,
+        name: userPreferences.name,
+        color: userPreferences.color,
         date: selectedDate.toISOString()
       };
       await axios.post(`${process.env.REACT_APP_API_URL}/api/availability`, eventData);
@@ -194,70 +199,124 @@ const Calendar = () => {
         <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
       )}
 
-      <Grid container spacing={2}>
-        {getNextSevenDays().map((date, index) => {
-          const dayAvailabilities = availabilities.filter(a => 
-            new Date(a.date).toDateString() === date.toDateString()
-          );
-          
-          return (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <Paper 
-                elevation={2} 
-                sx={{ 
-                  p: 2,
-                  borderRadius: 2,
-                  backgroundColor: 'white',
-                  minHeight: '200px'
-                }}
-              >
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                  <Typography variant="h6">
-                    {date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
-                  </Typography>
-                  <IconButton 
-                    onClick={() => handleAddEvent(date)}
-                    sx={{ color: '#4CAF50' }}
-                  >
-                    <AddIcon />
-                  </IconButton>
-                </Box>
-                
-                {dayAvailabilities.map((a, idx) => (
-                  <Paper
-                    key={idx}
-                    sx={{
-                      p: 1,
-                      mb: 1,
-                      backgroundColor: a.color,
-                      color: 'white',
-                      borderRadius: 1
+      {/* User Preferences */}
+      <Paper sx={{ p: 2, mb: 3, borderRadius: 2 }}>
+        <Typography variant="h6" gutterBottom>Your Preferences</Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Your Name"
+              fullWidth
+              value={userPreferences.name}
+              onChange={(e) => setUserPreferences({ ...userPreferences, name: e.target.value })}
+              required
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              select
+              label="Your Color"
+              fullWidth
+              value={userPreferences.color}
+              onChange={(e) => setUserPreferences({ ...userPreferences, color: e.target.value })}
+            >
+              {COLORS.map((color) => (
+                <MenuItem key={color.value} value={color.value}>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box
+                      sx={{
+                        width: 20,
+                        height: 20,
+                        backgroundColor: color.value,
+                        borderRadius: 1,
+                        mr: 1
+                      }}
+                    />
+                    {color.label}
+                  </Box>
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+        </Grid>
+      </Paper>
+
+      {/* Calendar Row */}
+      <Paper sx={{ p: 2, borderRadius: 2 }}>
+        <Grid container spacing={1}>
+          {getNextSevenDays().map((date, index) => {
+            const dayAvailabilities = availabilities.filter(a => 
+              new Date(a.date).toDateString() === date.toDateString()
+            );
+            
+            return (
+              <Grid item xs key={index}>
+                <Paper 
+                  elevation={2} 
+                  sx={{ 
+                    p: 1,
+                    borderRadius: 2,
+                    backgroundColor: 'white',
+                    minHeight: '150px',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      backgroundColor: '#F5F5F5'
+                    }
+                  }}
+                  onClick={() => handleDayClick(date)}
+                >
+                  <Typography 
+                    variant="subtitle2" 
+                    align="center" 
+                    sx={{ 
+                      fontWeight: 'bold',
+                      color: date.toDateString() === new Date().toDateString() ? '#4CAF50' : 'inherit'
                     }}
                   >
-                    <Typography variant="subtitle2">{a.name}</Typography>
-                    <Typography variant="body2">{a.timeSlot}</Typography>
-                    <Typography variant="body2">{a.location}</Typography>
-                  </Paper>
-                ))}
-              </Paper>
-            </Grid>
-          );
-        })}
-      </Grid>
+                    {date.toLocaleDateString('en-US', { weekday: 'short' })}
+                  </Typography>
+                  <Typography 
+                    variant="h6" 
+                    align="center"
+                    sx={{ 
+                      color: date.toDateString() === new Date().toDateString() ? '#4CAF50' : 'inherit'
+                    }}
+                  >
+                    {date.getDate()}
+                  </Typography>
+                  <Divider sx={{ my: 1 }} />
+                  {dayAvailabilities.map((a, idx) => (
+                    <Paper
+                      key={idx}
+                      sx={{
+                        p: 0.5,
+                        mb: 0.5,
+                        backgroundColor: a.color,
+                        color: 'white',
+                        borderRadius: 1,
+                        fontSize: '0.75rem'
+                      }}
+                    >
+                      <Typography variant="caption" display="block">
+                        {a.timeSlot}
+                      </Typography>
+                      <Typography variant="caption" display="block">
+                        {a.location}
+                      </Typography>
+                    </Paper>
+                  ))}
+                </Paper>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Paper>
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Add Event</DialogTitle>
+        <DialogTitle>Add Event for {selectedDate?.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
-            margin="dense"
-            label="Name"
-            fullWidth
-            value={newEvent.name}
-            onChange={(e) => setNewEvent({ ...newEvent, name: e.target.value })}
-            sx={{ mb: 2 }}
-          />
-          <TextField
             margin="dense"
             label="Time"
             fullWidth
@@ -271,33 +330,7 @@ const Calendar = () => {
             fullWidth
             value={newEvent.location}
             onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
-            sx={{ mb: 2 }}
           />
-          <TextField
-            select
-            margin="dense"
-            label="Color"
-            fullWidth
-            value={newEvent.color}
-            onChange={(e) => setNewEvent({ ...newEvent, color: e.target.value })}
-          >
-            {COLORS.map((color) => (
-              <MenuItem key={color.value} value={color.value}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Box
-                    sx={{
-                      width: 20,
-                      height: 20,
-                      backgroundColor: color.value,
-                      borderRadius: 1,
-                      mr: 1
-                    }}
-                  />
-                  {color.label}
-                </Box>
-              </MenuItem>
-            ))}
-          </TextField>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
