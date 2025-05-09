@@ -1,12 +1,13 @@
 {
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
-    "builder": "NIXPACKS"
+    "builder": "NIXPACKS",
+    "buildCommand": "cd client && CI=false npm install && npm run build"
   },
   "deploy": {
     "runtime": "V2",
     "numReplicas": 1,
-    "startCommand": "node server.js",
+    "startCommand": "cd client && npx serve -s build -l $PORT & node server.js",
     "sleepApplication": false,
     "multiRegionConfig": {
       "us-east4-eqdc4a": {
