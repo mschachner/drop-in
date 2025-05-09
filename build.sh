@@ -432,5 +432,22 @@ ls -la client/build
 echo "Contents of root directory:"
 ls -la
 
+# Debug: List contents of client directory
+echo "Contents of client directory:"
+ls -la client
+
+# Debug: List contents of client/build directory
+echo "Contents of client/build directory:"
+ls -la client/build
+
+# Move build files to the correct location
+echo "Moving build files to the correct location..."
+mkdir -p /app/client/build
+cp -r build/* /app/client/build/
+
+# Debug: List contents of /app/client/build directory
+echo "Contents of /app/client/build directory:"
+ls -la /app/client/build
+
 cd ..
 node server.js 
