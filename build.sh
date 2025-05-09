@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Enable debug mode
+set -x
+
 # Create necessary directories
 mkdir -p client/public client/src/components
 
@@ -420,5 +423,14 @@ npm install
 cd client
 npm install
 CI=false npm run build
+
+# Debug: List contents of build directory
+echo "Contents of client/build directory:"
+ls -la client/build
+
+# Debug: List contents of root directory
+echo "Contents of root directory:"
+ls -la
+
 cd ..
 node server.js 
