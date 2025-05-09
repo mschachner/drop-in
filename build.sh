@@ -425,22 +425,14 @@ npm install
 CI=false npm run build
 
 # Debug: List contents of build directory
-echo "Contents of client/build directory:"
-ls -la client/build
+echo "Contents of build directory:"
+ls -la build
 
 # Debug: List contents of root directory
 echo "Contents of root directory:"
 ls -la
 
-# Debug: List contents of client directory
-echo "Contents of client directory:"
-ls -la client
-
-# Debug: List contents of client/build directory
-echo "Contents of client/build directory:"
-ls -la client/build
-
-# Move build files to the correct location
+# Create client/build directory and move files
 echo "Moving build files to the correct location..."
 mkdir -p /app/client/build
 cp -r build/* /app/client/build/
