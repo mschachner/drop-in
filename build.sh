@@ -417,20 +417,78 @@ const Calendar = () => {
 export default Calendar;
 EOL
 
+# Create package.json for client
+cat > client/package.json << 'EOL'
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource/nunito": "^5.0.8",
+    "@mui/icons-material": "^5.15.10",
+    "@mui/material": "^5.15.10",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.6.7",
+    "date-fns": "^3.3.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
+EOL
+
 # Install dependencies and build
 cd /app
 npm install
 cd client
 npm install
-CI=false npm run build
 
-# Debug: List contents of build directory
+# Debug: List contents before build
+echo "Contents of client directory before build:"
+ls -la
+
+# Run build with error checking
+echo "Running React build..."
+CI=false npm run build || {
+  echo "React build failed!"
+  exit 1
+}
+
+# Debug: List contents after build
+echo "Contents of client directory after build:"
+ls -la
+
 echo "Contents of build directory:"
 ls -la build
-
-# Debug: List contents of root directory
-echo "Contents of root directory:"
-ls -la
 
 # Create client/build directory and move files
 echo "Moving build files to the correct location..."
