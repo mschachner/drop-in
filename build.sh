@@ -681,7 +681,8 @@ cat > client/package.json << 'EOL'
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
-    "@babel/plugin-proposal-numeric-separator": "^7.18.6"
+    "@babel/plugin-proposal-numeric-separator": "^7.18.6",
+    "@humanwhocodes/config-array": "^0.11.10"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -714,14 +715,14 @@ cat > client/package.json << 'EOL'
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
-    "@babel/plugin-proposal-numeric-separator": "^7.18.6"
+    "@babel/plugin-proposal-numeric-separator": "^7.18.6",
+    "@humanwhocodes/config-array": "^0.11.10"
   },
   "overrides": {
     "svgo": "^2.8.0",
     "stable": "^0.1.8",
     "q": "^1.5.1",
-    "domexception": "^3.0.0",
-    "@humanwhocodes/config-array": "@eslint/config-array"
+    "domexception": "^3.0.0"
   }
 }
 EOL
