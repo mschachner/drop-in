@@ -693,8 +693,32 @@ cat > client/package.json << 'EOL'
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "overrides": {
+    "@babel/plugin-proposal-numeric-separator": "@babel/plugin-transform-numeric-separator",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "@babel/plugin-transform-nullish-coalescing-operator",
+    "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
+    "@babel/plugin-proposal-private-property-in-object": "@babel/plugin-transform-private-property-in-object",
+    "svgo": "^2.8.0",
+    "sourcemap-codec": "@jridgewell/sourcemap-codec",
+    "rollup-plugin-terser": "@rollup/plugin-terser",
+    "stable": "^0.1.8",
+    "q": "^1.5.1",
+    "workbox-cacheable-response": "^7.0.0",
+    "workbox-google-analytics": "^7.0.0",
+    "domexception": "^3.0.0",
+    "inflight": "^2.0.0",
+    "@humanwhocodes/config-array": "@eslint/config-array"
   }
 }
+EOL
+
+# Create .npmrc to suppress warnings
+echo "Creating .npmrc..."
+cat > client/.npmrc << 'EOL'
+loglevel=error
+fund=false
+audit=false
 EOL
 
 # Create .env file for client
@@ -711,11 +735,11 @@ cleanup
 # Install dependencies in smaller chunks
 cd /app
 echo "Installing root dependencies..."
-npm install --omit=dev --omit=optional --no-audit --no-fund
+npm install --omit=dev --omit=optional --no-audit --no-fund --loglevel=error
 
 cd client
 echo "Installing client dependencies..."
-npm install --omit=optional --no-audit --no-fund
+npm install --omit=optional --no-audit --no-fund --loglevel=error
 
 # Run build with minimal configuration
 echo "Building React application..."
