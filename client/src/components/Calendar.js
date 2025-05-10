@@ -360,7 +360,8 @@ const Calendar = () => {
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        minHeight: 0
+        minHeight: 0,
+        height: { xs: 'calc(100vh - 200px)', sm: 'auto' }
       }}>
         <Grid 
           container 
@@ -368,7 +369,9 @@ const Calendar = () => {
             flex: { xs: 'none', sm: 1 },
             flexDirection: { xs: 'column', sm: 'row' },
             width: '100%',
-            minHeight: { sm: 0 }
+            minHeight: { sm: 0 },
+            overflow: { xs: 'auto', sm: 'hidden' },
+            height: { xs: '100%', sm: 'auto' }
           }}
         >
           {getNextSevenDays().map((date, index) => {
@@ -394,7 +397,8 @@ const Calendar = () => {
                   minHeight: 0,
                   overflow: 'hidden',
                   width: { xs: '100%', sm: 'auto' },
-                  flex: { xs: 'none', sm: 1 }
+                  flex: { xs: 'none', sm: 1 },
+                  height: { xs: 'auto', sm: '100%' }
                 }}
               >
                 <Box 
@@ -406,7 +410,7 @@ const Calendar = () => {
                     flexDirection: 'column',
                     overflow: 'auto',
                     minHeight: 0,
-                    height: { xs: '400px', sm: '100%' }
+                    height: { xs: 'auto', sm: '100%' }
                   }}
                 >
                   <Box sx={{ 
