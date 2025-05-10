@@ -677,7 +677,11 @@ cat > client/package.json << 'EOL'
     "@jridgewell/sourcemap-codec": "^1.4.15",
     "ajv": "^8.12.0",
     "ajv-keywords": "^5.1.0",
-    "schema-utils": "^4.2.0"
+    "schema-utils": "^4.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
+    "@babel/plugin-proposal-numeric-separator": "^7.18.6"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -706,13 +710,13 @@ cat > client/package.json << 'EOL'
     "sourcemap-codec": "^1.4.8",
     "ajv": "^8.12.0",
     "ajv-keywords": "^5.1.0",
-    "schema-utils": "^4.2.0"
+    "schema-utils": "^4.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
+    "@babel/plugin-proposal-numeric-separator": "^7.18.6"
   },
   "overrides": {
-    "@babel/plugin-proposal-numeric-separator": "@babel/plugin-transform-numeric-separator",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "@babel/plugin-transform-nullish-coalescing-operator",
-    "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
-    "@babel/plugin-proposal-private-property-in-object": "@babel/plugin-transform-private-property-in-object",
     "svgo": "^2.8.0",
     "stable": "^0.1.8",
     "q": "^1.5.1",
