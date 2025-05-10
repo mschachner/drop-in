@@ -5,12 +5,14 @@ const path = require('path');
 const cors = require('cors');
 const app = express();
 
-// Enable CORS with more detailed logging
+// Enable CORS with proper preflight handling
 app.use(cors({
-  origin: true, // Allow all origins during debugging
-  credentials: true,
+  origin: 'https://dropin-production.up.railway.app',
   methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 
 // Add request logging middleware
@@ -19,6 +21,9 @@ app.use((req, res, next) => {
   console.log('Headers:', req.headers);
   next();
 });
+
+// Handle OPTIONS requests explicitly
+app.options('*', cors());
 
 // Parse JSON bodies
 app.use(express.json());
