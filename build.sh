@@ -673,6 +673,7 @@ cat > client/package.json << 'EOL'
     "rollup-plugin-terser": "^7.0.2",
     "workbox-build": "^6.6.0",
     "workbox-webpack-plugin": "^6.6.0",
+    "sourcemap-codec": "^1.4.8",
     "@jridgewell/sourcemap-codec": "^1.4.15"
   },
   "scripts": {
@@ -698,6 +699,9 @@ cat > client/package.json << 'EOL'
       "last 1 safari version"
     ]
   },
+  "resolutions": {
+    "sourcemap-codec": "^1.4.8"
+  },
   "overrides": {
     "@babel/plugin-proposal-numeric-separator": "@babel/plugin-transform-numeric-separator",
     "@babel/plugin-proposal-nullish-coalescing-operator": "@babel/plugin-transform-nullish-coalescing-operator",
@@ -707,8 +711,7 @@ cat > client/package.json << 'EOL'
     "stable": "^0.1.8",
     "q": "^1.5.1",
     "domexception": "^3.0.0",
-    "@humanwhocodes/config-array": "@eslint/config-array",
-    "sourcemap-codec": "@jridgewell/sourcemap-codec"
+    "@humanwhocodes/config-array": "@eslint/config-array"
   }
 }
 EOL
