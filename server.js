@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
@@ -10,20 +11,15 @@ app.use(cors());
 // Parse JSON bodies
 app.use(express.json());
 
-// Debug logging
-console.log('Current working directory:', process.cwd());
-console.log('Environment variables:', {
-  MONGO_URL: process.env.MONGO_URL ? 'Set (hidden)' : 'Not set',
-  PORT: process.env.PORT || 'Not set',
-  NODE_ENV: process.env.NODE_ENV || 'Not set'
-});
-
-console.log('Contents of /app directory:');
-require('child_process').execSync('ls -la /app').toString().split('\n').forEach(line => console.log(line));
-console.log('Contents of /app/client directory:');
-require('child_process').execSync('ls -la /app/client').toString().split('\n').forEach(line => console.log(line));
-console.log('Contents of /app/client/build directory:');
-require('child_process').execSync('ls -la /app/client/build').toString().split('\n').forEach(line => console.log(line));
+// Debug logging only in development
+if (process.env.NODE_ENV === 'development') {
+  console.log('Current working directory:', process.cwd());
+  console.log('Environment variables:', {
+    MONGO_URL: process.env.MONGO_URL ? 'Set (hidden)' : 'Not set',
+    PORT: process.env.PORT || 'Not set',
+    NODE_ENV: process.env.NODE_ENV || 'Not set'
+  });
+}
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
@@ -92,11 +88,10 @@ app.delete('/api/availability/:id', async (req, res) => {
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
 app.get('*', (req, res) => {
-  console.log('Serving index.html for path:', req.path);
   res.sendFile(path.join(__dirname, 'client/build/index.html'));
 });
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 }); 

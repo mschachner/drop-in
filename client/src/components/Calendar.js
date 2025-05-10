@@ -1,591 +1,690 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Box, 
-  Paper, 
   Typography, 
-  Grid, 
-  Button, 
+  Paper, 
+  Grid,
+  Button,
+  CircularProgress,
+  Alert,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   TextField,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  Divider,
+  Fab,
   IconButton,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormControl,
+  FormLabel,
+  Popover
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { format, addDays, parseISO } from 'date-fns';
+import ColorLensIcon from '@mui/icons-material/ColorLens';
 import axios from 'axios';
-import '@fontsource/nunito';
 
 const COLORS = [
-  { value: '#e74c3c', label: 'Red' },        // Bright red
-  { value: '#ffb3b3', label: 'Light Red' },  // Soft red
-  { value: '#f1c40f', label: 'Yellow' },     // Bright yellow
-  { value: '#ffeaa7', label: 'Light Yellow' }, // Soft yellow
-  { value: '#2ecc71', label: 'Green' },      // Bright emerald
-  { value: '#a8e6cf', label: 'Light Green' }, // Mint
-  { value: '#3498db', label: 'Blue' },       // Bright blue
-  { value: '#b3e0ff', label: 'Light Blue' }, // Sky blue
-  { value: '#9b59b6', label: 'Purple' },     // Bright purple
-  { value: '#d8bfd8', label: 'Light Purple' } // Lavender
+  { value: '#4CAF50', label: 'Green' },
+  { value: '#2196F3', label: 'Blue' },
+  { value: '#FF9800', label: 'Orange' },
+  { value: '#9C27B0', label: 'Purple' },
+  { value: '#F44336', label: 'Red' },
 ];
 
-// Function to determine if a color is dark
-const isDarkColor = (color) => {
-  const hex = color.replace('#', '');
-  const r = parseInt(hex.substr(0, 2), 16);
-  const g = parseInt(hex.substr(2, 2), 16);
-  const b = parseInt(hex.substr(4, 2), 16);
-  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-  return brightness < 128;
+// Function to convert hex to RGB
+const hexToRgb = (hex) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+};
+
+// Function to create a very light pastel version of a color
+const createPastelColor = (hex) => {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return hex;
+  
+  // Mix with white to create a very light pastel (80% white, 20% color)
+  const pastelR = Math.round((rgb.r * 0.2) + (255 * 0.8));
+  const pastelG = Math.round((rgb.g * 0.2) + (255 * 0.8));
+  const pastelB = Math.round((rgb.b * 0.2) + (255 * 0.8));
+  
+  return `rgb(${pastelR}, ${pastelG}, ${pastelB})`;
+};
+
+// Function to create a darker version of a color
+const darkenColor = (hex) => {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return hex;
+  
+  // Darken by 30%
+  const darkenR = Math.round(rgb.r * 0.7);
+  const darkenG = Math.round(rgb.g * 0.7);
+  const darkenB = Math.round(rgb.b * 0.7);
+  
+  return `rgb(${darkenR}, ${darkenG}, ${darkenB})`;
 };
 
 const Calendar = () => {
+  const [error, setError] = useState(null);
+  const [dialogError, setDialogError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [availabilities, setAvailabilities] = useState([]);
+  const [currentDate] = useState(new Date());
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [newAvailability, setNewAvailability] = useState({
-    timeSlot: '',
-    location: ''
-  });
   const [userPreferences, setUserPreferences] = useState({
     name: '',
-    color: '#4a6741'
+    color: COLORS[0].value
   });
-  const [selectedSection, setSelectedSection] = useState('day');
-
-  const days = Array.from({ length: 7 }, (_, i) => addDays(new Date(), i));
+  const [newEvent, setNewEvent] = useState({
+    timeSlot: '',
+    location: '',
+    section: 'day'
+  });
+  const [colorPickerAnchor, setColorPickerAnchor] = useState(null);
+  const [customColor, setCustomColor] = useState('#000000');
 
   useEffect(() => {
-    fetchAvailabilities();
-    // Load saved preferences from localStorage
-    const savedPreferences = localStorage.getItem('userPreferences');
-    if (savedPreferences) {
-      setUserPreferences(JSON.parse(savedPreferences));
-    }
+    // Add Nunito font
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
   }, []);
 
-  const handlePreferencesChange = (field, value) => {
-    const newPreferences = { ...userPreferences, [field]: value };
-    setUserPreferences(newPreferences);
-    localStorage.setItem('userPreferences', JSON.stringify(newPreferences));
-  };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  const fetchAvailabilities = async () => {
+  const fetchData = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/availability`);
       setAvailabilities(response.data);
-    } catch (error) {
-      console.error('Error fetching availabilities:', error);
+      setError(null);
+    } catch (err) {
+      console.error('Error:', err);
+      setError(err.message || 'Failed to load availabilities');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleAddAvailability = (date, section = 'day') => {
+  const handleDayClick = (date, section) => {
     if (!userPreferences.name) {
-      alert('Please enter your name first');
+      setError('Please enter your name first');
       return;
     }
     setSelectedDate(date);
-    setSelectedSection(section);
+    setNewEvent({
+      timeSlot: '',
+      location: '',
+      section: section
+    });
     setOpenDialog(true);
   };
 
   const handleSubmit = async () => {
+    if (!newEvent.timeSlot || !newEvent.location) {
+      setDialogError('Please fill in all fields');
+      return;
+    }
+
     try {
-      let timeSlot = newAvailability.timeSlot;
-      if (selectedSection === 'evening' && timeSlot && !/pm|evening/i.test(timeSlot)) {
-        timeSlot = timeSlot + ' pm';
-      }
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/availability`, {
-        date: selectedDate,
-        timeSlot,
-        location: newAvailability.location,
+      const eventData = {
+        ...newEvent,
         name: userPreferences.name,
         color: userPreferences.color,
-        section: selectedSection
-      });
+        date: selectedDate.toISOString()
+      };
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/availability`, eventData);
       setOpenDialog(false);
-      setNewAvailability({ timeSlot: '', location: '' });
-      fetchAvailabilities();
-    } catch (error) {
-      console.error('Error adding availability:', error);
+      setDialogError(null);
+      fetchData();
+    } catch (err) {
+      setError(err.message || 'Failed to add event');
     }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`${process.env.REACT_APP_API_URL}/api/availability/${id}`);
-      fetchAvailabilities();
-    } catch (error) {
-      console.error('Error deleting availability:', error);
-    }
-  };
-
-  const getAvailabilitiesForDate = (date) => {
-    return availabilities.filter(avail => 
-      format(parseISO(avail.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
-    );
   };
 
   const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
+    if (event.key === 'Enter' && newEvent.timeSlot && newEvent.location) {
       handleSubmit();
     }
   };
 
-  const handleCellClick = (day, event) => {
-    if (event.target === event.currentTarget) {
-      handleAddAvailability(day);
+  const handleDelete = async (eventId) => {
+    try {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}`);
+      fetchData();
+    } catch (err) {
+      setError(err.message || 'Failed to delete event');
     }
   };
 
+  const getNextSevenDays = () => {
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() + i);
+      days.push(date);
+    }
+    return days;
+  };
+
+  const isWeekend = (date) => {
+    const day = date.getDay();
+    return day === 0 || day === 6;
+  };
+
+  const pastelColor = createPastelColor(userPreferences.color);
+  const darkColor = darkenColor(userPreferences.color);
+
+  const handleColorPickerOpen = (event) => {
+    setColorPickerAnchor(event.currentTarget);
+  };
+
+  const handleColorPickerClose = () => {
+    setColorPickerAnchor(null);
+  };
+
+  const handleCustomColorChange = (event) => {
+    const newColor = event.target.value;
+    setCustomColor(newColor);
+    setUserPreferences({ ...userPreferences, color: newColor });
+  };
+
+  const openColorPicker = Boolean(colorPickerAnchor);
+  const colorPickerId = openColorPicker ? 'color-picker-popover' : undefined;
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+    setDialogError(null);
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ 
-      p: 4,
-      bgcolor: '#f0f7f0',
-      minHeight: '100vh',
+      p: 4, 
+      height: '92.5vh',
+      backgroundColor: pastelColor,
+      borderRadius: 2,
       fontFamily: 'Nunito, sans-serif',
+      transition: 'background-color 0.5s ease',
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '100%',
-      boxSizing: 'border-box',
-      m: 0
+      overflow: 'hidden'
     }}>
       <Box sx={{ 
-        width: '100%',
-        maxWidth: '1600px',
-        boxSizing: 'border-box',
-        m: 0
+        display: 'flex', 
+        alignItems: 'center', 
+        mb: 2,
+        gap: 2
       }}>
-        <Stack direction="row" spacing={2} sx={{ mb: 4, alignItems: 'center' }}>
-          <Typography 
-            variant="h4" 
-            sx={{ 
-              fontFamily: 'Nunito, sans-serif',
-              textTransform: 'lowercase',
-              '&::first-letter': {
-                textTransform: 'uppercase'
-              },
-              fontStyle: 'italic',
-              mr: 2
-            }}
-          >
-            This week
-          </Typography>
-          <TextField
-            label="Your Name"
-            value={userPreferences.name}
-            onChange={(e) => handlePreferencesChange('name', e.target.value)}
-            placeholder="Enter your name"
-            sx={{ 
-              fontFamily: 'Nunito, sans-serif',
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '12px'
-              }
-            }}
-          />
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
-              Your Color:
-            </Typography>
-            <Box sx={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(5, 1fr)',
-              gap: 1,
-              width: '200px'
-            }}>
+        <Typography 
+          variant="h3" 
+          sx={{ 
+            color: darkColor,
+            fontWeight: 700,
+            fontFamily: 'Nunito, sans-serif',
+            letterSpacing: '-0.5px',
+            position: 'relative',
+            transition: 'color 0.5s ease',
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              bottom: -8,
+              left: 0,
+              width: '100%',
+              height: '3px',
+              backgroundColor: darkColor,
+              borderRadius: '2px',
+              transition: 'background-color 0.5s ease'
+            }
+          }}
+        >
+          Next 7 Days
+        </Typography>
+      </Box>
+      
+      {error && (
+        <Alert severity="error" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>{error}</Alert>
+      )}
+
+      {/* User Preferences */}
+      <Paper sx={{ 
+        p: 2, 
+        mb: 3, 
+        borderRadius: 2, 
+        fontFamily: 'Nunito, sans-serif',
+        width: 'fit-content'
+      }}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="Your Name"
+              fullWidth
+              value={userPreferences.name}
+              onChange={(e) => setUserPreferences({ ...userPreferences, name: e.target.value })}
+              required
+              InputProps={{
+                sx: { fontFamily: 'Nunito, sans-serif' }
+              }}
+              InputLabelProps={{
+                sx: { fontFamily: 'Nunito, sans-serif' }
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={8}>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
               {COLORS.map((color) => (
                 <Box
                   key={color.value}
-                  onClick={() => handlePreferencesChange('color', color.value)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setUserPreferences({ ...userPreferences, color: color.value });
+                  }}
                   sx={{
                     width: 32,
                     height: 32,
+                    backgroundColor: color.value,
                     borderRadius: '50%',
-                    bgcolor: color.value,
                     cursor: 'pointer',
-                    position: 'relative',
-                    border: userPreferences.color === color.value ? '2px solid #000' : '2px solid transparent',
+                    border: userPreferences.color === color.value ? '3px solid #000' : 'none',
+                    transition: 'all 0.3s ease',
                     '&:hover': {
-                      opacity: 0.8
-                    },
-                    '&::after': userPreferences.color === color.value ? {
-                      content: '""',
-                      position: 'absolute',
-                      top: -4,
-                      left: -4,
-                      right: -4,
-                      bottom: -4,
-                      border: '2px solid #000',
-                      borderRadius: '50%',
-                      opacity: 0.3
-                    } : {}
+                      transform: 'scale(1.1)',
+                    }
                   }}
                 />
               ))}
+              <Box
+                component="label"
+                onClick={(e) => e.stopPropagation()}
+                sx={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: customColor,
+                  borderRadius: '50%',
+                  cursor: 'pointer',
+                  border: userPreferences.color === customColor ? '3px solid #000' : 'none',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'relative',
+                  '&:hover': {
+                    transform: 'scale(1.1)',
+                  }
+                }}
+              >
+                <input
+                  type="color"
+                  value={customColor}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    const newColor = e.target.value;
+                    setCustomColor(newColor);
+                    setUserPreferences({ ...userPreferences, color: newColor });
+                  }}
+                  style={{
+                    opacity: 0,
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    cursor: 'pointer',
+                    top: 0,
+                    left: 0
+                  }}
+                />
+                <ColorLensIcon sx={{ color: 'white', fontSize: 20 }} />
+              </Box>
             </Box>
-          </Box>
-        </Stack>
-        
-        <TableContainer 
-          component={Paper} 
+          </Grid>
+        </Grid>
+      </Paper>
+
+      {/* Calendar Row */}
+      <Paper sx={{ 
+        borderRadius: 2, 
+        overflow: 'hidden', 
+        fontFamily: 'Nunito, sans-serif',
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 0,
+        overflow: 'auto'
+      }}>
+        <Grid 
+          container 
           sx={{ 
-            bgcolor: '#ffffff',
-            borderRadius: '16px',
-            overflow: 'hidden',
-            width: '100%'
+            flex: { xs: 'none', sm: 1 },
+            flexDirection: { xs: 'column', sm: 'row' },
+            width: '100%',
+            minHeight: { sm: 0 }
           }}
-          role="grid"
-          aria-label="Weekly calendar"
         >
-          <Table sx={{ tableLayout: 'fixed' }}>
-            <TableHead>
-              <TableRow>
-                {days.map((day) => (
-                  <TableCell 
-                    key={day.toString()} 
-                    align="center" 
-                    sx={{ 
-                      fontFamily: 'Nunito, sans-serif',
-                      borderRight: '1px solid #e0e0e0',
-                      bgcolor: [0, 6].includes(day.getDay()) ? '#f8f8f8' : '#ffffff',
-                      width: `${100/7}%`,
-                      py: 2,
-                      '&:last-child': {
-                        borderRight: 'none'
-                      }
-                    }}
-                    role="columnheader"
-                    aria-label={`${format(day, 'EEEE')} ${format(day, 'MMM d')}`}
-                  >
-                    <Typography variant="h6" sx={{ fontFamily: 'Nunito, sans-serif', mb: 1 }}>
-                      {format(day, 'EEEE')}
-                    </Typography>
-                    <Typography variant="subtitle1" sx={{ fontFamily: 'Nunito, sans-serif' }}>
-                      {format(day, 'MMM d')}
-                    </Typography>
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                {days.map((day) => (
-                  <TableCell 
-                    key={day.toString()} 
-                    sx={{ 
-                      height: '400px',
-                      verticalAlign: 'top',
-                      position: 'relative',
-                      borderRight: '1px solid #e0e0e0',
-                      bgcolor: [0, 6].includes(day.getDay()) ? '#f8f8f8' : '#ffffff',
-                      width: `${100/7}%`,
-                      p: 2,
-                      '&:last-child': {
-                        borderRight: 'none'
-                      }
-                    }}
-                    role="gridcell"
-                    aria-label={`${format(day, 'EEEE')} ${format(day, 'MMM d')} events`}
-                  >
-                    {/* Day Section */}
-                    <Box 
-                      onClick={(e) => { if (e.target === e.currentTarget) handleAddAvailability(day, 'day'); }}
-                      sx={{ 
-                        height: '100%',
-                        width: '100%',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        cursor: 'pointer',
-                        zIndex: 0,
+          {getNextSevenDays().map((date, index) => {
+            const dayAvailabilities = availabilities.filter(a => 
+              new Date(a.date).toDateString() === date.toDateString()
+            );
+            
+            return (
+              <Grid 
+                item 
+                xs={12}
+                sm
+                key={index}
+                sx={{
+                  borderRight: { sm: index < 6 ? '1px solid #e0e0e0' : 'none' },
+                  borderBottom: { xs: index < 6 ? '1px solid #e0e0e0' : 'none', sm: 'none' },
+                  '&:last-child': {
+                    borderRight: 'none',
+                    borderBottom: 'none'
+                  },
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minHeight: 0,
+                  overflow: 'hidden',
+                  width: { xs: '100%', sm: 'auto' },
+                  flex: { xs: 'none', sm: 1 }
+                }}
+              >
+                <Box 
+                  sx={{ 
+                    p: 2,
+                    backgroundColor: isWeekend(date) ? '#F5F5F5' : 'white',
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'auto',
+                    minHeight: 0,
+                    height: { xs: '400px', sm: '100%' }
+                  }}
+                >
+                  <Box sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between',
+                    mb: 2
+                  }}>
+                    <Box>
+                      <Typography 
+                        variant="subtitle2" 
+                        sx={{ 
+                          fontWeight: 600,
+                          color: date.toDateString() === new Date().toDateString() ? userPreferences.color : 'inherit',
+                          fontFamily: 'Nunito, sans-serif',
+                          transition: 'color 0.5s ease'
+                        }}
+                      >
+                        {date.toLocaleDateString('en-US', { weekday: 'short' })}
+                      </Typography>
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          color: date.toDateString() === new Date().toDateString() ? userPreferences.color : 'inherit',
+                          fontFamily: 'Nunito, sans-serif',
+                          fontWeight: 700,
+                          transition: 'color 0.5s ease'
+                        }}
+                      >
+                        {date.getDate()}
+                      </Typography>
+                    </Box>
+                    <Fab
+                      size="small"
+                      color="primary"
+                      sx={{
+                        backgroundColor: userPreferences.color,
+                        transition: 'all 0.5s ease',
                         '&:hover': {
-                          bgcolor: [0, 6].includes(day.getDay()) ? '#f0f0f0' : '#f8faf8'
+                          backgroundColor: userPreferences.color,
+                          opacity: 0.9
                         }
                       }}
-                    />
-                    <Box 
-                      sx={{ 
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        position: 'relative',
-                        zIndex: 1,
-                        pointerEvents: 'none'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDayClick(date, 'day');
                       }}
                     >
-                      <Box 
-                        sx={{ 
-                          flex: 1,
-                          overflowY: 'auto', 
-                          pr: 1,
-                          pointerEvents: 'none'
-                        }}
-                      >
-                        {getAvailabilitiesForDate(day)
-                          .filter(a => a.section === 'day')
-                          .map((availability, index) => (
-                            <Box 
-                              key={index} 
-                              sx={{ 
-                                mb: 1.5,
-                                p: 1.5,
-                                bgcolor: availability.color || '#f8faf8', 
-                                borderRadius: '12px',
-                                position: 'relative',
-                                pointerEvents: 'auto',
-                                '&:hover .delete-button': {
-                                  opacity: 1
-                                }
-                              }}
-                              role="article"
-                              aria-label={`Event: ${availability.name} at ${availability.timeSlot} in ${availability.location}`}
-                            >
-                              <IconButton
-                                className="delete-button"
-                                size="small"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDelete(availability._id);
-                                }}
-                                sx={{
-                                  position: 'absolute',
-                                  top: 4,
-                                  right: 4,
-                                  opacity: 0,
-                                  transition: 'opacity 0.2s',
-                                  color: isDarkColor(availability.color) ? '#ffffff' : '#666',
-                                  '&:hover': {
-                                    color: '#d32f2f'
-                                  }
-                                }}
-                              >
-                                <DeleteIcon fontSize="small" />
-                              </IconButton>
-                              <Typography 
-                                variant="body2" 
-                                sx={{ 
-                                  fontWeight: 'bold', 
-                                  fontFamily: 'Nunito, sans-serif', 
-                                  pr: 4, 
-                                  mb: 0.25,
-                                  color: isDarkColor(availability.color) ? '#ffffff' : '#000000'
-                                }}
-                              >
-                                {availability.name}
-                              </Typography>
-                              <Typography 
-                                variant="body2" 
-                                sx={{ 
-                                  fontFamily: 'Nunito, sans-serif', 
-                                  mb: 0.25,
-                                  color: isDarkColor(availability.color) ? '#ffffff' : '#000000'
-                                }}
-                              >
-                                {availability.timeSlot}
-                              </Typography>
-                              <Typography 
-                                variant="body2" 
-                                sx={{ 
-                                  fontFamily: 'Nunito, sans-serif',
-                                  color: isDarkColor(availability.color) ? '#ffffff' : 'text.secondary'
-                                }}
-                              >
-                                {availability.location}
-                              </Typography>
-                            </Box>
-                          ))}
-                      </Box>
-                      <Box 
-                        sx={{ 
-                          position: 'absolute', 
-                          bottom: 16, 
-                          right: 16,
-                          zIndex: 2,
-                          pointerEvents: 'auto'
-                        }}
-                      >
-                        <Button 
-                          variant="contained" 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleAddAvailability(day, 'day');
+                      <AddIcon />
+                    </Fab>
+                  </Box>
+                  <Divider sx={{ mb: 2 }} />
+
+                  {/* Day Section */}
+                  <Box 
+                    sx={{ 
+                      flex: 1,
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.02)'
+                      }
+                    }}
+                    onClick={() => handleDayClick(date, 'day')}
+                  >
+                    {dayAvailabilities
+                      .filter(a => a.section !== 'evening')
+                      .map((a, idx) => (
+                        <Paper
+                          key={idx}
+                          sx={{
+                            p: 1,
+                            mb: 1,
+                            backgroundColor: a.color,
+                            color: 'white',
+                            borderRadius: 1,
+                            position: 'relative',
+                            fontFamily: 'Nunito, sans-serif'
                           }}
-                          sx={{ 
-                            minWidth: '40px',
-                            width: '40px',
-                            height: '40px',
-                            borderRadius: '50%',
-                            p: 0,
-                            fontFamily: 'Nunito, sans-serif',
-                            fontSize: '1.5rem',
-                            bgcolor: '#4a6741',
-                            '&:hover': {
-                              bgcolor: '#3d5636'
-                            }
-                          }}
-                          aria-label={`Add event for ${format(day, 'MMMM d')}`}
                         >
-                          +
-                        </Button>
-                      </Box>
-                    </Box>
-                    {/* Evening Section */}
-                    <Box sx={{ mt: 2 }}>
-                      <Typography variant="subtitle2" sx={{ mb: 1, color: '#666', fontFamily: 'Nunito, sans-serif', fontWeight: 600 }}>
-                        Evening
-                      </Typography>
-                      <Box 
-                        onClick={(e) => { if (e.target === e.currentTarget) handleAddAvailability(day, 'evening'); }}
-                        sx={{ cursor: 'pointer', minHeight: '40px' }}
-                      >
-                        {getAvailabilitiesForDate(day)
-                          .filter(a => a.section === 'evening')
-                          .map((availability, index) => (
-                            <Box 
-                              key={index} 
-                              sx={{ 
-                                mb: 1.5,
-                                p: 1.5,
-                                bgcolor: availability.color || '#f8faf8', 
-                                borderRadius: '12px',
-                                position: 'relative',
-                                pointerEvents: 'auto',
-                                '&:hover .delete-button': {
-                                  opacity: 1
-                                }
-                              }}
-                              role="article"
-                              aria-label={`Event: ${availability.name} at ${availability.timeSlot} in ${availability.location}`}
-                            >
-                              <IconButton
-                                className="delete-button"
-                                size="small"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDelete(availability._id);
-                                }}
-                                sx={{
-                                  position: 'absolute',
-                                  top: 4,
-                                  right: 4,
-                                  opacity: 0,
-                                  transition: 'opacity 0.2s',
-                                  color: isDarkColor(availability.color) ? '#ffffff' : '#666',
-                                  '&:hover': {
-                                    color: '#d32f2f'
-                                  }
-                                }}
-                              >
-                                <DeleteIcon fontSize="small" />
-                              </IconButton>
-                              <Typography 
-                                variant="body2" 
-                                sx={{ 
-                                  fontWeight: 'bold', 
-                                  fontFamily: 'Nunito, sans-serif', 
-                                  pr: 4, 
-                                  mb: 0.25,
-                                  color: isDarkColor(availability.color) ? '#ffffff' : '#000000'
-                                }}
-                              >
-                                {availability.name}
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: 'Nunito, sans-serif' }}>
+                              {a.name}
+                            </Typography>
+                            <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
+                              {a.timeSlot}
+                            </Typography>
+                          </Box>
+                          <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
+                            {a.location}
+                          </Typography>
+                          <IconButton
+                            size="small"
+                            sx={{
+                              position: 'absolute',
+                              top: 0,
+                              right: 0,
+                              color: 'white',
+                              '&:hover': {
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                              }
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(a._id);
+                            }}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Paper>
+                    ))}
+                  </Box>
+
+                  {/* Evening Section */}
+                  <Box sx={{ 
+                    flex: 1,
+                    mt: 2,
+                    display: 'flex',
+                    flexDirection: 'column'
+                  }}>
+                    <Typography 
+                      variant="subtitle2" 
+                      sx={{ 
+                        mb: 1, 
+                        color: '#666',
+                        fontFamily: 'Nunito, sans-serif',
+                        fontWeight: 600
+                      }}
+                    >
+                      Evening
+                    </Typography>
+                    <Box 
+                      sx={{ 
+                        flex: 1,
+                        cursor: 'pointer',
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.02)'
+                        }
+                      }}
+                      onClick={() => handleDayClick(date, 'evening')}
+                    >
+                      {dayAvailabilities
+                        .filter(a => a.section === 'evening')
+                        .map((a, idx) => (
+                          <Paper
+                            key={idx}
+                            sx={{
+                              p: 1,
+                              mb: 1,
+                              backgroundColor: a.color,
+                              color: 'white',
+                              borderRadius: 1,
+                              position: 'relative',
+                              fontFamily: 'Nunito, sans-serif'
+                            }}
+                          >
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: 'Nunito, sans-serif' }}>
+                                {a.name}
                               </Typography>
-                              <Typography 
-                                variant="body2" 
-                                sx={{ 
-                                  fontFamily: 'Nunito, sans-serif', 
-                                  mb: 0.25,
-                                  color: isDarkColor(availability.color) ? '#ffffff' : '#000000'
-                                }}
-                              >
-                                {availability.timeSlot}
-                              </Typography>
-                              <Typography 
-                                variant="body2" 
-                                sx={{ 
-                                  fontFamily: 'Nunito, sans-serif',
-                                  color: isDarkColor(availability.color) ? '#ffffff' : 'text.secondary'
-                                }}
-                              >
-                                {availability.location}
+                              <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
+                                {a.timeSlot}
                               </Typography>
                             </Box>
-                          ))}
-                      </Box>
+                            <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
+                              {a.location}
+                            </Typography>
+                            <IconButton
+                              size="small"
+                              sx={{
+                                position: 'absolute',
+                                top: 0,
+                                right: 0,
+                                color: 'white',
+                                '&:hover': {
+                                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                                }
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(a._id);
+                              }}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Paper>
+                      ))}
                     </Box>
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+                  </Box>
+                </Box>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Paper>
 
       <Dialog 
         open={openDialog} 
-        onClose={() => setOpenDialog(false)}
+        onClose={handleDialogClose}
         PaperProps={{
           sx: {
-            borderRadius: '16px'
+            borderRadius: 4,
+            fontFamily: 'Nunito, sans-serif'
           }
         }}
       >
-        <DialogTitle sx={{ fontFamily: 'Nunito, sans-serif' }}>
-          What are your plans on {selectedDate && format(selectedDate, 'MMMM d')}?
+        <DialogTitle sx={{ fontFamily: 'Nunito, sans-serif', fontWeight: 600 }}>
+          What are your plans on {selectedDate?.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}?
         </DialogTitle>
         <DialogContent>
+          {dialogError && (
+            <Alert severity="error" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>{dialogError}</Alert>
+          )}
+          <FormControl component="fieldset" sx={{ mb: 2, width: '100%' }}>
+            <FormLabel component="legend" sx={{ fontFamily: 'Nunito, sans-serif' }}>Event Time</FormLabel>
+            <RadioGroup
+              row
+              value={newEvent.section}
+              onChange={(e) => setNewEvent({ ...newEvent, section: e.target.value })}
+            >
+              <FormControlLabel 
+                value="day" 
+                control={<Radio />} 
+                label="Day" 
+                sx={{ fontFamily: 'Nunito, sans-serif' }}
+              />
+              <FormControlLabel 
+                value="evening" 
+                control={<Radio />} 
+                label="Evening" 
+                sx={{ fontFamily: 'Nunito, sans-serif' }}
+              />
+            </RadioGroup>
+          </FormControl>
           <TextField
             autoFocus
             margin="dense"
-            label="Time Slot"
+            label="Time"
             fullWidth
-            value={newAvailability.timeSlot}
-            onChange={(e) => setNewAvailability({ ...newAvailability, timeSlot: e.target.value })}
+            value={newEvent.timeSlot}
+            onChange={(e) => setNewEvent({ ...newEvent, timeSlot: e.target.value })}
             onKeyPress={handleKeyPress}
-            placeholder={selectedSection === 'evening' ? 'e.g., 6:00 PM - 8:00 PM' : 'e.g., 9:00 AM - 5:00 PM'}
-            sx={{ 
-              fontFamily: 'Nunito, sans-serif',
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '12px'
-              }
+            sx={{ mb: 2 }}
+            placeholder={selectedDate ? (newEvent.section === 'evening' ? '6-7pm' : '9-5') : ''}
+            InputProps={{
+              sx: { fontFamily: 'Nunito, sans-serif' }
+            }}
+            InputLabelProps={{
+              sx: { fontFamily: 'Nunito, sans-serif' }
             }}
           />
           <TextField
             margin="dense"
             label="Location"
             fullWidth
-            value={newAvailability.location}
-            onChange={(e) => setNewAvailability({ ...newAvailability, location: e.target.value })}
+            value={newEvent.location}
+            onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
             onKeyPress={handleKeyPress}
-            placeholder="e.g., Conference Room A"
-            sx={{ 
-              fontFamily: 'Nunito, sans-serif',
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '12px'
-              }
+            InputProps={{
+              sx: { fontFamily: 'Nunito, sans-serif' }
+            }}
+            InputLabelProps={{
+              sx: { fontFamily: 'Nunito, sans-serif' }
             }}
           />
         </DialogContent>
         <DialogActions>
           <Button 
-            onClick={() => setOpenDialog(false)} 
+            onClick={handleDialogClose}
             sx={{ 
+              textTransform: 'none',
               fontFamily: 'Nunito, sans-serif',
-              textTransform: 'lowercase',
-              borderRadius: '12px'
+              fontWeight: 600
             }}
           >
             cancel
@@ -594,9 +693,16 @@ const Calendar = () => {
             onClick={handleSubmit} 
             variant="contained" 
             sx={{ 
+              backgroundColor: userPreferences.color,
+              textTransform: 'none',
+              borderRadius: 2,
               fontFamily: 'Nunito, sans-serif',
-              textTransform: 'lowercase',
-              borderRadius: '12px'
+              fontWeight: 600,
+              transition: 'all 0.5s ease',
+              '&:hover': {
+                backgroundColor: userPreferences.color,
+                opacity: 0.9
+              }
             }}
           >
             add
@@ -607,4 +713,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar; 
+export default Calendar;
