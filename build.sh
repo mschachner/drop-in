@@ -764,36 +764,7 @@ NODE_OPTIONS=--max-old-space-size=512 GENERATE_SOURCEMAP=false CI=false npm run 
   exit 1
 }
 
-# Create client/build directory and move files
-echo "Moving build files to the correct location..."
-mkdir -p /app/client/build
-
-# Remove existing build files if they exist
-echo "Cleaning existing build files..."
-rm -rf /app/client/build/*
-
-# Debug: List current directory contents
-echo "Current directory contents:"
-ls -la
-
-# Debug: List build directory contents
-echo "Build directory contents:"
-ls -la build/
-
-# Debug: Show current working directory
-echo "Current working directory:"
-pwd
-
-# Debug: List all build directories
-echo "Searching for build directories:"
-find /app -name "build" -type d
-
-# Copy all files from build directory
-echo "Copying build files..."
-cp -r /app/client/build/* /app/client/build/ || {
-  echo "Failed to copy build files!"
-  exit 1
-}
+# No need to copy build files—they are already in client/build
 
 # Cleanup after build but preserve /app/client/build
 echo "Cleaning up temporary files..."
