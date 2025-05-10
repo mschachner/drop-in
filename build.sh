@@ -774,13 +774,15 @@ rm -rf /app/client/build/*
 
 # Copy all files from build directory
 echo "Copying build files..."
-cp -r build/* /app/client/build/
+cp -r /app/client/build/* /app/client/build/ || {
+  echo "Failed to copy build files!"
+  exit 1
+}
 
 # Cleanup after build but preserve /app/client/build
 echo "Cleaning up temporary files..."
 rm -rf node_modules
 rm -rf client/node_modules
-rm -rf client/build
 npm cache clean --force
 
 cd ..
