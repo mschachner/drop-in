@@ -5,11 +5,20 @@ const path = require('path');
 const cors = require('cors');
 const app = express();
 
-// Enable CORS
+// Enable CORS with more detailed logging
 app.use(cors({
-  origin: ['https://dropin-production.up.railway.app', 'http://localhost:3000'],
-  credentials: true
+  origin: true, // Allow all origins during debugging
+  credentials: true,
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Add request logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  console.log('Headers:', req.headers);
+  next();
+});
 
 // Parse JSON bodies
 app.use(express.json());

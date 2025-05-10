@@ -103,11 +103,18 @@ const Calendar = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
+      console.log('Fetching from:', `${process.env.REACT_APP_API_URL}/api/availability`);
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/availability`);
+      console.log('Response:', response.data);
       setAvailabilities(response.data);
       setError(null);
     } catch (err) {
-      console.error('Error:', err);
+      console.error('Error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        url: `${process.env.REACT_APP_API_URL}/api/availability`
+      });
       setError(err.message || 'Failed to load availabilities');
     } finally {
       setLoading(false);
