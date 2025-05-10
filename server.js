@@ -7,7 +7,7 @@ const app = express();
 
 // Enable CORS with proper preflight handling
 app.use(cors({
-  origin: 'https://dropin-production.up.railway.app',
+  origin: ['https://dropin-production.up.railway.app', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -15,10 +15,15 @@ app.use(cors({
   optionsSuccessStatus: 204
 }));
 
-// Add request logging middleware
+// Add detailed request logging middleware
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  console.log('Headers:', req.headers);
+  console.log('=== Request Details ===');
+  console.log('Time:', new Date().toISOString());
+  console.log('Method:', req.method);
+  console.log('URL:', req.url);
+  console.log('Headers:', JSON.stringify(req.headers, null, 2));
+  console.log('Body:', JSON.stringify(req.body, null, 2));
+  console.log('=====================');
   next();
 });
 
@@ -27,6 +32,20 @@ app.options('*', cors());
 
 // Parse JSON bodies
 app.use(express.json());
+
+// Add response logging middleware
+app.use((req, res, next) => {
+  const oldSend = res.send;
+  res.send = function(data) {
+    console.log('=== Response Details ===');
+    console.log('Status:', res.statusCode);
+    console.log('Headers:', JSON.stringify(res.getHeaders(), null, 2));
+    console.log('Body:', data);
+    console.log('=====================');
+    oldSend.apply(res, arguments);
+  };
+  next();
+});
 
 // Debug logging only in development
 if (process.env.NODE_ENV === 'development') {

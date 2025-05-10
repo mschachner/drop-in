@@ -97,6 +97,8 @@ const Calendar = () => {
   }, []);
 
   useEffect(() => {
+    console.log('Environment:', process.env.NODE_ENV);
+    console.log('API URL:', process.env.REACT_APP_API_URL);
     fetchData();
   }, []);
 
@@ -104,7 +106,12 @@ const Calendar = () => {
     try {
       setLoading(true);
       console.log('Fetching from:', `${process.env.REACT_APP_API_URL}/api/availability`);
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/availability`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/availability`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true
+      });
       console.log('Response:', response.data);
       setAvailabilities(response.data);
       setError(null);
@@ -113,7 +120,8 @@ const Calendar = () => {
         message: err.message,
         response: err.response?.data,
         status: err.response?.status,
-        url: `${process.env.REACT_APP_API_URL}/api/availability`
+        url: `${process.env.REACT_APP_API_URL}/api/availability`,
+        config: err.config
       });
       setError(err.message || 'Failed to load availabilities');
     } finally {
