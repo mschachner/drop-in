@@ -768,6 +768,10 @@ NODE_OPTIONS=--max-old-space-size=512 GENERATE_SOURCEMAP=false CI=false npm run 
 echo "Moving build files to the correct location..."
 mkdir -p /app/client/build
 
+# Remove existing build files if they exist
+echo "Cleaning existing build files..."
+rm -rf /app/client/build/*
+
 # Copy all files from build directory
 echo "Copying build files..."
 cp -r build/* /app/client/build/
