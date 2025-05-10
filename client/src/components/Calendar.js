@@ -19,8 +19,7 @@ import {
   FormControlLabel,
   Radio,
   FormControl,
-  FormLabel,
-  Popover
+  FormLabel
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -76,9 +75,8 @@ const Calendar = () => {
   const [dialogError, setDialogError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [availabilities, setAvailabilities] = useState([]);
-  const [currentDate] = useState(new Date());
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [userPreferences, setUserPreferences] = useState({
     name: '',
     color: COLORS[0].value
@@ -88,8 +86,7 @@ const Calendar = () => {
     location: '',
     section: 'day'
   });
-  const [colorPickerAnchor, setColorPickerAnchor] = useState(null);
-  const [customColor, setCustomColor] = useState('#000000');
+  const [selectedColor, setSelectedColor] = useState('#1976d2');
 
   useEffect(() => {
     // Add Nunito font
@@ -185,23 +182,6 @@ const Calendar = () => {
 
   const pastelColor = createPastelColor(userPreferences.color);
   const darkColor = darkenColor(userPreferences.color);
-
-  const handleColorPickerOpen = (event) => {
-    setColorPickerAnchor(event.currentTarget);
-  };
-
-  const handleColorPickerClose = () => {
-    setColorPickerAnchor(null);
-  };
-
-  const handleCustomColorChange = (event) => {
-    const newColor = event.target.value;
-    setCustomColor(newColor);
-    setUserPreferences({ ...userPreferences, color: newColor });
-  };
-
-  const openColorPicker = Boolean(colorPickerAnchor);
-  const colorPickerId = openColorPicker ? 'color-picker-popover' : undefined;
 
   const handleDialogClose = () => {
     setOpenDialog(false);
@@ -317,10 +297,10 @@ const Calendar = () => {
                 sx={{
                   width: 32,
                   height: 32,
-                  backgroundColor: customColor,
+                  backgroundColor: selectedColor,
                   borderRadius: '50%',
                   cursor: 'pointer',
-                  border: userPreferences.color === customColor ? '3px solid #000' : 'none',
+                  border: userPreferences.color === selectedColor ? '3px solid #000' : 'none',
                   transition: 'all 0.3s ease',
                   display: 'flex',
                   alignItems: 'center',
@@ -333,11 +313,11 @@ const Calendar = () => {
               >
                 <input
                   type="color"
-                  value={customColor}
+                  value={selectedColor}
                   onChange={(e) => {
                     e.stopPropagation();
                     const newColor = e.target.value;
-                    setCustomColor(newColor);
+                    setSelectedColor(newColor);
                     setUserPreferences({ ...userPreferences, color: newColor });
                   }}
                   style={{
@@ -365,8 +345,7 @@ const Calendar = () => {
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        minHeight: 0,
-        overflow: 'auto'
+        minHeight: 0
       }}>
         <Grid 
           container 
