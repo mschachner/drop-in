@@ -672,7 +672,9 @@ cat > client/package.json << 'EOL'
     "react-scripts": "5.0.1",
     "rollup-plugin-terser": "^7.0.2",
     "workbox-build": "^6.6.0",
-    "workbox-webpack-plugin": "^6.6.0"
+    "workbox-webpack-plugin": "^6.6.0",
+    "sourcemap-codec": "^1.4.8",
+    "@jridgewell/sourcemap-codec": "^1.4.15"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -703,11 +705,11 @@ cat > client/package.json << 'EOL'
     "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
     "@babel/plugin-proposal-private-property-in-object": "@babel/plugin-transform-private-property-in-object",
     "svgo": "^2.8.0",
-    "sourcemap-codec": "@jridgewell/sourcemap-codec",
     "stable": "^0.1.8",
     "q": "^1.5.1",
     "domexception": "^3.0.0",
-    "@humanwhocodes/config-array": "@eslint/config-array"
+    "@humanwhocodes/config-array": "@eslint/config-array",
+    "sourcemap-codec": "@jridgewell/sourcemap-codec"
   }
 }
 EOL
