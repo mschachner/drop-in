@@ -50,7 +50,12 @@ const availabilitySchema = new mongoose.Schema({
   timeSlot: String,
   location: String,
   name: String,
-  color: String
+  color: String,
+  section: {
+    type: String,
+    enum: ['day', 'evening'],
+    default: 'day'
+  }
 });
 
 const Availability = mongoose.model('Availability', availabilitySchema);
