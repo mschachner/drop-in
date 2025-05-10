@@ -772,9 +772,17 @@ mkdir -p /app/client/build
 echo "Cleaning existing build files..."
 rm -rf /app/client/build/*
 
+# Debug: List current directory contents
+echo "Current directory contents:"
+ls -la
+
+# Debug: List build directory contents
+echo "Build directory contents:"
+ls -la build/
+
 # Copy all files from build directory
 echo "Copying build files..."
-cp -r /app/build/* /app/client/build/ || {
+cp -r build/* /app/client/build/ || {
   echo "Failed to copy build files!"
   exit 1
 }
