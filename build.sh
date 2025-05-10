@@ -707,7 +707,6 @@ cat > client/package.json << 'EOL'
     "workbox-cacheable-response": "^7.0.0",
     "workbox-google-analytics": "^7.0.0",
     "domexception": "^3.0.0",
-    "inflight": "^2.0.0",
     "@humanwhocodes/config-array": "@eslint/config-array"
   }
 }
@@ -719,6 +718,7 @@ cat > client/.npmrc << 'EOL'
 loglevel=error
 fund=false
 audit=false
+legacy-peer-deps=true
 EOL
 
 # Create .env file for client
@@ -739,7 +739,7 @@ npm install --omit=dev --omit=optional --no-audit --no-fund --loglevel=error
 
 cd client
 echo "Installing client dependencies..."
-npm install --omit=optional --no-audit --no-fund --loglevel=error
+npm install --no-audit --no-fund --loglevel=error
 
 # Run build with minimal configuration
 echo "Building React application..."
