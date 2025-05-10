@@ -361,7 +361,7 @@ const Calendar = () => {
         display: 'flex',
         flexDirection: 'column',
         minHeight: 0,
-        height: { xs: 'calc(100vh - 200px)', sm: 'auto' }
+        height: { xs: 'auto', sm: 'auto' }
       }}>
         <Grid 
           container 
@@ -371,7 +371,7 @@ const Calendar = () => {
             width: '100%',
             minHeight: { sm: 0 },
             overflow: { xs: 'auto', sm: 'hidden' },
-            height: { xs: '100%', sm: 'auto' }
+            height: { xs: 'auto', sm: 'auto' }
           }}
         >
           {getNextSevenDays().map((date, index) => {
