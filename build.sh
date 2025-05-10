@@ -673,7 +673,6 @@ cat > client/package.json << 'EOL'
     "rollup-plugin-terser": "^7.0.2",
     "workbox-build": "^6.6.0",
     "workbox-webpack-plugin": "^6.6.0",
-    "sourcemap-codec": "^1.4.8",
     "@jridgewell/sourcemap-codec": "^1.4.15"
   },
   "scripts": {
