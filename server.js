@@ -7,7 +7,7 @@ const app = express();
 
 // Enable CORS with proper preflight handling
 app.use(cors({
-  origin: ['https://dropin-production.up.railway.app', 'http://localhost:3000'],
+  origin: ['https://drop-in.up.railway.app', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
