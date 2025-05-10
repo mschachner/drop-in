@@ -674,7 +674,10 @@ cat > client/package.json << 'EOL'
     "workbox-build": "^6.6.0",
     "workbox-webpack-plugin": "^6.6.0",
     "sourcemap-codec": "^1.4.8",
-    "@jridgewell/sourcemap-codec": "^1.4.15"
+    "@jridgewell/sourcemap-codec": "^1.4.15",
+    "ajv": "^8.12.0",
+    "ajv-keywords": "^5.1.0",
+    "schema-utils": "^4.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -700,7 +703,10 @@ cat > client/package.json << 'EOL'
     ]
   },
   "resolutions": {
-    "sourcemap-codec": "^1.4.8"
+    "sourcemap-codec": "^1.4.8",
+    "ajv": "^8.12.0",
+    "ajv-keywords": "^5.1.0",
+    "schema-utils": "^4.2.0"
   },
   "overrides": {
     "@babel/plugin-proposal-numeric-separator": "@babel/plugin-transform-numeric-separator",
