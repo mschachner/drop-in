@@ -110,7 +110,8 @@ const Calendar = () => {
         timeSlot,
         location: newAvailability.location,
         name: userPreferences.name,
-        color: userPreferences.color
+        color: userPreferences.color,
+        section: selectedSection
       });
       setOpenDialog(false);
       setNewAvailability({ timeSlot: '', location: '' });
@@ -334,7 +335,7 @@ const Calendar = () => {
                         }}
                       >
                         {getAvailabilitiesForDate(day)
-                          .filter(a => !/pm|evening/i.test(a.timeSlot))
+                          .filter(a => a.section === 'day')
                           .map((availability, index) => (
                             <Box 
                               key={index} 
@@ -451,7 +452,7 @@ const Calendar = () => {
                         sx={{ cursor: 'pointer', minHeight: '40px' }}
                       >
                         {getAvailabilitiesForDate(day)
-                          .filter(a => /pm|evening/i.test(a.timeSlot))
+                          .filter(a => a.section === 'evening')
                           .map((availability, index) => (
                             <Box 
                               key={index} 
