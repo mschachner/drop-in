@@ -780,9 +780,17 @@ ls -la
 echo "Build directory contents:"
 ls -la build/
 
+# Debug: Show current working directory
+echo "Current working directory:"
+pwd
+
+# Debug: List all build directories
+echo "Searching for build directories:"
+find /app -name "build" -type d
+
 # Copy all files from build directory
 echo "Copying build files..."
-cp -r build/* /app/client/build/ || {
+cp -r /app/client/build/* /app/client/build/ || {
   echo "Failed to copy build files!"
   exit 1
 }
