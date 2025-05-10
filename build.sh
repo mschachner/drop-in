@@ -408,7 +408,10 @@ const Calendar = () => {
                     onClick={() => handleDayClick(date, 'day')}
                   >
                     {dayAvailabilities
-                      .filter(a => !a.timeSlot.toLowerCase().includes('pm'))
+                      .filter(a => {
+                        const time = a.timeSlot.toLowerCase();
+                        return !time.includes('pm') && !time.includes('evening');
+                      })
                       .map((a, idx) => (
                         <Paper
                           key={idx}
@@ -486,7 +489,10 @@ const Calendar = () => {
                       onClick={() => handleDayClick(date, 'evening')}
                     >
                       {dayAvailabilities
-                        .filter(a => a.timeSlot.toLowerCase().includes('pm'))
+                        .filter(a => {
+                          const time = a.timeSlot.toLowerCase();
+                          return time.includes('pm') || time.includes('evening');
+                        })
                         .map((a, idx) => (
                           <Paper
                             key={idx}
