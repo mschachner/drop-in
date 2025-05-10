@@ -711,11 +711,11 @@ cleanup
 # Install dependencies in smaller chunks
 cd /app
 echo "Installing root dependencies..."
-npm install --no-optional --no-audit --no-fund
+npm install --omit=dev --omit=optional --no-audit --no-fund
 
 cd client
 echo "Installing client dependencies..."
-npm install --no-optional --no-audit --no-fund
+npm install --omit=optional --no-audit --no-fund
 
 # Run build with minimal configuration
 echo "Building React application..."
