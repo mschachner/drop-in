@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Enable debug mode
-set -x
-
 # Set Node.js memory limits and cleanup
 export NODE_OPTIONS="--max-old-space-size=512"
 export GENERATE_SOURCEMAP=false
@@ -19,9 +16,11 @@ cleanup() {
 }
 
 # Create necessary directories
+echo "Setting up project structure..."
 mkdir -p client/public client/src/components
 
 # Create minimal public/index.html
+echo "Creating index.html..."
 cat > client/public/index.html << 'EOL'
 <!DOCTYPE html>
 <html lang="en">
@@ -37,6 +36,7 @@ cat > client/public/index.html << 'EOL'
 EOL
 
 # Create minimal src/index.js
+echo "Creating index.js..."
 cat > client/src/index.js << 'EOL'
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -46,6 +46,7 @@ root.render(<App />);
 EOL
 
 # Create minimal src/App.js
+echo "Creating App.js..."
 cat > client/src/App.js << 'EOL'
 import React from 'react';
 import { ThemeProvider, createTheme, CssBaseline, Container } from '@mui/material';
@@ -70,6 +71,7 @@ export default App;
 EOL
 
 # Create minimal src/components/Calendar.js
+echo "Creating Calendar component..."
 cat > client/src/components/Calendar.js << 'EOL'
 import React, { useState, useEffect } from 'react';
 import { 
@@ -653,6 +655,7 @@ export default Calendar;
 EOL
 
 # Create minimal package.json for client
+echo "Creating package.json..."
 cat > client/package.json << 'EOL'
 {
   "name": "client",
@@ -695,6 +698,7 @@ cat > client/package.json << 'EOL'
 EOL
 
 # Create .env file for client
+echo "Creating environment configuration..."
 cat > client/.env << 'EOL'
 GENERATE_SOURCEMAP=false
 NODE_OPTIONS=--max-old-space-size=512
@@ -713,23 +717,12 @@ cd client
 echo "Installing client dependencies..."
 npm install --no-optional --no-audit --no-fund
 
-# Debug: List contents before build
-echo "Contents of client directory before build:"
-ls -la
-
 # Run build with minimal configuration
-echo "Running React build..."
+echo "Building React application..."
 NODE_OPTIONS=--max-old-space-size=512 GENERATE_SOURCEMAP=false CI=false npm run build || {
   echo "React build failed!"
   exit 1
 }
-
-# Debug: List contents after build
-echo "Contents of client directory after build:"
-ls -la
-
-echo "Contents of build directory:"
-ls -la build
 
 # Create client/build directory and move files
 echo "Moving build files to the correct location..."
@@ -739,18 +732,6 @@ mkdir -p /app/client/build
 echo "Copying build files..."
 cp -r build/* /app/client/build/
 
-# Debug: List contents of /app/client/build directory
-echo "Contents of /app/client/build directory:"
-ls -la /app/client/build
-
-# Debug: List contents of /app/client directory
-echo "Contents of /app/client directory:"
-ls -la /app/client
-
-# Debug: List contents of /app directory
-echo "Contents of /app directory:"
-ls -la /app
-
 # Cleanup after build but preserve /app/client/build
 echo "Cleaning up temporary files..."
 rm -rf node_modules
@@ -759,4 +740,5 @@ rm -rf client/build
 npm cache clean --force
 
 cd ..
+echo "Starting server..."
 node server.js 
