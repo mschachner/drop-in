@@ -6,7 +6,10 @@ const cors = require('cors');
 const app = express();
 
 // Enable CORS
-app.use(cors());
+app.use(cors({
+  origin: ['https://dropin-production.up.railway.app', 'http://localhost:3000'],
+  credentials: true
+}));
 
 // Parse JSON bodies
 app.use(express.json());
