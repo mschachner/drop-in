@@ -669,7 +669,10 @@ cat > client/package.json << 'EOL'
     "axios": "^1.6.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "rollup-plugin-terser": "^7.0.2",
+    "workbox-build": "^6.6.0",
+    "workbox-webpack-plugin": "^6.6.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -701,11 +704,8 @@ cat > client/package.json << 'EOL'
     "@babel/plugin-proposal-private-property-in-object": "@babel/plugin-transform-private-property-in-object",
     "svgo": "^2.8.0",
     "sourcemap-codec": "@jridgewell/sourcemap-codec",
-    "rollup-plugin-terser": "@rollup/plugin-terser",
     "stable": "^0.1.8",
     "q": "^1.5.1",
-    "workbox-cacheable-response": "^7.0.0",
-    "workbox-google-analytics": "^7.0.0",
     "domexception": "^3.0.0",
     "@humanwhocodes/config-array": "@eslint/config-array"
   }
@@ -719,6 +719,7 @@ loglevel=error
 fund=false
 audit=false
 legacy-peer-deps=true
+strict-peer-dependencies=false
 EOL
 
 # Create .env file for client
