@@ -774,7 +774,7 @@ rm -rf /app/client/build/*
 
 # Copy all files from build directory
 echo "Copying build files..."
-cp -r /app/client/build/* /app/client/build/ || {
+cp -r /app/build/* /app/client/build/ || {
   echo "Failed to copy build files!"
   exit 1
 }
