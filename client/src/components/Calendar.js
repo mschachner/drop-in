@@ -36,6 +36,26 @@ const COLORS = [
   { value: '#795548', label: 'Brown' }
 ];
 
+// Function to calculate relative luminance of a color
+const calculateLuminance = (hex) => {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return 0;
+  
+  // Convert RGB to relative luminance
+  const [r, g, b] = [rgb.r, rgb.g, rgb.b].map(c => {
+    c = c / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+
+// Function to determine if text should be black or white based on background color
+const getTextColor = (backgroundColor) => {
+  const luminance = calculateLuminance(backgroundColor);
+  return luminance > 0.5 ? '#000000' : '#FFFFFF';
+};
+
 // Function to convert hex to RGB
 const hexToRgb = (hex) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -534,7 +554,7 @@ const Calendar = () => {
                             p: 1,
                             mb: 1,
                             backgroundColor: a.color,
-                            color: 'white',
+                            color: getTextColor(a.color),
                             borderRadius: 1,
                             position: 'relative',
                             fontFamily: 'Nunito, sans-serif',
@@ -575,9 +595,9 @@ const Calendar = () => {
                               position: 'absolute',
                               top: 0,
                               right: 0,
-                              color: 'white',
+                              color: getTextColor(a.color),
                               '&:hover': {
-                                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                                backgroundColor: 'rgba(0, 0, 0, 0.1)'
                               }
                             }}
                             onClick={(e) => {
@@ -628,7 +648,7 @@ const Calendar = () => {
                               p: 1,
                               mb: 1,
                               backgroundColor: a.color,
-                              color: 'white',
+                              color: getTextColor(a.color),
                               borderRadius: 1,
                               position: 'relative',
                               fontFamily: 'Nunito, sans-serif',
@@ -669,9 +689,9 @@ const Calendar = () => {
                                 position: 'absolute',
                                 top: 0,
                                 right: 0,
-                                color: 'white',
+                                color: getTextColor(a.color),
                                 '&:hover': {
-                                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                                  backgroundColor: 'rgba(0, 0, 0, 0.1)'
                                 }
                               }}
                               onClick={(e) => {
