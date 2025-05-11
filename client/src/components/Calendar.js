@@ -668,7 +668,7 @@ const Calendar = () => {
           />
           <TextField
             margin="dense"
-            label="Location"
+            label="Location / Event"
             fullWidth
             value={newEvent.location}
             onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
