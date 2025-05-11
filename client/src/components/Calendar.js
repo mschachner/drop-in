@@ -216,7 +216,7 @@ const Calendar = () => {
 
   const handleJoinEvent = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${selectedEvent._id}/join`, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${selectedEvent._id}/join`, {
         name: userPreferences.name
       });
       setOpenJoinDialog(false);
@@ -228,7 +228,7 @@ const Calendar = () => {
 
   const handleUnjoinEvent = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${selectedEvent._id}/unjoin`, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${selectedEvent._id}/unjoin`, {
         name: userPreferences.name
       });
       setOpenJoinDialog(false);
