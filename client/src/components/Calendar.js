@@ -97,10 +97,10 @@ const createHighlightColor = (hex) => {
   const rgb = hexToRgb(hex);
   if (!rgb) return hex;
   
-  // Mix with white to create a very light version (90% white, 10% color)
-  const highlightR = Math.round((rgb.r * 0.1) + (255 * 0.9));
-  const highlightG = Math.round((rgb.g * 0.1) + (255 * 0.9));
-  const highlightB = Math.round((rgb.b * 0.1) + (255 * 0.9));
+  // Mix with black to create a darker version (30% black, 70% color)
+  const highlightR = Math.round(rgb.r * 0.7);
+  const highlightG = Math.round(rgb.g * 0.7);
+  const highlightB = Math.round(rgb.b * 0.7);
   
   return `rgb(${highlightR}, ${highlightG}, ${highlightB})`;
 };
@@ -427,7 +427,7 @@ const Calendar = () => {
                     left: 0
                   }}
                 />
-                <ColorLensIcon sx={{ color: 'white', fontSize: 20 }} />
+                <ColorLensIcon sx={{ color: getTextColor(selectedColor), fontSize: 20 }} />
               </Box>
             </Box>
           </Grid>
