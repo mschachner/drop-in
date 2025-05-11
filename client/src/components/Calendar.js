@@ -614,7 +614,10 @@ const Calendar = () => {
         PaperProps={{
           sx: {
             borderRadius: 4,
-            fontFamily: 'Nunito, sans-serif'
+            fontFamily: 'Nunito, sans-serif',
+            margin: { xs: '16px', sm: '32px' },
+            position: { xs: 'absolute', sm: 'relative' },
+            top: { xs: '10%', sm: 'auto' }
           }
         }}
       >
