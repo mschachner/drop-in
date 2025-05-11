@@ -214,14 +214,15 @@ const Calendar = () => {
   return (
     <Box sx={{ 
       p: 4, 
-      height: '92.5vh',
+      height: { xs: 'auto', sm: '92.5vh' },
+      minHeight: { xs: '100vh', sm: 'auto' },
       backgroundColor: pastelColor,
       borderRadius: 2,
       fontFamily: 'Nunito, sans-serif',
       transition: 'background-color 0.5s ease',
       display: 'flex',
       flexDirection: 'column',
-      overflow: 'hidden'
+      overflow: { xs: 'auto', sm: 'hidden' }
     }}>
       <Box sx={{ 
         display: 'flex', 
@@ -357,12 +358,12 @@ const Calendar = () => {
         borderRadius: 2, 
         overflow: 'hidden', 
         fontFamily: 'Nunito, sans-serif',
-        flex: 1,
+        flex: { xs: 'none', sm: 1 },
         display: 'flex',
         flexDirection: 'column',
         minHeight: 0,
         height: { xs: 'auto', sm: 'auto' },
-        maxHeight: { xs: '100%', sm: 'none' }
+        maxHeight: { xs: 'none', sm: 'none' }
       }}>
         <Grid 
           container 
@@ -371,9 +372,8 @@ const Calendar = () => {
             flexDirection: { xs: 'column', sm: 'row' },
             width: '100%',
             minHeight: { sm: 0 },
-            overflow: { xs: 'auto', sm: 'hidden' },
-            height: { xs: 'auto', sm: 'auto' },
-            maxHeight: { xs: '100%', sm: 'none' }
+            overflow: { xs: 'visible', sm: 'hidden' },
+            height: { xs: 'auto', sm: 'auto' }
           }}
         >
           {getNextSevenDays().map((date, index) => {
@@ -410,10 +410,9 @@ const Calendar = () => {
                     position: 'relative',
                     display: 'flex',
                     flexDirection: 'column',
-                    overflow: 'auto',
+                    overflow: 'visible',
                     minHeight: 0,
-                    height: { xs: 'auto', sm: '100%' },
-                    maxHeight: { xs: 'none', sm: '100%' }
+                    height: { xs: 'auto', sm: '100%' }
                   }}
                 >
                   <Box sx={{ 
