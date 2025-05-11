@@ -76,6 +76,8 @@ const Calendar = () => {
   const [loading, setLoading] = useState(true);
   const [availabilities, setAvailabilities] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openJoinDialog, setOpenJoinDialog] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [userPreferences, setUserPreferences] = useState({
     name: '',
@@ -201,6 +203,50 @@ const Calendar = () => {
   const handleDialogClose = () => {
     setOpenDialog(false);
     setDialogError(null);
+  };
+
+  const handleEventClick = (event) => {
+    if (!userPreferences.name) {
+      setError('Please enter your name first');
+      return;
+    }
+    setSelectedEvent(event);
+    setOpenJoinDialog(true);
+  };
+
+  const handleJoinEvent = async () => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${selectedEvent._id}/join`, {
+        name: userPreferences.name
+      });
+      setOpenJoinDialog(false);
+      fetchData();
+    } catch (err) {
+      setError(err.message || 'Failed to join event');
+    }
+  };
+
+  const handleUnjoinEvent = async () => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${selectedEvent._id}/unjoin`, {
+        name: userPreferences.name
+      });
+      setOpenJoinDialog(false);
+      fetchData();
+    } catch (err) {
+      setError(err.message || 'Failed to unjoin event');
+    }
+  };
+
+  const formatJoiners = (joiners) => {
+    if (!joiners || joiners.length === 0) return '';
+    if (joiners.length === 1) return `${joiners[0]} will join!`;
+    if (joiners.length === 2) return `${joiners[0]} and ${joiners[1]} will join!`;
+    return `${joiners.slice(0, -1).join(', ')}, and ${joiners[joiners.length - 1]} will join!`;
+  };
+
+  const isUserJoining = (event) => {
+    return event.joiners && event.joiners.includes(userPreferences.name);
   };
 
   if (loading) {
@@ -489,7 +535,15 @@ const Calendar = () => {
                             color: 'white',
                             borderRadius: 1,
                             position: 'relative',
-                            fontFamily: 'Nunito, sans-serif'
+                            fontFamily: 'Nunito, sans-serif',
+                            cursor: 'pointer',
+                            '&:hover': {
+                              opacity: 0.9
+                            }
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEventClick(a);
                           }}
                         >
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -503,6 +557,16 @@ const Calendar = () => {
                           <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
                             {a.location}
                           </Typography>
+                          {a.joiners && a.joiners.length > 0 && (
+                            <Typography variant="body2" sx={{ 
+                              fontFamily: 'Nunito, sans-serif',
+                              mt: 0.5,
+                              fontSize: '0.75rem',
+                              opacity: 0.9
+                            }}>
+                              {formatJoiners(a.joiners)}
+                            </Typography>
+                          )}
                           <IconButton
                             size="small"
                             sx={{
@@ -565,7 +629,15 @@ const Calendar = () => {
                               color: 'white',
                               borderRadius: 1,
                               position: 'relative',
-                              fontFamily: 'Nunito, sans-serif'
+                              fontFamily: 'Nunito, sans-serif',
+                              cursor: 'pointer',
+                              '&:hover': {
+                                opacity: 0.9
+                              }
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEventClick(a);
                             }}
                           >
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -579,6 +651,16 @@ const Calendar = () => {
                             <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
                               {a.location}
                             </Typography>
+                            {a.joiners && a.joiners.length > 0 && (
+                              <Typography variant="body2" sx={{ 
+                                fontFamily: 'Nunito, sans-serif',
+                                mt: 0.5,
+                                fontSize: '0.75rem',
+                                opacity: 0.9
+                              }}>
+                                {formatJoiners(a.joiners)}
+                              </Typography>
+                            )}
                             <IconButton
                               size="small"
                               sx={{
@@ -709,6 +791,67 @@ const Calendar = () => {
             }}
           >
             add
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog 
+        open={openJoinDialog} 
+        onClose={() => setOpenJoinDialog(false)}
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            fontFamily: 'Nunito, sans-serif',
+            margin: { xs: '16px', sm: '32px' },
+            position: { xs: 'absolute', sm: 'relative' },
+            top: { xs: '10%', sm: 'auto' }
+          }
+        }}
+      >
+        <DialogTitle sx={{ fontFamily: 'Nunito, sans-serif', fontWeight: 600 }}>
+          {selectedEvent?.name}'s Event
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" sx={{ mb: 1, fontFamily: 'Nunito, sans-serif' }}>
+            {selectedEvent?.timeSlot}
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>
+            {selectedEvent?.location}
+          </Typography>
+          {selectedEvent?.joiners && selectedEvent.joiners.length > 0 && (
+            <Typography variant="body2" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>
+              {formatJoiners(selectedEvent.joiners)}
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={() => setOpenJoinDialog(false)}
+            sx={{ 
+              textTransform: 'none',
+              fontFamily: 'Nunito, sans-serif',
+              fontWeight: 600
+            }}
+          >
+            cancel
+          </Button>
+          <Button 
+            onClick={isUserJoining(selectedEvent) ? handleUnjoinEvent : handleJoinEvent}
+            variant="contained" 
+            sx={{ 
+              backgroundColor: userPreferences.color,
+              textTransform: 'none',
+              borderRadius: 2,
+              fontFamily: 'Nunito, sans-serif',
+              fontWeight: 600,
+              transition: 'all 0.5s ease',
+              '&:hover': {
+                backgroundColor: userPreferences.color,
+                opacity: 0.9
+              }
+            }}
+          >
+            {isUserJoining(selectedEvent) ? 'unjoin' : 'join'}
           </Button>
         </DialogActions>
       </Dialog>

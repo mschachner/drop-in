@@ -87,6 +87,10 @@ const availabilitySchema = new mongoose.Schema({
     type: String,
     enum: ['day', 'evening'],
     default: 'day'
+  },
+  joiners: {
+    type: [String],
+    default: []
   }
 });
 
@@ -116,6 +120,44 @@ app.delete('/api/availability/:id', async (req, res) => {
   try {
     await Availability.findByIdAndDelete(req.params.id);
     res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post('/api/availability/:id/join', async (req, res) => {
+  try {
+    const { name } = req.body;
+    const availability = await Availability.findById(req.params.id);
+    
+    if (!availability) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    if (!availability.joiners.includes(name)) {
+      availability.joiners.push(name);
+      await availability.save();
+    }
+    
+    res.json(availability);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post('/api/availability/:id/unjoin', async (req, res) => {
+  try {
+    const { name } = req.body;
+    const availability = await Availability.findById(req.params.id);
+    
+    if (!availability) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    availability.joiners = availability.joiners.filter(joiner => joiner !== name);
+    await availability.save();
+    
+    res.json(availability);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
