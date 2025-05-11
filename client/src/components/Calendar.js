@@ -32,6 +32,8 @@ const COLORS = [
   { value: '#FF9800', label: 'Orange' },
   { value: '#9C27B0', label: 'Purple' },
   { value: '#F44336', label: 'Red' },
+  { value: '#E91E63', label: 'Pink' },
+  { value: '#795548', label: 'Brown' }
 ];
 
 // Function to convert hex to RGB
@@ -88,7 +90,7 @@ const Calendar = () => {
     location: '',
     section: 'day'
   });
-  const [selectedColor, setSelectedColor] = useState('#1976d2');
+  const [selectedColor, setSelectedColor] = useState('#008080');
 
   useEffect(() => {
     // Add Nunito font
