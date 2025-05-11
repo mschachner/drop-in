@@ -92,6 +92,19 @@ const darkenColor = (hex) => {
   return `rgb(${darkenR}, ${darkenG}, ${darkenB})`;
 };
 
+// Function to create a subtle highlight color that maintains readability
+const createHighlightColor = (hex) => {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return hex;
+  
+  // Mix with white to create a very light version (90% white, 10% color)
+  const highlightR = Math.round((rgb.r * 0.1) + (255 * 0.9));
+  const highlightG = Math.round((rgb.g * 0.1) + (255 * 0.9));
+  const highlightB = Math.round((rgb.b * 0.1) + (255 * 0.9));
+  
+  return `rgb(${highlightR}, ${highlightG}, ${highlightB})`;
+};
+
 const Calendar = () => {
   const [error, setError] = useState(null);
   const [dialogError, setDialogError] = useState(null);
@@ -494,7 +507,7 @@ const Calendar = () => {
                         variant="subtitle2" 
                         sx={{ 
                           fontWeight: 600,
-                          color: date.toDateString() === new Date().toDateString() ? userPreferences.color : 'inherit',
+                          color: date.toDateString() === new Date().toDateString() ? createHighlightColor(userPreferences.color) : 'inherit',
                           fontFamily: 'Nunito, sans-serif',
                           transition: 'color 0.5s ease'
                         }}
@@ -504,7 +517,7 @@ const Calendar = () => {
                       <Typography 
                         variant="h6" 
                         sx={{ 
-                          color: date.toDateString() === new Date().toDateString() ? userPreferences.color : 'inherit',
+                          color: date.toDateString() === new Date().toDateString() ? createHighlightColor(userPreferences.color) : 'inherit',
                           fontFamily: 'Nunito, sans-serif',
                           fontWeight: 700,
                           transition: 'color 0.5s ease'
@@ -518,6 +531,7 @@ const Calendar = () => {
                       color="primary"
                       sx={{
                         backgroundColor: userPreferences.color,
+                        color: getTextColor(userPreferences.color),
                         transition: 'all 0.5s ease',
                         '&:hover': {
                           backgroundColor: userPreferences.color,
@@ -801,6 +815,7 @@ const Calendar = () => {
             variant="contained" 
             sx={{ 
               backgroundColor: userPreferences.color,
+              color: getTextColor(userPreferences.color),
               textTransform: 'none',
               borderRadius: 2,
               fontFamily: 'Nunito, sans-serif',
@@ -862,6 +877,7 @@ const Calendar = () => {
             variant="contained" 
             sx={{ 
               backgroundColor: userPreferences.color,
+              color: getTextColor(userPreferences.color),
               textTransform: 'none',
               borderRadius: 2,
               fontFamily: 'Nunito, sans-serif',
