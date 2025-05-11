@@ -246,7 +246,7 @@ const Calendar = () => {
   };
 
   const isUserJoining = (event) => {
-    return event.joiners && event.joiners.includes(userPreferences.name);
+    return event?.joiners?.includes(userPreferences.name) || false;
   };
 
   if (loading) {
@@ -818,7 +818,7 @@ const Calendar = () => {
           <Typography variant="body1" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>
             {selectedEvent?.location}
           </Typography>
-          {selectedEvent?.joiners && selectedEvent.joiners.length > 0 && (
+          {selectedEvent?.joiners?.length > 0 && (
             <Typography variant="body2" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>
               {formatJoiners(selectedEvent.joiners)}
             </Typography>
@@ -836,7 +836,7 @@ const Calendar = () => {
             cancel
           </Button>
           <Button 
-            onClick={isUserJoining(selectedEvent) ? handleUnjoinEvent : handleJoinEvent}
+            onClick={selectedEvent ? (isUserJoining(selectedEvent) ? handleUnjoinEvent : handleJoinEvent) : undefined}
             variant="contained" 
             sx={{ 
               backgroundColor: userPreferences.color,
@@ -851,7 +851,7 @@ const Calendar = () => {
               }
             }}
           >
-            {isUserJoining(selectedEvent) ? 'unjoin' : 'join'}
+            {selectedEvent ? (isUserJoining(selectedEvent) ? 'unjoin' : 'join') : 'join'}
           </Button>
         </DialogActions>
       </Dialog>
