@@ -114,6 +114,7 @@ const Calendar = () => {
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [dialogPosition, setDialogPosition] = useState({ top: 0, left: 0 });
   const [userPreferences, setUserPreferences] = useState({
     name: '',
     color: COLORS[0].value
@@ -240,12 +241,22 @@ const Calendar = () => {
     setDialogError(null);
   };
 
-  const handleEventClick = (event) => {
+  const handleEventClick = (event, clickEvent) => {
     if (!userPreferences.name) {
       setError('Please enter your name first');
       return;
     }
     setSelectedEvent(event);
+    
+    // Only position the dialog on desktop
+    if (window.innerWidth >= 600) { // Material-UI's sm breakpoint
+      const rect = clickEvent.currentTarget.getBoundingClientRect();
+      setDialogPosition({
+        top: rect.top,
+        left: rect.right + 16 // 16px gap
+      });
+    }
+    
     setOpenJoinDialog(true);
   };
 
@@ -577,10 +588,7 @@ const Calendar = () => {
                               opacity: 0.9
                             }
                           }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEventClick(a);
-                          }}
+                          onClick={(e) => handleEventClick(a, e)}
                         >
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: 'Nunito, sans-serif' }}>
@@ -603,24 +611,44 @@ const Calendar = () => {
                               {formatJoiners(a.joiners)}
                             </Typography>
                           )}
-                          <IconButton
-                            size="small"
-                            sx={{
-                              position: 'absolute',
-                              top: 0,
-                              right: 0,
-                              color: getTextColor(a.color),
-                              '&:hover': {
-                                backgroundColor: 'rgba(0, 0, 0, 0.1)'
-                              }
-                            }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDelete(a._id);
-                            }}
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
+                          <Box sx={{ 
+                            position: 'absolute', 
+                            top: 0, 
+                            right: 0,
+                            display: 'flex',
+                            gap: 0.5
+                          }}>
+                            <IconButton
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEventClick(a, e);
+                              }}
+                              sx={{
+                                color: getTextColor(a.color),
+                                '&:hover': {
+                                  backgroundColor: 'rgba(0, 0, 0, 0.1)'
+                                }
+                              }}
+                            >
+                              {isUserJoining(a) ? '✓' : '+'}
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              sx={{
+                                color: getTextColor(a.color),
+                                '&:hover': {
+                                  backgroundColor: 'rgba(0, 0, 0, 0.1)'
+                                }
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(a._id);
+                              }}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Box>
                         </Paper>
                     ))}
                   </Box>
@@ -671,10 +699,7 @@ const Calendar = () => {
                                 opacity: 0.9
                               }
                             }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEventClick(a);
-                            }}
+                            onClick={(e) => handleEventClick(a, e)}
                           >
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                               <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: 'Nunito, sans-serif' }}>
@@ -697,24 +722,44 @@ const Calendar = () => {
                                 {formatJoiners(a.joiners)}
                               </Typography>
                             )}
-                            <IconButton
-                              size="small"
-                              sx={{
-                                position: 'absolute',
-                                top: 0,
-                                right: 0,
-                                color: getTextColor(a.color),
-                                '&:hover': {
-                                  backgroundColor: 'rgba(0, 0, 0, 0.1)'
-                                }
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDelete(a._id);
-                              }}
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
+                            <Box sx={{ 
+                              position: 'absolute', 
+                              top: 0, 
+                              right: 0,
+                              display: 'flex',
+                              gap: 0.5
+                            }}>
+                              <IconButton
+                                size="small"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEventClick(a, e);
+                                }}
+                                sx={{
+                                  color: getTextColor(a.color),
+                                  '&:hover': {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.1)'
+                                  }
+                                }}
+                              >
+                                {isUserJoining(a) ? '✓' : '+'}
+                              </IconButton>
+                              <IconButton
+                                size="small"
+                                sx={{
+                                  color: getTextColor(a.color),
+                                  '&:hover': {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.1)'
+                                  }
+                                }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDelete(a._id);
+                                }}
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            </Box>
                           </Paper>
                       ))}
                     </Box>
@@ -840,8 +885,10 @@ const Calendar = () => {
             borderRadius: 4,
             fontFamily: 'Nunito, sans-serif',
             margin: { xs: '16px', sm: '32px' },
-            position: { xs: 'absolute', sm: 'relative' },
-            top: { xs: '10%', sm: 'auto' }
+            position: { xs: 'absolute', sm: 'fixed' },
+            top: { xs: '10%', sm: dialogPosition.top },
+            left: { xs: 'auto', sm: dialogPosition.left },
+            maxWidth: { xs: 'calc(100% - 32px)', sm: '400px' }
           }
         }}
       >
