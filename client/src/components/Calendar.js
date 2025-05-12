@@ -628,10 +628,20 @@ const Calendar = () => {
                                 color: getTextColor(a.color),
                                 '&:hover': {
                                   backgroundColor: 'rgba(0, 0, 0, 0.1)'
-                                }
+                                },
+                                minWidth: '60px',
+                                justifyContent: 'flex-start',
+                                gap: 0.5
                               }}
                             >
-                              {isUserJoining(a) ? '✓' : '+'}
+                              {isUserJoining(a) ? (
+                                <>
+                                  <span>Joined</span>
+                                  <span style={{ fontSize: '1.2em' }}>✓</span>
+                                </>
+                              ) : (
+                                'Join'
+                              )}
                             </IconButton>
                             <IconButton
                               size="small"
@@ -739,10 +749,20 @@ const Calendar = () => {
                                   color: getTextColor(a.color),
                                   '&:hover': {
                                     backgroundColor: 'rgba(0, 0, 0, 0.1)'
-                                  }
+                                  },
+                                  minWidth: '60px',
+                                  justifyContent: 'flex-start',
+                                  gap: 0.5
                                 }}
                               >
-                                {isUserJoining(a) ? '✓' : '+'}
+                                {isUserJoining(a) ? (
+                                  <>
+                                    <span>Joined</span>
+                                    <span style={{ fontSize: '1.2em' }}>✓</span>
+                                  </>
+                                ) : (
+                                  'Join'
+                                )}
                               </IconButton>
                               <IconButton
                                 size="small"
