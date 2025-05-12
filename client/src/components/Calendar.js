@@ -629,15 +629,17 @@ const Calendar = () => {
                                 '&:hover': {
                                   backgroundColor: 'rgba(0, 0, 0, 0.1)'
                                 },
-                                minWidth: '60px',
+                                minWidth: '50px',
                                 justifyContent: 'flex-start',
-                                gap: 0.5
+                                gap: 0.5,
+                                fontSize: '0.75rem',
+                                padding: '4px 8px'
                               }}
                             >
                               {isUserJoining(a) ? (
                                 <>
                                   <span>Joined</span>
-                                  <span style={{ fontSize: '1.2em' }}>✓</span>
+                                  <span style={{ fontSize: '1em' }}>✓</span>
                                 </>
                               ) : (
                                 'Join'
@@ -750,15 +752,17 @@ const Calendar = () => {
                                   '&:hover': {
                                     backgroundColor: 'rgba(0, 0, 0, 0.1)'
                                   },
-                                  minWidth: '60px',
+                                  minWidth: '50px',
                                   justifyContent: 'flex-start',
-                                  gap: 0.5
+                                  gap: 0.5,
+                                  fontSize: '0.75rem',
+                                  padding: '4px 8px'
                                 }}
                               >
                                 {isUserJoining(a) ? (
                                   <>
                                     <span>Joined</span>
-                                    <span style={{ fontSize: '1.2em' }}>✓</span>
+                                    <span style={{ fontSize: '1em' }}>✓</span>
                                   </>
                                 ) : (
                                   'Join'
