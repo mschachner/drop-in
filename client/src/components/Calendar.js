@@ -629,7 +629,7 @@ const Calendar = () => {
                                 '&:hover': {
                                   backgroundColor: 'rgba(0, 0, 0, 0.1)'
                                 },
-                                minWidth: '50px',
+                                minWidth: isUserJoining(a) ? '50px' : 'auto',
                                 justifyContent: 'flex-start',
                                 gap: 0.5,
                                 fontSize: '0.75rem',
@@ -752,7 +752,7 @@ const Calendar = () => {
                                   '&:hover': {
                                     backgroundColor: 'rgba(0, 0, 0, 0.1)'
                                   },
-                                  minWidth: '50px',
+                                  minWidth: isUserJoining(a) ? '50px' : 'auto',
                                   justifyContent: 'flex-start',
                                   gap: 0.5,
                                   fontSize: '0.75rem',
