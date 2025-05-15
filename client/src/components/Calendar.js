@@ -654,7 +654,6 @@ const Calendar = () => {
                                     gap: 0.5
                                   }}
                                 >
-                                  <span style={{ fontSize: '1.2em' }}>👥</span>
                                   {formatJoiners(a.joiners)}
                                 </Typography>
                               )}
@@ -669,7 +668,10 @@ const Calendar = () => {
                               display: 'flex',
                               gap: 0.5,
                               opacity: 0,
-                              transition: 'opacity 0.2s ease'
+                              transition: 'opacity 0.2s ease',
+                              backgroundColor: a.color,
+                              padding: '0 4px',
+                              borderRadius: '12px'
                             }}
                           >
                             <IconButton
@@ -835,7 +837,6 @@ const Calendar = () => {
                                       gap: 0.5
                                     }}
                                   >
-                                    <span style={{ fontSize: '1.2em' }}>👥</span>
                                     {formatJoiners(a.joiners)}
                                   </Typography>
                                 )}
@@ -850,7 +851,10 @@ const Calendar = () => {
                                 display: 'flex',
                                 gap: 0.5,
                                 opacity: 0,
-                                transition: 'opacity 0.2s ease'
+                                transition: 'opacity 0.2s ease',
+                                backgroundColor: a.color,
+                                padding: '0 4px',
+                                borderRadius: '12px'
                               }}
                             >
                               <IconButton
