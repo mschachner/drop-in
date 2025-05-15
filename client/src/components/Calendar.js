@@ -576,48 +576,102 @@ const Calendar = () => {
                         <Paper
                           key={idx}
                           sx={{
-                            p: 1,
-                            mb: 1,
+                            p: 1.5,
+                            mb: 1.5,
                             backgroundColor: a.color,
                             color: getTextColor(a.color),
-                            borderRadius: 1,
+                            borderRadius: 2,
                             position: 'relative',
                             fontFamily: 'Nunito, sans-serif',
                             cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                             '&:hover': {
-                              opacity: 0.9
+                              transform: 'translateY(-2px)',
+                              boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+                              '& .event-actions': {
+                                opacity: 1
+                              }
                             }
                           }}
                           onClick={(e) => handleEventClick(a, e)}
                         >
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: 'Nunito, sans-serif' }}>
-                              {a.name}
-                            </Typography>
-                            <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
-                              {a.timeSlot}
-                            </Typography>
-                          </Box>
-                          <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
-                            {a.location}
-                          </Typography>
-                          {a.joiners && a.joiners.length > 0 && (
-                            <Typography variant="body2" sx={{ 
-                              fontFamily: 'Nunito, sans-serif',
-                              mt: 0.5,
-                              fontSize: '0.75rem',
-                              opacity: 0.9
+                          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                            <Box sx={{ 
+                              minWidth: '40px',
+                              height: '40px',
+                              borderRadius: '50%',
+                              backgroundColor: 'rgba(255,255,255,0.2)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              flexShrink: 0
                             }}>
-                              {formatJoiners(a.joiners)}
-                            </Typography>
-                          )}
-                          <Box sx={{ 
-                            position: 'absolute', 
-                            top: 0, 
-                            right: 0,
-                            display: 'flex',
-                            gap: 0.5
-                          }}>
+                              <Typography variant="body2" sx={{ 
+                                fontWeight: 600,
+                                fontSize: '0.875rem',
+                                fontFamily: 'Nunito, sans-serif'
+                              }}>
+                                {a.timeSlot.split('-')[0]}
+                              </Typography>
+                            </Box>
+                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                              <Typography 
+                                variant="subtitle1" 
+                                sx={{ 
+                                  fontWeight: 700, 
+                                  fontFamily: 'Nunito, sans-serif',
+                                  mb: 0.5,
+                                  whiteSpace: 'nowrap',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis'
+                                }}
+                              >
+                                {a.name}
+                              </Typography>
+                              <Typography 
+                                variant="body2" 
+                                sx={{ 
+                                  fontFamily: 'Nunito, sans-serif',
+                                  opacity: 0.9,
+                                  whiteSpace: 'nowrap',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis'
+                                }}
+                              >
+                                {a.location}
+                              </Typography>
+                              {a.joiners && a.joiners.length > 0 && (
+                                <Typography 
+                                  variant="body2" 
+                                  sx={{ 
+                                    fontFamily: 'Nunito, sans-serif',
+                                    mt: 1,
+                                    fontSize: '0.75rem',
+                                    opacity: 0.8,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 0.5
+                                  }}
+                                >
+                                  <span style={{ fontSize: '1.2em' }}>👥</span>
+                                  {formatJoiners(a.joiners)}
+                                </Typography>
+                              )}
+                            </Box>
+                          </Box>
+                          <Box 
+                            className="event-actions"
+                            sx={{ 
+                              position: 'absolute', 
+                              top: 8, 
+                              right: 8,
+                              display: 'flex',
+                              gap: 0.5,
+                              opacity: 0,
+                              transition: 'opacity 0.2s ease'
+                            }}
+                          >
                             <IconButton
                               size="small"
                               onClick={(e) => {
@@ -626,14 +680,16 @@ const Calendar = () => {
                               }}
                               sx={{
                                 color: getTextColor(a.color),
+                                backgroundColor: 'rgba(255,255,255,0.2)',
                                 '&:hover': {
-                                  backgroundColor: 'rgba(0, 0, 0, 0.1)'
+                                  backgroundColor: 'rgba(255,255,255,0.3)'
                                 },
                                 minWidth: isUserJoining(a) ? '50px' : 'auto',
                                 justifyContent: 'flex-start',
                                 gap: 0.5,
                                 fontSize: '0.75rem',
-                                padding: '4px 8px'
+                                padding: '4px 8px',
+                                borderRadius: '12px'
                               }}
                             >
                               {isUserJoining(a) ? (
@@ -649,9 +705,11 @@ const Calendar = () => {
                               size="small"
                               sx={{
                                 color: getTextColor(a.color),
+                                backgroundColor: 'rgba(255,255,255,0.2)',
                                 '&:hover': {
-                                  backgroundColor: 'rgba(0, 0, 0, 0.1)'
-                                }
+                                  backgroundColor: 'rgba(255,255,255,0.3)'
+                                },
+                                borderRadius: '12px'
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -699,48 +757,102 @@ const Calendar = () => {
                           <Paper
                             key={idx}
                             sx={{
-                              p: 1,
-                              mb: 1,
+                              p: 1.5,
+                              mb: 1.5,
                               backgroundColor: a.color,
                               color: getTextColor(a.color),
-                              borderRadius: 1,
+                              borderRadius: 2,
                               position: 'relative',
                               fontFamily: 'Nunito, sans-serif',
                               cursor: 'pointer',
+                              transition: 'all 0.2s ease',
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                               '&:hover': {
-                                opacity: 0.9
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+                                '& .event-actions': {
+                                  opacity: 1
+                                }
                               }
                             }}
                             onClick={(e) => handleEventClick(a, e)}
                           >
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <Typography variant="subtitle2" sx={{ fontWeight: 700, fontFamily: 'Nunito, sans-serif' }}>
-                                {a.name}
-                              </Typography>
-                              <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
-                                {a.timeSlot}
-                              </Typography>
-                            </Box>
-                            <Typography variant="body2" sx={{ fontFamily: 'Nunito, sans-serif' }}>
-                              {a.location}
-                            </Typography>
-                            {a.joiners && a.joiners.length > 0 && (
-                              <Typography variant="body2" sx={{ 
-                                fontFamily: 'Nunito, sans-serif',
-                                mt: 0.5,
-                                fontSize: '0.75rem',
-                                opacity: 0.9
+                            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                              <Box sx={{ 
+                                minWidth: '40px',
+                                height: '40px',
+                                borderRadius: '50%',
+                                backgroundColor: 'rgba(255,255,255,0.2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: 0
                               }}>
-                                {formatJoiners(a.joiners)}
-                              </Typography>
-                            )}
-                            <Box sx={{ 
-                              position: 'absolute', 
-                              top: 0, 
-                              right: 0,
-                              display: 'flex',
-                              gap: 0.5
-                            }}>
+                                <Typography variant="body2" sx={{ 
+                                  fontWeight: 600,
+                                  fontSize: '0.875rem',
+                                  fontFamily: 'Nunito, sans-serif'
+                                }}>
+                                  {a.timeSlot.split('-')[0]}
+                                </Typography>
+                              </Box>
+                              <Box sx={{ flex: 1, minWidth: 0 }}>
+                                <Typography 
+                                  variant="subtitle1" 
+                                  sx={{ 
+                                    fontWeight: 700, 
+                                    fontFamily: 'Nunito, sans-serif',
+                                    mb: 0.5,
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis'
+                                  }}
+                                >
+                                  {a.name}
+                                </Typography>
+                                <Typography 
+                                  variant="body2" 
+                                  sx={{ 
+                                    fontFamily: 'Nunito, sans-serif',
+                                    opacity: 0.9,
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis'
+                                  }}
+                                >
+                                  {a.location}
+                                </Typography>
+                                {a.joiners && a.joiners.length > 0 && (
+                                  <Typography 
+                                    variant="body2" 
+                                    sx={{ 
+                                      fontFamily: 'Nunito, sans-serif',
+                                      mt: 1,
+                                      fontSize: '0.75rem',
+                                      opacity: 0.8,
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: 0.5
+                                    }}
+                                  >
+                                    <span style={{ fontSize: '1.2em' }}>👥</span>
+                                    {formatJoiners(a.joiners)}
+                                  </Typography>
+                                )}
+                              </Box>
+                            </Box>
+                            <Box 
+                              className="event-actions"
+                              sx={{ 
+                                position: 'absolute', 
+                                top: 8, 
+                                right: 8,
+                                display: 'flex',
+                                gap: 0.5,
+                                opacity: 0,
+                                transition: 'opacity 0.2s ease'
+                              }}
+                            >
                               <IconButton
                                 size="small"
                                 onClick={(e) => {
@@ -749,14 +861,16 @@ const Calendar = () => {
                                 }}
                                 sx={{
                                   color: getTextColor(a.color),
+                                  backgroundColor: 'rgba(255,255,255,0.2)',
                                   '&:hover': {
-                                    backgroundColor: 'rgba(0, 0, 0, 0.1)'
+                                    backgroundColor: 'rgba(255,255,255,0.3)'
                                   },
                                   minWidth: isUserJoining(a) ? '50px' : 'auto',
                                   justifyContent: 'flex-start',
                                   gap: 0.5,
                                   fontSize: '0.75rem',
-                                  padding: '4px 8px'
+                                  padding: '4px 8px',
+                                  borderRadius: '12px'
                                 }}
                               >
                                 {isUserJoining(a) ? (
@@ -772,9 +886,11 @@ const Calendar = () => {
                                 size="small"
                                 sx={{
                                   color: getTextColor(a.color),
+                                  backgroundColor: 'rgba(255,255,255,0.2)',
                                   '&:hover': {
-                                    backgroundColor: 'rgba(0, 0, 0, 0.1)'
-                                  }
+                                    backgroundColor: 'rgba(255,255,255,0.3)'
+                                  },
+                                  borderRadius: '12px'
                                 }}
                                 onClick={(e) => {
                                   e.stopPropagation();
