@@ -622,9 +622,8 @@ const Calendar = () => {
                                   fontWeight: 700, 
                                   fontFamily: 'Nunito, sans-serif',
                                   mb: 0.5,
-                                  whiteSpace: 'nowrap',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis'
+                                  wordBreak: 'break-word',
+                                  lineHeight: 1.2
                                 }}
                               >
                                 {a.name}
@@ -805,9 +804,8 @@ const Calendar = () => {
                                     fontWeight: 700, 
                                     fontFamily: 'Nunito, sans-serif',
                                     mb: 0.5,
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis'
+                                    wordBreak: 'break-word',
+                                    lineHeight: 1.2
                                   }}
                                 >
                                   {a.name}
