@@ -633,9 +633,8 @@ const Calendar = () => {
                                 sx={{ 
                                   fontFamily: 'Nunito, sans-serif',
                                   opacity: 0.9,
-                                  whiteSpace: 'nowrap',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis'
+                                  wordBreak: 'break-word',
+                                  lineHeight: 1.2
                                 }}
                               >
                                 {a.location}
@@ -815,9 +814,8 @@ const Calendar = () => {
                                   sx={{ 
                                     fontFamily: 'Nunito, sans-serif',
                                     opacity: 0.9,
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis'
+                                    wordBreak: 'break-word',
+                                    lineHeight: 1.2
                                   }}
                                 >
                                   {a.location}
