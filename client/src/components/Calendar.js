@@ -19,7 +19,8 @@ import {
   FormControlLabel,
   Radio,
   FormControl,
-  FormLabel
+  FormLabel,
+  Tooltip
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -597,24 +598,30 @@ const Calendar = () => {
                           onClick={(e) => handleEventClick(a, e)}
                         >
                           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                            <Box sx={{ 
-                              minWidth: '40px',
-                              height: '40px',
-                              borderRadius: '50%',
-                              backgroundColor: 'rgba(255,255,255,0.2)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              flexShrink: 0
-                            }}>
-                              <Typography variant="body2" sx={{ 
-                                fontWeight: 600,
-                                fontSize: '0.875rem',
-                                fontFamily: 'Nunito, sans-serif'
+                            <Tooltip title={a.timeSlot} arrow placement="top">
+                              <Box sx={{ 
+                                minWidth: '60px',
+                                height: '40px',
+                                borderRadius: '8px',
+                                backgroundColor: 'rgba(255,255,255,0.2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: 0,
+                                padding: '0 8px'
                               }}>
-                                {a.timeSlot.split('-')[0]}
-                              </Typography>
-                            </Box>
+                                <Typography variant="body2" sx={{ 
+                                  fontWeight: 600,
+                                  fontSize: '0.75rem',
+                                  fontFamily: 'Nunito, sans-serif',
+                                  whiteSpace: 'nowrap',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis'
+                                }}>
+                                  {a.timeSlot}
+                                </Typography>
+                              </Box>
+                            </Tooltip>
                             <Box sx={{ flex: 1, minWidth: 0 }}>
                               <Typography 
                                 variant="subtitle1" 
@@ -778,24 +785,30 @@ const Calendar = () => {
                             onClick={(e) => handleEventClick(a, e)}
                           >
                             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                              <Box sx={{ 
-                                minWidth: '40px',
-                                height: '40px',
-                                borderRadius: '50%',
-                                backgroundColor: 'rgba(255,255,255,0.2)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexShrink: 0
-                              }}>
-                                <Typography variant="body2" sx={{ 
-                                  fontWeight: 600,
-                                  fontSize: '0.875rem',
-                                  fontFamily: 'Nunito, sans-serif'
+                              <Tooltip title={a.timeSlot} arrow placement="top">
+                                <Box sx={{ 
+                                  minWidth: '60px',
+                                  height: '40px',
+                                  borderRadius: '8px',
+                                  backgroundColor: 'rgba(255,255,255,0.2)',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  flexShrink: 0,
+                                  padding: '0 8px'
                                 }}>
-                                  {a.timeSlot.split('-')[0]}
-                                </Typography>
-                              </Box>
+                                  <Typography variant="body2" sx={{ 
+                                    fontWeight: 600,
+                                    fontSize: '0.75rem',
+                                    fontFamily: 'Nunito, sans-serif',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis'
+                                  }}>
+                                    {a.timeSlot}
+                                  </Typography>
+                                </Box>
+                              </Tooltip>
                               <Box sx={{ flex: 1, minWidth: 0 }}>
                                 <Typography 
                                   variant="subtitle1" 
