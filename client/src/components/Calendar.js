@@ -20,11 +20,11 @@ import {
   Radio,
   FormControl,
   FormLabel,
-  Tooltip, // Added
-  ColorLensIcon // Added
+  Tooltip
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ColorLensIcon from '@mui/icons-material/ColorLens';
 import axios from 'axios';
 
 const COLORS = [
