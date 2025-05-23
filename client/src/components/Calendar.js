@@ -19,12 +19,10 @@ import {
   FormControlLabel,
   Radio,
   FormControl,
-  FormLabel,
-  Tooltip
+  FormLabel
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ColorLensIcon from '@mui/icons-material/ColorLens';
 import axios from 'axios';
 
 const COLORS = [
@@ -136,32 +134,21 @@ const Calendar = () => {
   }, []);
 
   useEffect(() => {
-    console.log('Environment:', process.env.NODE_ENV);
-    console.log('API URL:', process.env.REACT_APP_API_URL);
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      console.log('Fetching from:', `${process.env.REACT_APP_API_URL}/api/availability`);
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/availability`, {
         headers: {
           'Content-Type': 'application/json',
         },
         withCredentials: true
       });
-      console.log('Response:', response.data);
       setAvailabilities(response.data);
       setError(null);
     } catch (err) {
-      console.error('Error details:', {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status,
-        url: `${process.env.REACT_APP_API_URL}/api/availability`,
-        config: err.config
-      });
       setError(err.message || 'Failed to load availabilities');
     } finally {
       setLoading(false);
