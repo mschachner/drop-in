@@ -587,43 +587,45 @@ const Calendar = () => {
                           onClick={(e) => handleEventClick(a, e)}
                         >
                           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                            <Tooltip title={a.timeSlot} arrow placement="top">
-                              <Box sx={{ 
-                                minWidth: '60px',
-                                height: '40px',
-                                borderRadius: '8px',
-                                backgroundColor: 'rgba(255,255,255,0.2)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexShrink: 0,
-                                padding: '0 8px'
-                              }}>
-                                <Typography variant="body2" sx={{ 
-                                  fontWeight: 600,
-                                  fontSize: '0.75rem',
-                                  fontFamily: 'Nunito, sans-serif',
-                                  whiteSpace: 'nowrap',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis'
-                                }}>
-                                  {a.timeSlot}
-                                </Typography>
-                              </Box>
-                            </Tooltip>
                             <Box sx={{ flex: 1, minWidth: 0 }}>
-                              <Typography 
-                                variant="subtitle1" 
-                                sx={{ 
-                                  fontWeight: 700, 
-                                  fontFamily: 'Nunito, sans-serif',
-                                  mb: 0.5,
-                                  wordBreak: 'break-word',
-                                  lineHeight: 1.2
-                                }}
-                              >
-                                {a.name}
-                              </Typography>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 0.5 }}>
+                                <Typography 
+                                  variant="subtitle1" 
+                                  sx={{ 
+                                    fontWeight: 700, 
+                                    fontFamily: 'Nunito, sans-serif',
+                                    wordBreak: 'break-word',
+                                    lineHeight: 1.2
+                                  }}
+                                >
+                                  {a.name}
+                                </Typography>
+                                <Tooltip title={a.timeSlot} arrow placement="top">
+                                  <Box sx={{ 
+                                    minWidth: '60px',
+                                    height: '40px',
+                                    borderRadius: '8px',
+                                    backgroundColor: 'rgba(255,255,255,0.2)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0,
+                                    padding: '0 8px',
+                                    ml: 1
+                                  }}>
+                                    <Typography variant="body2" sx={{ 
+                                      fontWeight: 600,
+                                      fontSize: '0.75rem',
+                                      fontFamily: 'Nunito, sans-serif',
+                                      whiteSpace: 'nowrap',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis'
+                                    }}>
+                                      {a.timeSlot}
+                                    </Typography>
+                                  </Box>
+                                </Tooltip>
+                              </Box>
                               <Typography 
                                 variant="body2" 
                                 sx={{ 
@@ -774,43 +776,45 @@ const Calendar = () => {
                             onClick={(e) => handleEventClick(a, e)}
                           >
                             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                              <Tooltip title={a.timeSlot} arrow placement="top">
-                                <Box sx={{ 
-                                  minWidth: '60px',
-                                  height: '40px',
-                                  borderRadius: '8px',
-                                  backgroundColor: 'rgba(255,255,255,0.2)',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  flexShrink: 0,
-                                  padding: '0 8px'
-                                }}>
-                                  <Typography variant="body2" sx={{ 
-                                    fontWeight: 600,
-                                    fontSize: '0.75rem',
-                                    fontFamily: 'Nunito, sans-serif',
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis'
-                                  }}>
-                                    {a.timeSlot}
-                                  </Typography>
-                                </Box>
-                              </Tooltip>
                               <Box sx={{ flex: 1, minWidth: 0 }}>
-                                <Typography 
-                                  variant="subtitle1" 
-                                  sx={{ 
-                                    fontWeight: 700, 
-                                    fontFamily: 'Nunito, sans-serif',
-                                    mb: 0.5,
-                                    wordBreak: 'break-word',
-                                    lineHeight: 1.2
-                                  }}
-                                >
-                                  {a.name}
-                                </Typography>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 0.5 }}>
+                                  <Typography 
+                                    variant="subtitle1" 
+                                    sx={{ 
+                                      fontWeight: 700, 
+                                      fontFamily: 'Nunito, sans-serif',
+                                      wordBreak: 'break-word',
+                                      lineHeight: 1.2
+                                    }}
+                                  >
+                                    {a.name}
+                                  </Typography>
+                                  <Tooltip title={a.timeSlot} arrow placement="top">
+                                    <Box sx={{ 
+                                      minWidth: '60px',
+                                      height: '40px',
+                                      borderRadius: '8px',
+                                      backgroundColor: 'rgba(255,255,255,0.2)',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      flexShrink: 0,
+                                      padding: '0 8px',
+                                      ml: 1
+                                    }}>
+                                      <Typography variant="body2" sx={{ 
+                                        fontWeight: 600,
+                                        fontSize: '0.75rem',
+                                        fontFamily: 'Nunito, sans-serif',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis'
+                                      }}>
+                                        {a.timeSlot}
+                                      </Typography>
+                                    </Box>
+                                  </Tooltip>
+                                </Box>
                                 <Typography 
                                   variant="body2" 
                                   sx={{ 
