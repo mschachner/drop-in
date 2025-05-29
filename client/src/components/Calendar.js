@@ -158,8 +158,8 @@ const Calendar = () => {
   };
 
   const handleDayClick = (date, section, event) => {
-    // Only handle empty space clicks on mobile
-    if (window.innerWidth < 600 && event?.target?.closest('.event-paper')) {
+    // Only handle clicks on desktop
+    if (window.innerWidth < 600) {
       return;
     }
 
@@ -558,9 +558,9 @@ const Calendar = () => {
                   <Box 
                     sx={{ 
                       flex: 1,
-                      cursor: 'pointer',
+                      cursor: { xs: 'default', sm: 'pointer' },
                       '&:hover': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.02)'
+                        backgroundColor: { xs: 'transparent', sm: 'rgba(0, 0, 0, 0.02)' }
                       }
                     }}
                     onClick={(e) => handleDayClick(date, 'day', e)}
@@ -570,7 +570,6 @@ const Calendar = () => {
                       .map((a, idx) => (
                         <Paper
                           key={idx}
-                          className="event-paper"
                           sx={{
                             p: 1.5,
                             mb: 1.5,
@@ -729,12 +728,13 @@ const Calendar = () => {
                   </Box>
 
                   {/* Evening Section */}
-                  <Box sx={{ 
-                    flex: 1,
-                    mt: 2,
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}>
+                  <Box 
+                    sx={{ 
+                      flex: 1,
+                      mt: 2,
+                      display: 'flex',
+                      flexDirection: 'column'
+                    }}>
                     <Typography 
                       variant="subtitle2" 
                       sx={{ 
@@ -749,9 +749,9 @@ const Calendar = () => {
                     <Box 
                       sx={{ 
                         flex: 1,
-                        cursor: 'pointer',
+                        cursor: { xs: 'default', sm: 'pointer' },
                         '&:hover': {
-                          backgroundColor: 'rgba(0, 0, 0, 0.02)'
+                          backgroundColor: { xs: 'transparent', sm: 'rgba(0, 0, 0, 0.02)' }
                         }
                       }}
                       onClick={(e) => handleDayClick(date, 'evening', e)}
@@ -761,7 +761,6 @@ const Calendar = () => {
                         .map((a, idx) => (
                           <Paper
                             key={idx}
-                            className="event-paper"
                             sx={{
                               p: 1.5,
                               mb: 1.5,
@@ -920,7 +919,7 @@ const Calendar = () => {
                     </Box>
                   </Box>
                 </Box>
-              </Grid>
+              </Box>
             );
           })}
         </Grid>
