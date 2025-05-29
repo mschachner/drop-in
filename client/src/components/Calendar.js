@@ -588,14 +588,16 @@ const Calendar = () => {
                         >
                           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
                             <Box sx={{ flex: 1, minWidth: 0 }}>
-                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 0.5 }}>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                                 <Typography 
                                   variant="subtitle1" 
                                   sx={{ 
                                     fontWeight: 700, 
                                     fontFamily: 'Nunito, sans-serif',
                                     wordBreak: 'break-word',
-                                    lineHeight: 1.2
+                                    lineHeight: 1.2,
+                                    flex: 1,
+                                    pr: 1
                                   }}
                                 >
                                   {a.name}
@@ -610,8 +612,7 @@ const Calendar = () => {
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     flexShrink: 0,
-                                    padding: '0 8px',
-                                    ml: 1
+                                    padding: '0 8px'
                                   }}>
                                     <Typography variant="body2" sx={{ 
                                       fontWeight: 600,
@@ -777,14 +778,16 @@ const Calendar = () => {
                           >
                             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
                               <Box sx={{ flex: 1, minWidth: 0 }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 0.5 }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
                                   <Typography 
                                     variant="subtitle1" 
                                     sx={{ 
                                       fontWeight: 700, 
                                       fontFamily: 'Nunito, sans-serif',
                                       wordBreak: 'break-word',
-                                      lineHeight: 1.2
+                                      lineHeight: 1.2,
+                                      flex: 1,
+                                      pr: 1
                                     }}
                                   >
                                     {a.name}
@@ -799,8 +802,7 @@ const Calendar = () => {
                                       alignItems: 'center',
                                       justifyContent: 'center',
                                       flexShrink: 0,
-                                      padding: '0 8px',
-                                      ml: 1
+                                      padding: '0 8px'
                                     }}>
                                       <Typography variant="body2" sx={{ 
                                         fontWeight: 600,
