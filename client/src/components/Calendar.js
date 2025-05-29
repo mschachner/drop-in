@@ -671,9 +671,10 @@ const Calendar = () => {
                               gap: 0.5,
                               opacity: 0,
                               transition: 'opacity 0.2s ease',
-                              backgroundColor: a.color,
+                              backgroundColor: 'transparent',
                               padding: '0 4px',
-                              borderRadius: '12px'
+                              borderRadius: '12px',
+                              zIndex: 1
                             }}
                           >
                             <IconButton
@@ -693,7 +694,8 @@ const Calendar = () => {
                                 gap: 0.5,
                                 fontSize: '0.75rem',
                                 padding: '4px 8px',
-                                borderRadius: '12px'
+                                borderRadius: '12px',
+                                backdropFilter: 'blur(4px)'
                               }}
                             >
                               {isUserJoining(a) ? (
@@ -713,7 +715,8 @@ const Calendar = () => {
                                 '&:hover': {
                                   backgroundColor: 'rgba(255,255,255,0.3)'
                                 },
-                                borderRadius: '12px'
+                                borderRadius: '12px',
+                                backdropFilter: 'blur(4px)'
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -862,9 +865,10 @@ const Calendar = () => {
                                 gap: 0.5,
                                 opacity: 0,
                                 transition: 'opacity 0.2s ease',
-                                backgroundColor: a.color,
+                                backgroundColor: 'transparent',
                                 padding: '0 4px',
-                                borderRadius: '12px'
+                                borderRadius: '12px',
+                                zIndex: 1
                               }}
                             >
                               <IconButton
@@ -884,7 +888,8 @@ const Calendar = () => {
                                   gap: 0.5,
                                   fontSize: '0.75rem',
                                   padding: '4px 8px',
-                                  borderRadius: '12px'
+                                  borderRadius: '12px',
+                                  backdropFilter: 'blur(4px)'
                                 }}
                               >
                                 {isUserJoining(a) ? (
@@ -904,7 +909,8 @@ const Calendar = () => {
                                   '&:hover': {
                                     backgroundColor: 'rgba(255,255,255,0.3)'
                                   },
-                                  borderRadius: '12px'
+                                  borderRadius: '12px',
+                                  backdropFilter: 'blur(4px)'
                                 }}
                                 onClick={(e) => {
                                   e.stopPropagation();
