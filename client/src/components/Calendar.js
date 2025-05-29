@@ -623,7 +623,13 @@ const Calendar = () => {
                         >
                           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
                             <Box sx={{ flex: 1, minWidth: 0 }}>
-                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+                              <Box sx={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-between', 
+                                alignItems: 'center', 
+                                mb: 0.5,
+                                position: 'relative'
+                              }}>
                                 <Typography 
                                   variant="subtitle1" 
                                   sx={{ 
@@ -640,14 +646,61 @@ const Calendar = () => {
                                 <Box sx={{ 
                                   display: 'flex',
                                   alignItems: 'center',
+<<<<<<< HEAD
                                   gap: 0.5,
                                   transition: 'transform 0.2s ease'
                                 }}>
+=======
+                                  gap: 1,
+                                  transition: 'all 0.2s ease',
+                                  transform: 'translateX(0)',
+                                  '.event-actions': {
+                                    opacity: 0,
+                                    transform: 'translateX(20px)',
+                                    transition: 'all 0.2s ease'
+                                  },
+                                  '&:hover': {
+                                    '.event-actions': {
+                                      opacity: 1,
+                                      transform: 'translateX(0)'
+                                    }
+                                  }
+                                }}>
+                                  <Tooltip title={a.timeSlot} arrow placement="top">
+                                    <Box sx={{ 
+                                      minWidth: '60px',
+                                      height: '40px',
+                                      borderRadius: '8px',
+                                      backgroundColor: 'rgba(255,255,255,0.2)',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      flexShrink: 0,
+                                      padding: '0 8px',
+                                      transition: 'all 0.2s ease',
+                                      '&:hover': {
+                                        transform: 'translateX(-60px)'
+                                      }
+                                    }}>
+                                      <Typography variant="body2" sx={{ 
+                                        fontWeight: 600,
+                                        fontSize: '0.75rem',
+                                        fontFamily: 'Nunito, sans-serif',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis'
+                                      }}>
+                                        {a.timeSlot}
+                                      </Typography>
+                                    </Box>
+                                  </Tooltip>
+>>>>>>> 667d135 (Fix event box hover behavior to move time box left and reveal action buttons)
                                   <Box 
                                     className="event-actions"
                                     sx={{ 
                                       display: 'flex',
                                       gap: 0.5,
+<<<<<<< HEAD
                                       opacity: 0,
                                       transition: 'opacity 0.2s ease',
                                       transform: 'translateX(20px)',
@@ -655,6 +708,12 @@ const Calendar = () => {
                                         opacity: 1,
                                         transform: 'translateX(0)'
                                       }
+=======
+                                      backgroundColor: 'transparent',
+                                      padding: '0 4px',
+                                      borderRadius: '12px',
+                                      zIndex: 1
+>>>>>>> 667d135 (Fix event box hover behavior to move time box left and reveal action buttons)
                                     }}
                                   >
                                     <IconButton
@@ -674,7 +733,12 @@ const Calendar = () => {
                                         gap: 0.5,
                                         fontSize: '0.75rem',
                                         padding: '4px 8px',
+<<<<<<< HEAD
                                         borderRadius: '12px'
+=======
+                                        borderRadius: '12px',
+                                        backdropFilter: 'blur(4px)'
+>>>>>>> 667d135 (Fix event box hover behavior to move time box left and reveal action buttons)
                                       }}
                                     >
                                       {isUserJoining(a) ? (
@@ -694,7 +758,12 @@ const Calendar = () => {
                                         '&:hover': {
                                           backgroundColor: 'rgba(255,255,255,0.3)'
                                         },
+<<<<<<< HEAD
                                         borderRadius: '12px'
+=======
+                                        borderRadius: '12px',
+                                        backdropFilter: 'blur(4px)'
+>>>>>>> 667d135 (Fix event box hover behavior to move time box left and reveal action buttons)
                                       }}
                                       onClick={(e) => {
                                         e.stopPropagation();
@@ -704,6 +773,7 @@ const Calendar = () => {
                                       <DeleteIcon fontSize="small" />
                                     </IconButton>
                                   </Box>
+<<<<<<< HEAD
                                   <Tooltip title={a.timeSlot} arrow placement="top">
                                     <Box sx={{ 
                                       minWidth: '60px',
@@ -732,6 +802,8 @@ const Calendar = () => {
                                       </Typography>
                                     </Box>
                                   </Tooltip>
+=======
+>>>>>>> 667d135 (Fix event box hover behavior to move time box left and reveal action buttons)
                                 </Box>
                               </Box>
                               <Typography 
@@ -824,7 +896,13 @@ const Calendar = () => {
                           >
                             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
                               <Box sx={{ flex: 1, minWidth: 0 }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+                                <Box sx={{ 
+                                  display: 'flex', 
+                                  justifyContent: 'space-between', 
+                                  alignItems: 'center', 
+                                  mb: 0.5,
+                                  position: 'relative'
+                                }}>
                                   <Typography 
                                     variant="subtitle1" 
                                     sx={{ 
@@ -841,14 +919,61 @@ const Calendar = () => {
                                   <Box sx={{ 
                                     display: 'flex',
                                     alignItems: 'center',
+<<<<<<< HEAD
                                     gap: 0.5,
                                     transition: 'transform 0.2s ease'
                                   }}>
+=======
+                                    gap: 1,
+                                    transition: 'all 0.2s ease',
+                                    transform: 'translateX(0)',
+                                    '.event-actions': {
+                                      opacity: 0,
+                                      transform: 'translateX(20px)',
+                                      transition: 'all 0.2s ease'
+                                    },
+                                    '&:hover': {
+                                      '.event-actions': {
+                                        opacity: 1,
+                                        transform: 'translateX(0)'
+                                      }
+                                    }
+                                  }}>
+                                    <Tooltip title={a.timeSlot} arrow placement="top">
+                                      <Box sx={{ 
+                                        minWidth: '60px',
+                                        height: '40px',
+                                        borderRadius: '8px',
+                                        backgroundColor: 'rgba(255,255,255,0.2)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        flexShrink: 0,
+                                        padding: '0 8px',
+                                        transition: 'all 0.2s ease',
+                                        '&:hover': {
+                                          transform: 'translateX(-60px)'
+                                        }
+                                      }}>
+                                        <Typography variant="body2" sx={{ 
+                                          fontWeight: 600,
+                                          fontSize: '0.75rem',
+                                          fontFamily: 'Nunito, sans-serif',
+                                          whiteSpace: 'nowrap',
+                                          overflow: 'hidden',
+                                          textOverflow: 'ellipsis'
+                                        }}>
+                                          {a.timeSlot}
+                                        </Typography>
+                                      </Box>
+                                    </Tooltip>
+>>>>>>> 667d135 (Fix event box hover behavior to move time box left and reveal action buttons)
                                     <Box 
                                       className="event-actions"
                                       sx={{ 
                                         display: 'flex',
                                         gap: 0.5,
+<<<<<<< HEAD
                                         opacity: 0,
                                         transition: 'opacity 0.2s ease',
                                         transform: 'translateX(20px)',
@@ -856,6 +981,12 @@ const Calendar = () => {
                                           opacity: 1,
                                           transform: 'translateX(0)'
                                         }
+=======
+                                        backgroundColor: 'transparent',
+                                        padding: '0 4px',
+                                        borderRadius: '12px',
+                                        zIndex: 1
+>>>>>>> 667d135 (Fix event box hover behavior to move time box left and reveal action buttons)
                                       }}
                                     >
                                       <IconButton
@@ -875,7 +1006,12 @@ const Calendar = () => {
                                           gap: 0.5,
                                           fontSize: '0.75rem',
                                           padding: '4px 8px',
+<<<<<<< HEAD
                                           borderRadius: '12px'
+=======
+                                          borderRadius: '12px',
+                                          backdropFilter: 'blur(4px)'
+>>>>>>> 667d135 (Fix event box hover behavior to move time box left and reveal action buttons)
                                         }}
                                       >
                                         {isUserJoining(a) ? (
@@ -895,7 +1031,12 @@ const Calendar = () => {
                                           '&:hover': {
                                             backgroundColor: 'rgba(255,255,255,0.3)'
                                           },
+<<<<<<< HEAD
                                           borderRadius: '12px'
+=======
+                                          borderRadius: '12px',
+                                          backdropFilter: 'blur(4px)'
+>>>>>>> 667d135 (Fix event box hover behavior to move time box left and reveal action buttons)
                                         }}
                                         onClick={(e) => {
                                           e.stopPropagation();
@@ -905,6 +1046,7 @@ const Calendar = () => {
                                         <DeleteIcon fontSize="small" />
                                       </IconButton>
                                     </Box>
+<<<<<<< HEAD
                                     <Tooltip title={a.timeSlot} arrow placement="top">
                                       <Box sx={{ 
                                         minWidth: '60px',
@@ -933,6 +1075,8 @@ const Calendar = () => {
                                         </Typography>
                                       </Box>
                                     </Tooltip>
+=======
+>>>>>>> 667d135 (Fix event box hover behavior to move time box left and reveal action buttons)
                                   </Box>
                                 </Box>
                                 <Typography 
