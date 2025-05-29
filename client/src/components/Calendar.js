@@ -314,16 +314,490 @@ const Calendar = () => {
                   height: { xs: 'auto', sm: '100%' }
                 }}
               >
-                <CalendarDay
-                  date={date}
-                  dayAvailabilities={dayAvailabilities}
-                  handleDayClick={handleDayClick}
-                  handleEventClick={handleEventClick}
-                  handleDelete={handleDelete}
-                  isUserJoining={isUserJoining}
-                  formatJoiners={formatJoiners}
-                  userPreferences={userPreferences}
-                />
+                <Box 
+                  sx={{ 
+                    p: 2,
+                    backgroundColor: isWeekend(date) ? '#F5F5F5' : 'white',
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'visible',
+                    minHeight: 0,
+                    height: { xs: 'auto', sm: '100%' }
+                  }}
+                >
+                  <Box sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between',
+                    mb: 2
+                  }}>
+                    <Box>
+                      <Typography 
+                        variant="subtitle2" 
+                        sx={{ 
+                          fontWeight: 600,
+                          color: date.toDateString() === new Date().toDateString() ? createHighlightColor(userPreferences.color) : 'inherit',
+                          fontFamily: 'Nunito, sans-serif',
+                          transition: 'color 0.5s ease'
+                        }}
+                      >
+                        {date.toLocaleDateString('en-US', { weekday: 'short' })}
+                      </Typography>
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          color: date.toDateString() === new Date().toDateString() ? createHighlightColor(userPreferences.color) : 'inherit',
+                          fontFamily: 'Nunito, sans-serif',
+                          fontWeight: 700,
+                          transition: 'color 0.5s ease'
+                        }}
+                      >
+                        {date.getDate()}
+                      </Typography>
+                    </Box>
+                    <Fab
+                      size="small"
+                      color="primary"
+                      sx={{
+                        backgroundColor: userPreferences.color,
+                        color: getTextColor(userPreferences.color),
+                        transition: 'all 0.5s ease',
+                        '&:hover': {
+                          backgroundColor: userPreferences.color,
+                          opacity: 0.9
+                        }
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDayClick(date, 'day', e);
+                      }}
+                    >
+                      <AddIcon />
+                    </Fab>
+                  </Box>
+                  <Divider sx={{ mb: 2 }} />
+
+                  {/* Day Section */}
+                  <Box 
+                    sx={{ 
+                      flex: 1,
+                      cursor: { xs: 'default', sm: 'pointer' },
+                      '&:hover': {
+                        backgroundColor: { xs: 'transparent', sm: 'rgba(0, 0, 0, 0.02)' }
+                      }
+                    }}
+                    onClick={(e) => handleDayClick(date, 'day', e)}
+                  >
+                    {dayAvailabilities
+                      .filter(a => a.section !== 'evening')
+                      .map((a, idx) => (
+                        <Paper
+                          key={idx}
+                          sx={{
+                            p: 1.5,
+                            mb: 1.5,
+                            backgroundColor: a.color,
+                            color: getTextColor(a.color),
+                            borderRadius: 2,
+                            position: 'relative',
+                            fontFamily: 'Nunito, sans-serif',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                            '&:hover': {
+                              transform: 'translateY(-2px)',
+                              boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+                              '& .event-actions': {
+                                opacity: 1
+                              }
+                            }
+                          }}
+                          onClick={(e) => handleEventClick(a, e)}
+                        >
+                          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                              <Box sx={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-between', 
+                                alignItems: 'center', 
+                                mb: 0.5,
+                                position: 'relative'
+                              }}>
+                                <Typography 
+                                  variant="subtitle1" 
+                                  sx={{ 
+                                    fontWeight: 700, 
+                                    fontFamily: 'Nunito, sans-serif',
+                                    wordBreak: 'break-word',
+                                    lineHeight: 1.2,
+                                    flex: 1,
+                                    pr: 1
+                                  }}
+                                >
+                                  {a.name}
+                                </Typography>
+                                <Box sx={{ 
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 1,
+                                  transition: 'all 0.2s ease',
+                                  transform: 'translateX(0)',
+                                  '.event-actions': {
+                                    opacity: 0,
+                                    transform: 'translateX(20px)',
+                                    transition: 'all 0.2s ease'
+                                  },
+                                  '&:hover': {
+                                    '.event-actions': {
+                                      opacity: 1,
+                                      transform: 'translateX(0)'
+                                    }
+                                  }
+                                }}>
+                                  <Tooltip title={a.timeSlot} arrow placement="top">
+                                    <Box sx={{ 
+                                      minWidth: '60px',
+                                      height: '40px',
+                                      borderRadius: '8px',
+                                      backgroundColor: 'rgba(255,255,255,0.2)',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      flexShrink: 0,
+                                      padding: '0 8px',
+                                      transition: 'all 0.2s ease',
+                                      '&:hover': {
+                                        transform: 'translateX(-60px)'
+                                      }
+                                    }}>
+                                      <Typography variant="body2" sx={{ 
+                                        fontWeight: 600,
+                                        fontSize: '0.75rem',
+                                        fontFamily: 'Nunito, sans-serif',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis'
+                                      }}>
+                                        {a.timeSlot}
+                                      </Typography>
+                                    </Box>
+                                  </Tooltip>
+                                  <Box 
+                                    className="event-actions"
+                                    sx={{ 
+                                      display: 'flex',
+                                      gap: 0.5,
+                                      backgroundColor: 'transparent',
+                                      padding: '0 4px',
+                                      borderRadius: '12px',
+                                      zIndex: 1
+                                    }}
+                                  >
+                                    <IconButton
+                                      size="small"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEventClick(a, e);
+                                      }}
+                                      sx={{
+                                        color: getTextColor(a.color),
+                                        backgroundColor: 'rgba(255,255,255,0.2)',
+                                        '&:hover': {
+                                          backgroundColor: 'rgba(255,255,255,0.3)'
+                                        },
+                                        minWidth: isUserJoining(a) ? '50px' : 'auto',
+                                        justifyContent: 'flex-start',
+                                        gap: 0.5,
+                                        fontSize: '0.75rem',
+                                        padding: '4px 8px',
+                                        borderRadius: '12px',
+                                        backdropFilter: 'blur(4px)'
+                                      }}
+                                    >
+                                      {isUserJoining(a) ? (
+                                        <>
+                                          <span>Joined</span>
+                                          <span style={{ fontSize: '1em' }}>✓</span>
+                                        </>
+                                      ) : (
+                                        'Join'
+                                      )}
+                                    </IconButton>
+                                    <IconButton
+                                      size="small"
+                                      sx={{
+                                        color: getTextColor(a.color),
+                                        backgroundColor: 'rgba(255,255,255,0.2)',
+                                        '&:hover': {
+                                          backgroundColor: 'rgba(255,255,255,0.3)'
+                                        },
+                                        borderRadius: '12px',
+                                        backdropFilter: 'blur(4px)'
+                                      }}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDelete(a._id);
+                                      }}
+                                    >
+                                      <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                  </Box>
+                                </Box>
+                              </Box>
+                              <Typography 
+                                variant="body2" 
+                                sx={{ 
+                                  fontFamily: 'Nunito, sans-serif',
+                                  opacity: 0.9,
+                                  wordBreak: 'break-word',
+                                  lineHeight: 1.2
+                                }}
+                              >
+                                {a.location}
+                              </Typography>
+                              {a.joiners && a.joiners.length > 0 && (
+                                <Typography 
+                                  variant="body2" 
+                                  sx={{ 
+                                    fontFamily: 'Nunito, sans-serif',
+                                    mt: 1,
+                                    fontSize: '0.75rem',
+                                    opacity: 0.8,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 0.5
+                                  }}
+                                >
+                                  {formatJoiners(a.joiners)}
+                                </Typography>
+                              )}
+                            </Box>
+                          </Box>
+                        </Paper>
+                    ))}
+                  </Box>
+
+                  {/* Evening Section */}
+                  <Box 
+                    sx={{ 
+                      flex: 1,
+                      mt: 2,
+                      display: 'flex',
+                      flexDirection: 'column'
+                    }}>
+                    <Typography 
+                      variant="subtitle2" 
+                      sx={{ 
+                        mb: 1, 
+                        color: '#666',
+                        fontFamily: 'Nunito, sans-serif',
+                        fontWeight: 600
+                      }}
+                    >
+                      Evening
+                    </Typography>
+                    <Box 
+                      sx={{ 
+                        flex: 1,
+                        cursor: { xs: 'default', sm: 'pointer' },
+                        '&:hover': {
+                          backgroundColor: { xs: 'transparent', sm: 'rgba(0, 0, 0, 0.02)' }
+                        }
+                      }}
+                      onClick={(e) => handleDayClick(date, 'evening', e)}
+                    >
+                      {dayAvailabilities
+                        .filter(a => a.section === 'evening')
+                        .map((a, idx) => (
+                          <Paper
+                            key={idx}
+                            sx={{
+                              p: 1.5,
+                              mb: 1.5,
+                              backgroundColor: a.color,
+                              color: getTextColor(a.color),
+                              borderRadius: 2,
+                              position: 'relative',
+                              fontFamily: 'Nunito, sans-serif',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s ease',
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                              '&:hover': {
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+                                '& .event-actions': {
+                                  opacity: 1
+                                }
+                              }
+                            }}
+                            onClick={(e) => handleEventClick(a, e)}
+                          >
+                            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                              <Box sx={{ flex: 1, minWidth: 0 }}>
+                                <Box sx={{ 
+                                  display: 'flex', 
+                                  justifyContent: 'space-between', 
+                                  alignItems: 'center', 
+                                  mb: 0.5,
+                                  position: 'relative'
+                                }}>
+                                  <Typography 
+                                    variant="subtitle1" 
+                                    sx={{ 
+                                      fontWeight: 700, 
+                                      fontFamily: 'Nunito, sans-serif',
+                                      wordBreak: 'break-word',
+                                      lineHeight: 1.2,
+                                      flex: 1,
+                                      pr: 1
+                                    }}
+                                  >
+                                    {a.name}
+                                  </Typography>
+                                  <Box sx={{ 
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1,
+                                    transition: 'all 0.2s ease',
+                                    transform: 'translateX(0)',
+                                    '.event-actions': {
+                                      opacity: 0,
+                                      transform: 'translateX(20px)',
+                                      transition: 'all 0.2s ease'
+                                    },
+                                    '&:hover': {
+                                      '.event-actions': {
+                                        opacity: 1,
+                                        transform: 'translateX(0)'
+                                      }
+                                    }
+                                  }}>
+                                    <Tooltip title={a.timeSlot} arrow placement="top">
+                                      <Box sx={{ 
+                                        minWidth: '60px',
+                                        height: '40px',
+                                        borderRadius: '8px',
+                                        backgroundColor: 'rgba(255,255,255,0.2)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        flexShrink: 0,
+                                        padding: '0 8px',
+                                        transition: 'all 0.2s ease',
+                                        '&:hover': {
+                                          transform: 'translateX(-60px)'
+                                        }
+                                      }}>
+                                        <Typography variant="body2" sx={{ 
+                                          fontWeight: 600,
+                                          fontSize: '0.75rem',
+                                          fontFamily: 'Nunito, sans-serif',
+                                          whiteSpace: 'nowrap',
+                                          overflow: 'hidden',
+                                          textOverflow: 'ellipsis'
+                                        }}>
+                                          {a.timeSlot}
+                                        </Typography>
+                                      </Box>
+                                    </Tooltip>
+                                    <Box 
+                                      className="event-actions"
+                                      sx={{ 
+                                        display: 'flex',
+                                        gap: 0.5,
+                                        backgroundColor: 'transparent',
+                                        padding: '0 4px',
+                                        borderRadius: '12px',
+                                        zIndex: 1
+                                      }}
+                                    >
+                                      <IconButton
+                                        size="small"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleEventClick(a, e);
+                                        }}
+                                        sx={{
+                                          color: getTextColor(a.color),
+                                          backgroundColor: 'rgba(255,255,255,0.2)',
+                                          '&:hover': {
+                                            backgroundColor: 'rgba(255,255,255,0.3)'
+                                          },
+                                          minWidth: isUserJoining(a) ? '50px' : 'auto',
+                                          justifyContent: 'flex-start',
+                                          gap: 0.5,
+                                          fontSize: '0.75rem',
+                                          padding: '4px 8px',
+                                          borderRadius: '12px',
+                                          backdropFilter: 'blur(4px)'
+                                        }}
+                                      >
+                                        {isUserJoining(a) ? (
+                                          <>
+                                            <span>Joined</span>
+                                            <span style={{ fontSize: '1em' }}>✓</span>
+                                          </>
+                                        ) : (
+                                          'Join'
+                                        )}
+                                      </IconButton>
+                                      <IconButton
+                                        size="small"
+                                        sx={{
+                                          color: getTextColor(a.color),
+                                          backgroundColor: 'rgba(255,255,255,0.2)',
+                                          '&:hover': {
+                                            backgroundColor: 'rgba(255,255,255,0.3)'
+                                          },
+                                          borderRadius: '12px',
+                                          backdropFilter: 'blur(4px)'
+                                        }}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleDelete(a._id);
+                                        }}
+                                      >
+                                        <DeleteIcon fontSize="small" />
+                                      </IconButton>
+                                    </Box>
+                                  </Box>
+                                </Box>
+                                <Typography 
+                                  variant="body2" 
+                                  sx={{ 
+                                    fontFamily: 'Nunito, sans-serif',
+                                    opacity: 0.9,
+                                    wordBreak: 'break-word',
+                                    lineHeight: 1.2
+                                  }}
+                                >
+                                  {a.location}
+                                </Typography>
+                                {a.joiners && a.joiners.length > 0 && (
+                                  <Typography 
+                                    variant="body2" 
+                                    sx={{ 
+                                      fontFamily: 'Nunito, sans-serif',
+                                      mt: 1,
+                                      fontSize: '0.75rem',
+                                      opacity: 0.8,
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: 0.5
+                                    }}
+                                  >
+                                    {formatJoiners(a.joiners)}
+                                  </Typography>
+                                )}
+                              </Box>
+                            </Box>
+                          </Box>
+                        </Paper>
+                      ))}
+                    </Box>
+                  </Box>
+                </Box>
               </Grid>
             );
           })}
