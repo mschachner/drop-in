@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, KeyboardEvent, MouseEvent } from 'react';
 import { 
   Box, 
   Typography, 
@@ -106,6 +106,19 @@ const createHighlightColor = (hex) => {
   return `rgb(${highlightR}, ${highlightG}, ${highlightB})`;
 };
 
+/**
+ * @typedef {Object} UserPreferences
+ * @property {string} name - The user's name
+ * @property {string} color - The user's preferred color
+ */
+
+/**
+ * @typedef {Object} NewEvent
+ * @property {string} timeSlot - The time slot for the event
+ * @property {string} location - The location of the event
+ * @property {string} section - The section of the day (day/evening)
+ */
+
 const Calendar = () => {
   const [error, setError] = useState(null);
   const [dialogError, setDialogError] = useState(null);
@@ -116,10 +129,12 @@ const Calendar = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [dialogPosition, setDialogPosition] = useState({ top: 0, left: 0 });
+  /** @type {[UserPreferences, React.Dispatch<React.SetStateAction<UserPreferences>>]} */
   const [userPreferences, setUserPreferences] = useState({
     name: '',
     color: COLORS[0].value
   });
+  /** @type {[NewEvent, React.Dispatch<React.SetStateAction<NewEvent>>]} */
   const [newEvent, setNewEvent] = useState({
     timeSlot: '',
     location: '',
@@ -157,6 +172,22 @@ const Calendar = () => {
     }
   };
 
+  /**
+   * Handles key press events in the time slot input
+   * @param {React.KeyboardEvent<HTMLInputElement>} event - The keyboard event
+   */
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter' && newEvent.timeSlot && newEvent.location) {
+      handleSubmit();
+    }
+  };
+
+  /**
+   * Handles day click events
+   * @param {Date} date - The selected date
+   * @param {string} section - The section of the day (day/evening)
+   * @param {React.MouseEvent<HTMLElement>} event - The mouse event
+   */
   const handleDayClick = (date, section, event) => {
     // Only handle clicks on desktop
     if (window.innerWidth < 600) {
@@ -198,12 +229,6 @@ const Calendar = () => {
     }
   };
 
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter' && newEvent.timeSlot && newEvent.location) {
-      handleSubmit();
-    }
-  };
-
   const handleDelete = async (eventId) => {
     try {
       await axios.delete(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}`);
@@ -236,6 +261,11 @@ const Calendar = () => {
     setDialogError(null);
   };
 
+  /**
+   * Handles event click events
+   * @param {Object} event - The event object
+   * @param {React.MouseEvent<HTMLElement>} clickEvent - The mouse event
+   */
   const handleEventClick = (event, clickEvent) => {
     if (!userPreferences.name) {
       setError('Please enter your name first');
@@ -244,11 +274,11 @@ const Calendar = () => {
     setSelectedEvent(event);
     
     // Only position the dialog on desktop
-    if (window.innerWidth >= 600) { // Material-UI's sm breakpoint
+    if (window.innerWidth >= 600) {
       const rect = clickEvent.currentTarget.getBoundingClientRect();
       setDialogPosition({
         top: rect.top,
-        left: rect.right + 16 // 16px gap
+        left: rect.right + 16
       });
     }
     
@@ -607,30 +637,102 @@ const Calendar = () => {
                                 >
                                   {a.name}
                                 </Typography>
-                                <Tooltip title={a.timeSlot} arrow placement="top">
-                                  <Box sx={{ 
-                                    minWidth: '60px',
-                                    height: '40px',
-                                    borderRadius: '8px',
-                                    backgroundColor: 'rgba(255,255,255,0.2)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    flexShrink: 0,
-                                    padding: '0 8px'
-                                  }}>
-                                    <Typography variant="body2" sx={{ 
-                                      fontWeight: 600,
-                                      fontSize: '0.75rem',
-                                      fontFamily: 'Nunito, sans-serif',
-                                      whiteSpace: 'nowrap',
-                                      overflow: 'hidden',
-                                      textOverflow: 'ellipsis'
-                                    }}>
-                                      {a.timeSlot}
-                                    </Typography>
+                                <Box sx={{ 
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 0.5,
+                                  transition: 'transform 0.2s ease'
+                                }}>
+                                  <Box 
+                                    className="event-actions"
+                                    sx={{ 
+                                      display: 'flex',
+                                      gap: 0.5,
+                                      opacity: 0,
+                                      transition: 'opacity 0.2s ease',
+                                      transform: 'translateX(20px)',
+                                      '.MuiPaper-root:hover &': {
+                                        opacity: 1,
+                                        transform: 'translateX(0)'
+                                      }
+                                    }}
+                                  >
+                                    <IconButton
+                                      size="small"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEventClick(a, e);
+                                      }}
+                                      sx={{
+                                        color: getTextColor(a.color),
+                                        backgroundColor: 'rgba(255,255,255,0.2)',
+                                        '&:hover': {
+                                          backgroundColor: 'rgba(255,255,255,0.3)'
+                                        },
+                                        minWidth: isUserJoining(a) ? '50px' : 'auto',
+                                        justifyContent: 'flex-start',
+                                        gap: 0.5,
+                                        fontSize: '0.75rem',
+                                        padding: '4px 8px',
+                                        borderRadius: '12px'
+                                      }}
+                                    >
+                                      {isUserJoining(a) ? (
+                                        <>
+                                          <span>Joined</span>
+                                          <span style={{ fontSize: '1em' }}>✓</span>
+                                        </>
+                                      ) : (
+                                        'Join'
+                                      )}
+                                    </IconButton>
+                                    <IconButton
+                                      size="small"
+                                      sx={{
+                                        color: getTextColor(a.color),
+                                        backgroundColor: 'rgba(255,255,255,0.2)',
+                                        '&:hover': {
+                                          backgroundColor: 'rgba(255,255,255,0.3)'
+                                        },
+                                        borderRadius: '12px'
+                                      }}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDelete(a._id);
+                                      }}
+                                    >
+                                      <DeleteIcon fontSize="small" />
+                                    </IconButton>
                                   </Box>
-                                </Tooltip>
+                                  <Tooltip title={a.timeSlot} arrow placement="top">
+                                    <Box sx={{ 
+                                      minWidth: '60px',
+                                      height: '40px',
+                                      borderRadius: '8px',
+                                      backgroundColor: 'rgba(255,255,255,0.2)',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      flexShrink: 0,
+                                      padding: '0 8px',
+                                      transition: 'transform 0.2s ease',
+                                      '.MuiPaper-root:hover &': {
+                                        transform: 'translateX(-20px)'
+                                      }
+                                    }}>
+                                      <Typography variant="body2" sx={{ 
+                                        fontWeight: 600,
+                                        fontSize: '0.75rem',
+                                        fontFamily: 'Nunito, sans-serif',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis'
+                                      }}>
+                                        {a.timeSlot}
+                                      </Typography>
+                                    </Box>
+                                  </Tooltip>
+                                </Box>
                               </Box>
                               <Typography 
                                 variant="body2" 
@@ -661,73 +763,8 @@ const Calendar = () => {
                               )}
                             </Box>
                           </Box>
-                          <Box 
-                            className="event-actions"
-                            sx={{ 
-                              position: 'absolute', 
-                              top: 8, 
-                              right: 8,
-                              display: 'flex',
-                              gap: 0.5,
-                              opacity: 0,
-                              transition: 'opacity 0.2s ease',
-                              backgroundColor: 'transparent',
-                              padding: '0 4px',
-                              borderRadius: '12px',
-                              zIndex: 1
-                            }}
-                          >
-                            <IconButton
-                              size="small"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEventClick(a, e);
-                              }}
-                              sx={{
-                                color: getTextColor(a.color),
-                                backgroundColor: 'rgba(255,255,255,0.2)',
-                                '&:hover': {
-                                  backgroundColor: 'rgba(255,255,255,0.3)'
-                                },
-                                minWidth: isUserJoining(a) ? '50px' : 'auto',
-                                justifyContent: 'flex-start',
-                                gap: 0.5,
-                                fontSize: '0.75rem',
-                                padding: '4px 8px',
-                                borderRadius: '12px',
-                                backdropFilter: 'blur(4px)'
-                              }}
-                            >
-                              {isUserJoining(a) ? (
-                                <>
-                                  <span>Joined</span>
-                                  <span style={{ fontSize: '1em' }}>✓</span>
-                                </>
-                              ) : (
-                                'Join'
-                              )}
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              sx={{
-                                color: getTextColor(a.color),
-                                backgroundColor: 'rgba(255,255,255,0.2)',
-                                '&:hover': {
-                                  backgroundColor: 'rgba(255,255,255,0.3)'
-                                },
-                                borderRadius: '12px',
-                                backdropFilter: 'blur(4px)'
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDelete(a._id);
-                              }}
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
-                          </Box>
                         </Paper>
-                    ))}
+                      ))}
                   </Box>
 
                   {/* Evening Section */}
@@ -801,30 +838,102 @@ const Calendar = () => {
                                   >
                                     {a.name}
                                   </Typography>
-                                  <Tooltip title={a.timeSlot} arrow placement="top">
-                                    <Box sx={{ 
-                                      minWidth: '60px',
-                                      height: '40px',
-                                      borderRadius: '8px',
-                                      backgroundColor: 'rgba(255,255,255,0.2)',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      flexShrink: 0,
-                                      padding: '0 8px'
-                                    }}>
-                                      <Typography variant="body2" sx={{ 
-                                        fontWeight: 600,
-                                        fontSize: '0.75rem',
-                                        fontFamily: 'Nunito, sans-serif',
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis'
-                                      }}>
-                                        {a.timeSlot}
-                                      </Typography>
+                                  <Box sx={{ 
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 0.5,
+                                    transition: 'transform 0.2s ease'
+                                  }}>
+                                    <Box 
+                                      className="event-actions"
+                                      sx={{ 
+                                        display: 'flex',
+                                        gap: 0.5,
+                                        opacity: 0,
+                                        transition: 'opacity 0.2s ease',
+                                        transform: 'translateX(20px)',
+                                        '.MuiPaper-root:hover &': {
+                                          opacity: 1,
+                                          transform: 'translateX(0)'
+                                        }
+                                      }}
+                                    >
+                                      <IconButton
+                                        size="small"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleEventClick(a, e);
+                                        }}
+                                        sx={{
+                                          color: getTextColor(a.color),
+                                          backgroundColor: 'rgba(255,255,255,0.2)',
+                                          '&:hover': {
+                                            backgroundColor: 'rgba(255,255,255,0.3)'
+                                          },
+                                          minWidth: isUserJoining(a) ? '50px' : 'auto',
+                                          justifyContent: 'flex-start',
+                                          gap: 0.5,
+                                          fontSize: '0.75rem',
+                                          padding: '4px 8px',
+                                          borderRadius: '12px'
+                                        }}
+                                      >
+                                        {isUserJoining(a) ? (
+                                          <>
+                                            <span>Joined</span>
+                                            <span style={{ fontSize: '1em' }}>✓</span>
+                                          </>
+                                        ) : (
+                                          'Join'
+                                        )}
+                                      </IconButton>
+                                      <IconButton
+                                        size="small"
+                                        sx={{
+                                          color: getTextColor(a.color),
+                                          backgroundColor: 'rgba(255,255,255,0.2)',
+                                          '&:hover': {
+                                            backgroundColor: 'rgba(255,255,255,0.3)'
+                                          },
+                                          borderRadius: '12px'
+                                        }}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleDelete(a._id);
+                                        }}
+                                      >
+                                        <DeleteIcon fontSize="small" />
+                                      </IconButton>
                                     </Box>
-                                  </Tooltip>
+                                    <Tooltip title={a.timeSlot} arrow placement="top">
+                                      <Box sx={{ 
+                                        minWidth: '60px',
+                                        height: '40px',
+                                        borderRadius: '8px',
+                                        backgroundColor: 'rgba(255,255,255,0.2)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        flexShrink: 0,
+                                        padding: '0 8px',
+                                        transition: 'transform 0.2s ease',
+                                        '.MuiPaper-root:hover &': {
+                                          transform: 'translateX(-20px)'
+                                        }
+                                      }}>
+                                        <Typography variant="body2" sx={{ 
+                                          fontWeight: 600,
+                                          fontSize: '0.75rem',
+                                          fontFamily: 'Nunito, sans-serif',
+                                          whiteSpace: 'nowrap',
+                                          overflow: 'hidden',
+                                          textOverflow: 'ellipsis'
+                                        }}>
+                                          {a.timeSlot}
+                                        </Typography>
+                                      </Box>
+                                    </Tooltip>
+                                  </Box>
                                 </Box>
                                 <Typography 
                                   variant="body2" 
@@ -855,72 +964,8 @@ const Calendar = () => {
                                 )}
                               </Box>
                             </Box>
-                            <Box 
-                              className="event-actions"
-                              sx={{ 
-                                position: 'absolute', 
-                                top: 8, 
-                                right: 8,
-                                display: 'flex',
-                                gap: 0.5,
-                                opacity: 0,
-                                transition: 'opacity 0.2s ease',
-                                backgroundColor: 'transparent',
-                                padding: '0 4px',
-                                borderRadius: '12px',
-                                zIndex: 1
-                              }}
-                            >
-                              <IconButton
-                                size="small"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleEventClick(a, e);
-                                }}
-                                sx={{
-                                  color: getTextColor(a.color),
-                                  backgroundColor: 'rgba(255,255,255,0.2)',
-                                  '&:hover': {
-                                    backgroundColor: 'rgba(255,255,255,0.3)'
-                                  },
-                                  minWidth: isUserJoining(a) ? '50px' : 'auto',
-                                  justifyContent: 'flex-start',
-                                  gap: 0.5,
-                                  fontSize: '0.75rem',
-                                  padding: '4px 8px',
-                                  borderRadius: '12px',
-                                  backdropFilter: 'blur(4px)'
-                                }}
-                              >
-                                {isUserJoining(a) ? (
-                                  <>
-                                    <span>Joined</span>
-                                    <span style={{ fontSize: '1em' }}>✓</span>
-                                  </>
-                                ) : (
-                                  'Join'
-                                )}
-                              </IconButton>
-                              <IconButton
-                                size="small"
-                                sx={{
-                                  color: getTextColor(a.color),
-                                  backgroundColor: 'rgba(255,255,255,0.2)',
-                                  '&:hover': {
-                                    backgroundColor: 'rgba(255,255,255,0.3)'
-                                  },
-                                  borderRadius: '12px',
-                                  backdropFilter: 'blur(4px)'
-                                }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDelete(a._id);
-                                }}
-                              >
-                                <DeleteIcon fontSize="small" />
-                              </IconButton>
-                            </Box>
-                          </Paper>
+                          </Box>
+                        </Paper>
                       ))}
                     </Box>
                   </Box>
@@ -979,7 +1024,7 @@ const Calendar = () => {
             fullWidth
             value={newEvent.timeSlot}
             onChange={(e) => setNewEvent({ ...newEvent, timeSlot: e.target.value })}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             sx={{ mb: 2 }}
             placeholder={selectedDate ? (newEvent.section === 'evening' ? '6-7pm' : '9-5') : ''}
             InputProps={{
