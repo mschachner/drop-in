@@ -919,7 +919,7 @@ const Calendar = () => {
                     </Box>
                   </Box>
                 </Box>
-              </Box>
+              </Grid>
             );
           })}
         </Grid>
