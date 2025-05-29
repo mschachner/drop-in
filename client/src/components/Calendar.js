@@ -157,7 +157,12 @@ const Calendar = () => {
     }
   };
 
-  const handleDayClick = (date, section) => {
+  const handleDayClick = (date, section, event) => {
+    // Only handle empty space clicks on mobile
+    if (window.innerWidth < 600 && event?.target?.closest('.event-paper')) {
+      return;
+    }
+
     if (!userPreferences.name) {
       setError('Please enter your name first');
       return;
@@ -541,7 +546,7 @@ const Calendar = () => {
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDayClick(date, 'day');
+                        handleDayClick(date, 'day', e);
                       }}
                     >
                       <AddIcon />
@@ -558,13 +563,14 @@ const Calendar = () => {
                         backgroundColor: 'rgba(0, 0, 0, 0.02)'
                       }
                     }}
-                    onClick={() => handleDayClick(date, 'day')}
+                    onClick={(e) => handleDayClick(date, 'day', e)}
                   >
                     {dayAvailabilities
                       .filter(a => a.section !== 'evening')
                       .map((a, idx) => (
                         <Paper
                           key={idx}
+                          className="event-paper"
                           sx={{
                             p: 1.5,
                             mb: 1.5,
@@ -748,13 +754,14 @@ const Calendar = () => {
                           backgroundColor: 'rgba(0, 0, 0, 0.02)'
                         }
                       }}
-                      onClick={() => handleDayClick(date, 'evening')}
+                      onClick={(e) => handleDayClick(date, 'evening', e)}
                     >
                       {dayAvailabilities
                         .filter(a => a.section === 'evening')
                         .map((a, idx) => (
                           <Paper
                             key={idx}
+                            className="event-paper"
                             sx={{
                               p: 1.5,
                               mb: 1.5,
