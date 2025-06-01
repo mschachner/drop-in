@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, Fab, Divider, useMediaQuery } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Event from './Event';
-import { createHighlightColor } from './colorUtils';
+import { createHighlightColor, getTextColor } from './colorUtils';
 
 const CalendarDay = ({
   date,
