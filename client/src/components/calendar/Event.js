@@ -37,7 +37,10 @@ const Event = ({
           }
         }
       }}
-      onClick={(e) => onEventClick(event, e)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onEventClick(event, e);
+      }}
     >
       <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
