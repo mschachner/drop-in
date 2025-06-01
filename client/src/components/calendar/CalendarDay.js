@@ -88,12 +88,16 @@ const CalendarDay = ({
       <Box 
         sx={{ 
           flex: 1,
-          cursor: 'pointer',
+          cursor: { xs: 'default', sm: 'pointer' },
           '&:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.02)'
+            backgroundColor: { xs: 'transparent', sm: 'rgba(0, 0, 0, 0.02)' }
           }
         }}
-        onClick={() => handleDayClick(date, 'day')}
+        onClick={(e) => {
+          if (window.innerWidth >= 600) { // Material-UI's sm breakpoint
+            handleDayClick(date, 'day');
+          }
+        }}
       >
         {dayAvailabilities
           .filter(a => a.section !== 'evening')
@@ -130,12 +134,16 @@ const CalendarDay = ({
         <Box 
           sx={{ 
             flex: 1,
-            cursor: 'pointer',
+            cursor: { xs: 'default', sm: 'pointer' },
             '&:hover': {
-              backgroundColor: 'rgba(0, 0, 0, 0.02)'
+              backgroundColor: { xs: 'transparent', sm: 'rgba(0, 0, 0, 0.02)' }
             }
           }}
-          onClick={() => handleDayClick(date, 'evening')}
+          onClick={(e) => {
+            if (window.innerWidth >= 600) { // Material-UI's sm breakpoint
+              handleDayClick(date, 'evening');
+            }
+          }}
         >
           {dayAvailabilities
             .filter(a => a.section === 'evening')
