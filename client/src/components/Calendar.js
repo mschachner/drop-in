@@ -26,6 +26,11 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import axios from 'axios';
+import { createPastelColor } from './calendar/colorUtils';
+import UserPreferences from './calendar/UserPreferences';
+import CalendarDay from './calendar/CalendarDay';
+import AddEventDialog from './calendar/AddEventDialog';
+import JoinEventDialog from './calendar/JoinEventDialog';
 
 const COLORS = [
   { value: '#4CAF50', label: 'Green' },
@@ -118,7 +123,7 @@ const Calendar = () => {
   const [dialogPosition, setDialogPosition] = useState({ top: 0, left: 0 });
   const [userPreferences, setUserPreferences] = useState({
     name: '',
-    color: COLORS[0].value
+    color: '#4CAF50'
   });
   const [newEvent, setNewEvent] = useState({
     timeSlot: '',
@@ -236,6 +241,7 @@ const Calendar = () => {
       setError('Please enter your name first');
       return;
     }
+    clickEvent.stopPropagation(); // Stop the event from bubbling up
     setSelectedEvent(event);
     
     // Only position the dialog on desktop
@@ -342,100 +348,13 @@ const Calendar = () => {
         <Alert severity="error" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>{error}</Alert>
       )}
 
-      {/* User Preferences */}
-      <Paper sx={{ 
-        p: 2, 
-        mb: 3, 
-        borderRadius: 2, 
-        fontFamily: 'Nunito, sans-serif',
-        width: 'fit-content'
-      }}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Your Name"
-              fullWidth
-              value={userPreferences.name}
-              onChange={(e) => setUserPreferences({ ...userPreferences, name: e.target.value })}
-              required
-              InputProps={{
-                sx: { fontFamily: 'Nunito, sans-serif' }
-              }}
-              InputLabelProps={{
-                sx: { fontFamily: 'Nunito, sans-serif' }
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={8}>
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-              {COLORS.map((color) => (
-                <Box
-                  key={color.value}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setUserPreferences({ ...userPreferences, color: color.value });
-                  }}
-                  sx={{
-                    width: 32,
-                    height: 32,
-                    backgroundColor: color.value,
-                    borderRadius: '50%',
-                    cursor: 'pointer',
-                    border: userPreferences.color === color.value ? '3px solid #000' : 'none',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      transform: 'scale(1.1)',
-                    }
-                  }}
-                />
-              ))}
-              <Box
-                component="label"
-                onClick={(e) => e.stopPropagation()}
-                sx={{
-                  width: 32,
-                  height: 32,
-                  backgroundColor: selectedColor,
-                  borderRadius: '50%',
-                  cursor: 'pointer',
-                  border: userPreferences.color === selectedColor ? '3px solid #000' : 'none',
-                  transition: 'all 0.3s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  '&:hover': {
-                    transform: 'scale(1.1)',
-                  }
-                }}
-              >
-                <input
-                  type="color"
-                  value={selectedColor}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    const newColor = e.target.value;
-                    setSelectedColor(newColor);
-                    setUserPreferences({ ...userPreferences, color: newColor });
-                  }}
-                  style={{
-                    opacity: 0,
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    cursor: 'pointer',
-                    top: 0,
-                    left: 0
-                  }}
-                />
-                <ColorLensIcon sx={{ color: getTextColor(selectedColor), fontSize: 20 }} />
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      </Paper>
+      <UserPreferences
+        userPreferences={userPreferences}
+        setUserPreferences={setUserPreferences}
+        selectedColor={selectedColor}
+        setSelectedColor={setSelectedColor}
+      />
 
-      {/* Calendar Row */}
       <Paper sx={{ 
         borderRadius: 2, 
         overflow: 'hidden', 
@@ -485,609 +404,44 @@ const Calendar = () => {
                   height: { xs: 'auto', sm: '100%' }
                 }}
               >
-                <Box 
-                  sx={{ 
-                    p: 2,
-                    backgroundColor: isWeekend(date) ? '#F5F5F5' : 'white',
-                    position: 'relative',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflow: 'visible',
-                    minHeight: 0,
-                    height: { xs: 'auto', sm: '100%' }
-                  }}
-                >
-                  <Box sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'space-between',
-                    mb: 2
-                  }}>
-                    <Box>
-                      <Typography 
-                        variant="subtitle2" 
-                        sx={{ 
-                          fontWeight: 600,
-                          color: date.toDateString() === new Date().toDateString() ? createHighlightColor(userPreferences.color) : 'inherit',
-                          fontFamily: 'Nunito, sans-serif',
-                          transition: 'color 0.5s ease'
-                        }}
-                      >
-                        {date.toLocaleDateString('en-US', { weekday: 'short' })}
-                      </Typography>
-                      <Typography 
-                        variant="h6" 
-                        sx={{ 
-                          color: date.toDateString() === new Date().toDateString() ? createHighlightColor(userPreferences.color) : 'inherit',
-                          fontFamily: 'Nunito, sans-serif',
-                          fontWeight: 700,
-                          transition: 'color 0.5s ease'
-                        }}
-                      >
-                        {date.getDate()}
-                      </Typography>
-                    </Box>
-                    <Fab
-                      size="small"
-                      color="primary"
-                      sx={{
-                        backgroundColor: userPreferences.color,
-                        color: getTextColor(userPreferences.color),
-                        transition: 'all 0.5s ease',
-                        '&:hover': {
-                          backgroundColor: userPreferences.color,
-                          opacity: 0.9
-                        }
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDayClick(date, 'day');
-                      }}
-                    >
-                      <AddIcon />
-                    </Fab>
-                  </Box>
-                  <Divider sx={{ mb: 2 }} />
-
-                  {/* Day Section */}
-                  <Box 
-                    sx={{ 
-                      flex: 1,
-                      cursor: 'pointer',
-                      '&:hover': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.02)'
-                      }
-                    }}
-                    onClick={() => handleDayClick(date, 'day')}
-                  >
-                    {dayAvailabilities
-                      .filter(a => a.section !== 'evening')
-                      .map((a, idx) => (
-                        <Paper
-                          key={idx}
-                          sx={{
-                            p: 1.5,
-                            mb: 1.5,
-                            backgroundColor: a.color,
-                            color: getTextColor(a.color),
-                            borderRadius: 2,
-                            position: 'relative',
-                            fontFamily: 'Nunito, sans-serif',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                            '&:hover': {
-                              transform: 'translateY(-2px)',
-                              boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
-                              '& .event-actions': {
-                                opacity: 1
-                              }
-                            }
-                          }}
-                          onClick={(e) => handleEventClick(a, e)}
-                        >
-                          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                            <Box sx={{ flex: 1, minWidth: 0 }}>
-                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
-                                <Typography 
-                                  variant="subtitle1" 
-                                  sx={{ 
-                                    fontWeight: 700, 
-                                    fontFamily: 'Nunito, sans-serif',
-                                    wordBreak: 'break-word',
-                                    lineHeight: 1.2,
-                                    flex: 1,
-                                    pr: 1
-                                  }}
-                                >
-                                  {a.name}
-                                </Typography>
-                                <Tooltip title={a.timeSlot} arrow placement="top">
-                                  <Box sx={{ 
-                                    minWidth: '60px',
-                                    height: '40px',
-                                    borderRadius: '8px',
-                                    backgroundColor: 'rgba(255,255,255,0.2)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    flexShrink: 0,
-                                    padding: '0 8px'
-                                  }}>
-                                    <Typography variant="body2" sx={{ 
-                                      fontWeight: 600,
-                                      fontSize: '0.75rem',
-                                      fontFamily: 'Nunito, sans-serif',
-                                      whiteSpace: 'nowrap',
-                                      overflow: 'hidden',
-                                      textOverflow: 'ellipsis'
-                                    }}>
-                                      {a.timeSlot}
-                                    </Typography>
-                                  </Box>
-                                </Tooltip>
-                              </Box>
-                              <Typography 
-                                variant="body2" 
-                                sx={{ 
-                                  fontFamily: 'Nunito, sans-serif',
-                                  opacity: 0.9,
-                                  wordBreak: 'break-word',
-                                  lineHeight: 1.2
-                                }}
-                              >
-                                {a.location}
-                              </Typography>
-                              {a.joiners && a.joiners.length > 0 && (
-                                <Typography 
-                                  variant="body2" 
-                                  sx={{ 
-                                    fontFamily: 'Nunito, sans-serif',
-                                    mt: 1,
-                                    fontSize: '0.75rem',
-                                    opacity: 0.8,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 0.5
-                                  }}
-                                >
-                                  {formatJoiners(a.joiners)}
-                                </Typography>
-                              )}
-                            </Box>
-                          </Box>
-                          <Box 
-                            className="event-actions"
-                            sx={{ 
-                              position: 'absolute', 
-                              top: 8, 
-                              right: 8,
-                              display: 'flex',
-                              gap: 0.5,
-                              opacity: 0,
-                              transition: 'opacity 0.2s ease',
-                              backgroundColor: a.color,
-                              padding: '0 4px',
-                              borderRadius: '12px'
-                            }}
-                          >
-                            <IconButton
-                              size="small"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEventClick(a, e);
-                              }}
-                              sx={{
-                                color: getTextColor(a.color),
-                                backgroundColor: 'rgba(255,255,255,0.2)',
-                                '&:hover': {
-                                  backgroundColor: 'rgba(255,255,255,0.3)'
-                                },
-                                minWidth: isUserJoining(a) ? '50px' : 'auto',
-                                justifyContent: 'flex-start',
-                                gap: 0.5,
-                                fontSize: '0.75rem',
-                                padding: '4px 8px',
-                                borderRadius: '12px'
-                              }}
-                            >
-                              {isUserJoining(a) ? (
-                                <>
-                                  <span>Joined</span>
-                                  <span style={{ fontSize: '1em' }}>✓</span>
-                                </>
-                              ) : (
-                                'Join'
-                              )}
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              sx={{
-                                color: getTextColor(a.color),
-                                backgroundColor: 'rgba(255,255,255,0.2)',
-                                '&:hover': {
-                                  backgroundColor: 'rgba(255,255,255,0.3)'
-                                },
-                                borderRadius: '12px'
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDelete(a._id);
-                              }}
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
-                          </Box>
-                        </Paper>
-                    ))}
-                  </Box>
-
-                  {/* Evening Section */}
-                  <Box sx={{ 
-                    flex: 1,
-                    mt: 2,
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}>
-                    <Typography 
-                      variant="subtitle2" 
-                      sx={{ 
-                        mb: 1, 
-                        color: '#666',
-                        fontFamily: 'Nunito, sans-serif',
-                        fontWeight: 600
-                      }}
-                    >
-                      Evening
-                    </Typography>
-                    <Box 
-                      sx={{ 
-                        flex: 1,
-                        cursor: 'pointer',
-                        '&:hover': {
-                          backgroundColor: 'rgba(0, 0, 0, 0.02)'
-                        }
-                      }}
-                      onClick={() => handleDayClick(date, 'evening')}
-                    >
-                      {dayAvailabilities
-                        .filter(a => a.section === 'evening')
-                        .map((a, idx) => (
-                          <Paper
-                            key={idx}
-                            sx={{
-                              p: 1.5,
-                              mb: 1.5,
-                              backgroundColor: a.color,
-                              color: getTextColor(a.color),
-                              borderRadius: 2,
-                              position: 'relative',
-                              fontFamily: 'Nunito, sans-serif',
-                              cursor: 'pointer',
-                              transition: 'all 0.2s ease',
-                              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                              '&:hover': {
-                                transform: 'translateY(-2px)',
-                                boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
-                                '& .event-actions': {
-                                  opacity: 1
-                                }
-                              }
-                            }}
-                            onClick={(e) => handleEventClick(a, e)}
-                          >
-                            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                              <Box sx={{ flex: 1, minWidth: 0 }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
-                                  <Typography 
-                                    variant="subtitle1" 
-                                    sx={{ 
-                                      fontWeight: 700, 
-                                      fontFamily: 'Nunito, sans-serif',
-                                      wordBreak: 'break-word',
-                                      lineHeight: 1.2,
-                                      flex: 1,
-                                      pr: 1
-                                    }}
-                                  >
-                                    {a.name}
-                                  </Typography>
-                                  <Tooltip title={a.timeSlot} arrow placement="top">
-                                    <Box sx={{ 
-                                      minWidth: '60px',
-                                      height: '40px',
-                                      borderRadius: '8px',
-                                      backgroundColor: 'rgba(255,255,255,0.2)',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      flexShrink: 0,
-                                      padding: '0 8px'
-                                    }}>
-                                      <Typography variant="body2" sx={{ 
-                                        fontWeight: 600,
-                                        fontSize: '0.75rem',
-                                        fontFamily: 'Nunito, sans-serif',
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis'
-                                      }}>
-                                        {a.timeSlot}
-                                      </Typography>
-                                    </Box>
-                                  </Tooltip>
-                                </Box>
-                                <Typography 
-                                  variant="body2" 
-                                  sx={{ 
-                                    fontFamily: 'Nunito, sans-serif',
-                                    opacity: 0.9,
-                                    wordBreak: 'break-word',
-                                    lineHeight: 1.2
-                                  }}
-                                >
-                                  {a.location}
-                                </Typography>
-                                {a.joiners && a.joiners.length > 0 && (
-                                  <Typography 
-                                    variant="body2" 
-                                    sx={{ 
-                                      fontFamily: 'Nunito, sans-serif',
-                                      mt: 1,
-                                      fontSize: '0.75rem',
-                                      opacity: 0.8,
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      gap: 0.5
-                                    }}
-                                  >
-                                    {formatJoiners(a.joiners)}
-                                  </Typography>
-                                )}
-                              </Box>
-                            </Box>
-                            <Box 
-                              className="event-actions"
-                              sx={{ 
-                                position: 'absolute', 
-                                top: 8, 
-                                right: 8,
-                                display: 'flex',
-                                gap: 0.5,
-                                opacity: 0,
-                                transition: 'opacity 0.2s ease',
-                                backgroundColor: a.color,
-                                padding: '0 4px',
-                                borderRadius: '12px'
-                              }}
-                            >
-                              <IconButton
-                                size="small"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleEventClick(a, e);
-                                }}
-                                sx={{
-                                  color: getTextColor(a.color),
-                                  backgroundColor: 'rgba(255,255,255,0.2)',
-                                  '&:hover': {
-                                    backgroundColor: 'rgba(255,255,255,0.3)'
-                                  },
-                                  minWidth: isUserJoining(a) ? '50px' : 'auto',
-                                  justifyContent: 'flex-start',
-                                  gap: 0.5,
-                                  fontSize: '0.75rem',
-                                  padding: '4px 8px',
-                                  borderRadius: '12px'
-                                }}
-                              >
-                                {isUserJoining(a) ? (
-                                  <>
-                                    <span>Joined</span>
-                                    <span style={{ fontSize: '1em' }}>✓</span>
-                                  </>
-                                ) : (
-                                  'Join'
-                                )}
-                              </IconButton>
-                              <IconButton
-                                size="small"
-                                sx={{
-                                  color: getTextColor(a.color),
-                                  backgroundColor: 'rgba(255,255,255,0.2)',
-                                  '&:hover': {
-                                    backgroundColor: 'rgba(255,255,255,0.3)'
-                                  },
-                                  borderRadius: '12px'
-                                }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDelete(a._id);
-                                }}
-                              >
-                                <DeleteIcon fontSize="small" />
-                              </IconButton>
-                            </Box>
-                          </Paper>
-                      ))}
-                    </Box>
-                  </Box>
-                </Box>
+                <CalendarDay
+                  date={date}
+                  dayAvailabilities={dayAvailabilities}
+                  handleDayClick={handleDayClick}
+                  handleEventClick={handleEventClick}
+                  handleDelete={handleDelete}
+                  isUserJoining={isUserJoining}
+                  formatJoiners={formatJoiners}
+                  userPreferences={userPreferences}
+                />
               </Grid>
             );
           })}
         </Grid>
       </Paper>
 
-      <Dialog 
-        open={openDialog} 
+      <AddEventDialog
+        open={openDialog}
         onClose={handleDialogClose}
-        PaperProps={{
-          sx: {
-            borderRadius: 4,
-            fontFamily: 'Nunito, sans-serif',
-            margin: { xs: '16px', sm: '32px' },
-            position: { xs: 'absolute', sm: 'relative' },
-            top: { xs: '10%', sm: 'auto' }
-          }
-        }}
-      >
-        <DialogTitle sx={{ fontFamily: 'Nunito, sans-serif', fontWeight: 600 }}>
-          What are your plans on {selectedDate?.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}?
-        </DialogTitle>
-        <DialogContent>
-          {dialogError && (
-            <Alert severity="error" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>{dialogError}</Alert>
-          )}
-          <FormControl component="fieldset" sx={{ mb: 2, width: '100%' }}>
-            <FormLabel component="legend" sx={{ fontFamily: 'Nunito, sans-serif' }}>Event Time</FormLabel>
-            <RadioGroup
-              row
-              value={newEvent.section}
-              onChange={(e) => setNewEvent({ ...newEvent, section: e.target.value })}
-            >
-              <FormControlLabel 
-                value="day" 
-                control={<Radio />} 
-                label="Day" 
-                sx={{ fontFamily: 'Nunito, sans-serif' }}
-              />
-              <FormControlLabel 
-                value="evening" 
-                control={<Radio />} 
-                label="Evening" 
-                sx={{ fontFamily: 'Nunito, sans-serif' }}
-              />
-            </RadioGroup>
-          </FormControl>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Time"
-            fullWidth
-            value={newEvent.timeSlot}
-            onChange={(e) => setNewEvent({ ...newEvent, timeSlot: e.target.value })}
-            onKeyPress={handleKeyPress}
-            sx={{ mb: 2 }}
-            placeholder={selectedDate ? (newEvent.section === 'evening' ? '6-7pm' : '9-5') : ''}
-            InputProps={{
-              sx: { fontFamily: 'Nunito, sans-serif' }
-            }}
-            InputLabelProps={{
-              sx: { fontFamily: 'Nunito, sans-serif' }
-            }}
-          />
-          <TextField
-            margin="dense"
-            label="Location / Event"
-            fullWidth
-            value={newEvent.location}
-            onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
-            onKeyPress={handleKeyPress}
-            InputProps={{
-              sx: { fontFamily: 'Nunito, sans-serif' }
-            }}
-            InputLabelProps={{
-              sx: { fontFamily: 'Nunito, sans-serif' }
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button 
-            onClick={handleDialogClose}
-            sx={{ 
-              textTransform: 'none',
-              fontFamily: 'Nunito, sans-serif',
-              fontWeight: 600
-            }}
-          >
-            cancel
-          </Button>
-          <Button 
-            onClick={handleSubmit} 
-            variant="contained" 
-            sx={{ 
-              backgroundColor: userPreferences.color,
-              color: getTextColor(userPreferences.color),
-              textTransform: 'none',
-              borderRadius: 2,
-              fontFamily: 'Nunito, sans-serif',
-              fontWeight: 600,
-              transition: 'all 0.5s ease',
-              '&:hover': {
-                backgroundColor: userPreferences.color,
-                opacity: 0.9
-              }
-            }}
-          >
-            add
-          </Button>
-        </DialogActions>
-      </Dialog>
+        selectedDate={selectedDate}
+        newEvent={newEvent}
+        setNewEvent={setNewEvent}
+        handleSubmit={handleSubmit}
+        handleKeyPress={handleKeyPress}
+        dialogError={dialogError}
+        userPreferences={userPreferences}
+      />
 
-      <Dialog 
-        open={openJoinDialog} 
+      <JoinEventDialog
+        open={openJoinDialog}
         onClose={() => setOpenJoinDialog(false)}
-        PaperProps={{
-          sx: {
-            borderRadius: 4,
-            fontFamily: 'Nunito, sans-serif',
-            margin: { xs: '16px', sm: '32px' },
-            position: { xs: 'absolute', sm: 'fixed' },
-            top: { xs: '10%', sm: dialogPosition.top },
-            left: { xs: 'auto', sm: dialogPosition.left },
-            maxWidth: { xs: 'calc(100% - 32px)', sm: '400px' }
-          }
-        }}
-      >
-        <DialogTitle sx={{ fontFamily: 'Nunito, sans-serif', fontWeight: 600 }}>
-          {selectedEvent?.name}'s Event
-        </DialogTitle>
-        <DialogContent>
-          <Typography variant="body1" sx={{ mb: 1, fontFamily: 'Nunito, sans-serif' }}>
-            {selectedEvent?.timeSlot}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>
-            {selectedEvent?.location}
-          </Typography>
-          {selectedEvent?.joiners?.length > 0 && (
-            <Typography variant="body2" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>
-              {formatJoiners(selectedEvent.joiners)}
-            </Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button 
-            onClick={() => setOpenJoinDialog(false)}
-            sx={{ 
-              textTransform: 'none',
-              fontFamily: 'Nunito, sans-serif',
-              fontWeight: 600
-            }}
-          >
-            cancel
-          </Button>
-          <Button 
-            onClick={selectedEvent ? (isUserJoining(selectedEvent) ? handleUnjoinEvent : handleJoinEvent) : undefined}
-            variant="contained" 
-            sx={{ 
-              backgroundColor: userPreferences.color,
-              color: getTextColor(userPreferences.color),
-              textTransform: 'none',
-              borderRadius: 2,
-              fontFamily: 'Nunito, sans-serif',
-              fontWeight: 600,
-              transition: 'all 0.5s ease',
-              '&:hover': {
-                backgroundColor: userPreferences.color,
-                opacity: 0.9
-              }
-            }}
-          >
-            {selectedEvent ? (isUserJoining(selectedEvent) ? 'unjoin' : 'join') : 'join'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        selectedEvent={selectedEvent}
+        handleJoinEvent={handleJoinEvent}
+        handleUnjoinEvent={handleUnjoinEvent}
+        isUserJoining={isUserJoining}
+        userPreferences={userPreferences}
+        formatJoiners={formatJoiners}
+      />
     </Box>
   );
 };
