@@ -38,7 +38,9 @@ const Event = ({
         }
       }}
       onClick={(e) => {
-        e.stopPropagation();
+        if (window.innerWidth < 600) {
+          e.stopPropagation();
+        }
         onEventClick(event, e);
       }}
     >
