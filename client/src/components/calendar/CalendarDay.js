@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Fab, Divider } from '@mui/material';
+import { Box, Typography, Fab, Divider, useMediaQuery } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Event from './Event';
 import { createHighlightColor } from './colorUtils';
@@ -14,9 +14,17 @@ const CalendarDay = ({
   formatJoiners,
   userPreferences
 }) => {
+  const isMobile = useMediaQuery('(max-width:599px)');
+
   const isWeekend = (date) => {
     const day = date.getDay();
     return day === 0 || day === 6;
+  };
+
+  const handleSectionClick = (e, section) => {
+    if (!isMobile) {
+      handleDayClick(date, section);
+    }
   };
 
   return (
@@ -93,11 +101,7 @@ const CalendarDay = ({
             backgroundColor: { xs: 'transparent', sm: 'rgba(0, 0, 0, 0.02)' }
           }
         }}
-        onClick={(e) => {
-          if (window.innerWidth >= 600) { // Material-UI's sm breakpoint
-            handleDayClick(date, 'day');
-          }
-        }}
+        onClick={(e) => handleSectionClick(e, 'day')}
       >
         {dayAvailabilities
           .filter(a => a.section !== 'evening')
@@ -139,11 +143,7 @@ const CalendarDay = ({
               backgroundColor: { xs: 'transparent', sm: 'rgba(0, 0, 0, 0.02)' }
             }
           }}
-          onClick={(e) => {
-            if (window.innerWidth >= 600) { // Material-UI's sm breakpoint
-              handleDayClick(date, 'evening');
-            }
-          }}
+          onClick={(e) => handleSectionClick(e, 'evening')}
         >
           {dayAvailabilities
             .filter(a => a.section === 'evening')
