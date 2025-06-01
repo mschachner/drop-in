@@ -5,10 +5,16 @@ import {
   Paper, 
   Grid,
   CircularProgress,
-  Alert
+  Alert,
+  Fab,
+  IconButton,
+  Tooltip,
+  Divider
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
-import { createPastelColor } from './calendar/colorUtils';
+import { createPastelColor, getTextColor, createHighlightColor, isWeekend } from './calendar/colorUtils';
 import UserPreferences from './calendar/UserPreferences';
 import CalendarDay from './calendar/CalendarDay';
 import AddEventDialog from './calendar/AddEventDialog';
@@ -585,7 +591,8 @@ const Calendar = () => {
                       mt: 2,
                       display: 'flex',
                       flexDirection: 'column'
-                    }}>
+                    }}
+                  >
                     <Typography 
                       variant="subtitle2" 
                       sx={{ 
@@ -792,9 +799,8 @@ const Calendar = () => {
                                 )}
                               </Box>
                             </Box>
-                          </Box>
-                        </Paper>
-                      ))}
+                          </Paper>
+                        ))}
                     </Box>
                   </Box>
                 </Box>
@@ -814,17 +820,6 @@ const Calendar = () => {
         handleKeyPress={handleKeyPress}
         dialogError={dialogError}
         userPreferences={userPreferences}
-      />
-
-      <JoinEventDialog
-        open={openJoinDialog}
-        onClose={() => setOpenJoinDialog(false)}
-        selectedEvent={selectedEvent}
-        handleJoinEvent={handleJoinEvent}
-        handleUnjoinEvent={handleUnjoinEvent}
-        isUserJoining={isUserJoining}
-        userPreferences={userPreferences}
-        formatJoiners={formatJoiners}
       />
     </Box>
   );
