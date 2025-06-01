@@ -4,57 +4,15 @@ import {
   Typography, 
   Paper, 
   Grid,
-  Button,
   CircularProgress,
-  Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Divider,
-  Fab,
-  IconButton,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  FormControl,
-  FormLabel,
-  Tooltip
+  Alert
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ColorLensIcon from '@mui/icons-material/ColorLens';
 import axios from 'axios';
-import { createPastelColor, getTextColor } from './calendar/colorUtils';
+import { createPastelColor } from './calendar/colorUtils';
 import UserPreferences from './calendar/UserPreferences';
 import CalendarDay from './calendar/CalendarDay';
 import AddEventDialog from './calendar/AddEventDialog';
 import JoinEventDialog from './calendar/JoinEventDialog';
-
-const COLORS = [
-  { value: '#4CAF50', label: 'Green' },
-  { value: '#2196F3', label: 'Blue' },
-  { value: '#FF9800', label: 'Orange' },
-  { value: '#9C27B0', label: 'Purple' },
-  { value: '#F44336', label: 'Red' },
-  { value: '#FF80AB', label: 'Pink' },
-  { value: '#795548', label: 'Brown' }
-];
-
-// Function to calculate relative luminance of a color
-const calculateLuminance = (hex) => {
-  const rgb = hexToRgb(hex);
-  if (!rgb) return 0;
-  
-  // Convert RGB to relative luminance
-  const [r, g, b] = [rgb.r, rgb.g, rgb.b].map(c => {
-    c = c / 255;
-    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-  });
-  
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-};
 
 // Function to convert hex to RGB
 const hexToRgb = (hex) => {
@@ -79,19 +37,6 @@ const darkenColor = (hex) => {
   return `rgb(${darkenR}, ${darkenG}, ${darkenB})`;
 };
 
-// Function to create a subtle highlight color that maintains readability
-const createHighlightColor = (hex) => {
-  const rgb = hexToRgb(hex);
-  if (!rgb) return hex;
-  
-  // Mix with black to create a darker version (30% black, 70% color)
-  const highlightR = Math.round(rgb.r * 0.7);
-  const highlightG = Math.round(rgb.g * 0.7);
-  const highlightB = Math.round(rgb.b * 0.7);
-  
-  return `rgb(${highlightR}, ${highlightG}, ${highlightB})`;
-};
-
 const Calendar = () => {
   const [error, setError] = useState(null);
   const [dialogError, setDialogError] = useState(null);
@@ -101,7 +46,6 @@ const Calendar = () => {
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [dialogPosition, setDialogPosition] = useState({ top: 0, left: 0 });
   const [userPreferences, setUserPreferences] = useState({
     name: '',
     color: '#4CAF50'
@@ -204,11 +148,6 @@ const Calendar = () => {
     return days;
   };
 
-  const isWeekend = (date) => {
-    const day = date.getDay();
-    return day === 0 || day === 6;
-  };
-
   const pastelColor = createPastelColor(userPreferences.color);
   const darkColor = darkenColor(userPreferences.color);
 
@@ -224,16 +163,6 @@ const Calendar = () => {
     }
     clickEvent.stopPropagation(); // Stop the event from bubbling up
     setSelectedEvent(event);
-    
-    // Only position the dialog on desktop
-    if (window.innerWidth >= 600) { // Material-UI's sm breakpoint
-      const rect = clickEvent.currentTarget.getBoundingClientRect();
-      setDialogPosition({
-        top: rect.top,
-        left: rect.right + 16 // 16px gap
-      });
-    }
-    
     setOpenJoinDialog(true);
   };
 
