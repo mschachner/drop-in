@@ -26,7 +26,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import axios from 'axios';
-import { createPastelColor } from './calendar/colorUtils';
+import { createPastelColor, getTextColor } from './calendar/colorUtils';
 import UserPreferences from './calendar/UserPreferences';
 import CalendarDay from './calendar/CalendarDay';
 import AddEventDialog from './calendar/AddEventDialog';
@@ -56,12 +56,6 @@ const calculateLuminance = (hex) => {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 };
 
-// Function to determine if text should be black or white based on background color
-const getTextColor = (backgroundColor) => {
-  const luminance = calculateLuminance(backgroundColor);
-  return luminance > 0.5 ? '#000000' : '#FFFFFF';
-};
-
 // Function to convert hex to RGB
 const hexToRgb = (hex) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -70,19 +64,6 @@ const hexToRgb = (hex) => {
     g: parseInt(result[2], 16),
     b: parseInt(result[3], 16)
   } : null;
-};
-
-// Function to create a very light pastel version of a color
-const createPastelColor = (hex) => {
-  const rgb = hexToRgb(hex);
-  if (!rgb) return hex;
-  
-  // Mix with white to create a very light pastel (80% white, 20% color)
-  const pastelR = Math.round((rgb.r * 0.2) + (255 * 0.8));
-  const pastelG = Math.round((rgb.g * 0.2) + (255 * 0.8));
-  const pastelB = Math.round((rgb.b * 0.2) + (255 * 0.8));
-  
-  return `rgb(${pastelR}, ${pastelG}, ${pastelB})`;
 };
 
 // Function to create a darker version of a color
