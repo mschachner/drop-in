@@ -183,6 +183,9 @@ const Calendar = () => {
   const handleDialogClose = () => {
     setOpenDialog(false);
     setDialogError(null);
+    if (!isMobile) {
+      setActiveEventId(null);
+    }
   };
 
   const formatJoiners = (joiners) => {
@@ -420,15 +423,15 @@ const Calendar = () => {
                               transform: { xs: 'none', sm: 'translateY(-2px)' },
                               boxShadow: { xs: '0 2px 4px rgba(0,0,0,0.1)', sm: '0 4px 8px rgba(0,0,0,0.15)' },
                               '& .event-actions': {
-                                opacity: { xs: 0, sm: 1 }
+                                opacity: { xs: 1, sm: 1 }
                               }
                             },
                             className: 'event-paper',
                             '&:hover .time-box': { 
-                              right: { xs: 0, sm: isUserJoining(a) ? '110px' : '72px' }
+                              right: { xs: isUserJoining(a) ? '110px' : '72px', sm: isUserJoining(a) ? '110px' : '72px' }
                             },
                             '&:hover .event-actions': { 
-                              opacity: { xs: 0, sm: 1 }
+                              opacity: { xs: 1, sm: 1 }
                             }
                           }}
                           onClick={(e) => handleEventClick(a, e)}
@@ -640,15 +643,15 @@ const Calendar = () => {
                                 transform: { xs: 'none', sm: 'translateY(-2px)' },
                                 boxShadow: { xs: '0 2px 4px rgba(0,0,0,0.1)', sm: '0 4px 8px rgba(0,0,0,0.15)' },
                                 '& .event-actions': {
-                                  opacity: { xs: 0, sm: 1 }
+                                  opacity: { xs: 1, sm: 1 }
                                 }
                               },
                               className: 'event-paper',
                               '&:hover .time-box': { 
-                                right: { xs: 0, sm: isUserJoining(a) ? '110px' : '72px' }
+                                right: { xs: isUserJoining(a) ? '110px' : '72px', sm: isUserJoining(a) ? '110px' : '72px' }
                               },
                               '&:hover .event-actions': { 
-                                opacity: { xs: 0, sm: 1 }
+                                opacity: { xs: 1, sm: 1 }
                               }
                             }}
                             onClick={(e) => handleEventClick(a, e)}
