@@ -57,6 +57,7 @@ const Calendar = () => {
     section: 'day'
   });
   const [selectedColor, setSelectedColor] = useState('#008080');
+  const [activeEventId, setActiveEventId] = useState(null);
 
   useEffect(() => {
     // Add Nunito font
@@ -191,6 +192,21 @@ const Calendar = () => {
 
   const isUserJoining = (event) => {
     return event?.joiners?.includes(userPreferences.name) || false;
+  };
+
+  const handleEventClick = (event, e) => {
+    e.stopPropagation();
+    if (window.innerWidth < 600) { // Mobile
+      setActiveEventId(activeEventId === event._id ? null : event._id);
+    } else { // Desktop
+      handleDayClick(new Date(event.date), event.section, e);
+    }
+  };
+
+  const handleSectionClick = (e, section) => {
+    if (!isMobile) {
+      handleDayClick(date, section, e);
+    }
   };
 
   if (loading) {
@@ -379,7 +395,7 @@ const Calendar = () => {
                         backgroundColor: { xs: 'transparent', sm: 'rgba(0, 0, 0, 0.02)' }
                       }
                     }}
-                    onClick={(e) => handleDayClick(date, 'day', e)}
+                    onClick={(e) => handleSectionClick(e, 'day')}
                   >
                     {dayAvailabilities
                       .filter(a => a.section !== 'evening')
@@ -398,18 +414,21 @@ const Calendar = () => {
                             transition: 'all 0.2s ease',
                             boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                             '&:hover': {
-                              transform: 'translateY(-2px)',
-                              boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+                              transform: { xs: 'none', sm: 'translateY(-2px)' },
+                              boxShadow: { xs: '0 2px 4px rgba(0,0,0,0.1)', sm: '0 4px 8px rgba(0,0,0,0.15)' },
                               '& .event-actions': {
-                                opacity: 1
+                                opacity: { xs: 0, sm: 1 }
                               }
                             },
                             className: 'event-paper',
                             '&:hover .time-box': { 
-                              right: isUserJoining(a) ? '110px' : '72px'
+                              right: { xs: 0, sm: isUserJoining(a) ? '110px' : '72px' }
                             },
-                            '&:hover .event-actions': { opacity: 1 }
+                            '&:hover .event-actions': { 
+                              opacity: { xs: 0, sm: 1 }
+                            }
                           }}
+                          onClick={(e) => handleEventClick(a, e)}
                         >
                           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
                             <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -459,7 +478,8 @@ const Calendar = () => {
                                       textOverflow: 'ellipsis',
                                       transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
                                       zIndex: 2,
-                                      pointerEvents: 'none'
+                                      pointerEvents: 'none',
+                                      right: (window.innerWidth < 600 && activeEventId === a._id) ? (isUserJoining(a) ? '110px' : '72px') : 0
                                     }}
                                     className="time-box"
                                   >
@@ -473,11 +493,11 @@ const Calendar = () => {
                                       right: 0,
                                       display: 'flex',
                                       gap: 0.5,
-                                      opacity: 0,
+                                      opacity: (window.innerWidth < 600 && activeEventId === a._id) ? 1 : 0,
                                       transition: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)',
                                       zIndex: 1,
                                       '&.event-paper:hover .event-actions': {
-                                        opacity: 1,
+                                        opacity: { xs: 0, sm: 1 },
                                       },
                                     }}
                                   >
@@ -596,7 +616,7 @@ const Calendar = () => {
                           backgroundColor: { xs: 'transparent', sm: 'rgba(0, 0, 0, 0.02)' }
                         }
                       }}
-                      onClick={(e) => handleDayClick(date, 'evening', e)}
+                      onClick={(e) => handleSectionClick(e, 'evening')}
                     >
                       {dayAvailabilities
                         .filter(a => a.section === 'evening')
@@ -615,18 +635,21 @@ const Calendar = () => {
                               transition: 'all 0.2s ease',
                               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                               '&:hover': {
-                                transform: 'translateY(-2px)',
-                                boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+                                transform: { xs: 'none', sm: 'translateY(-2px)' },
+                                boxShadow: { xs: '0 2px 4px rgba(0,0,0,0.1)', sm: '0 4px 8px rgba(0,0,0,0.15)' },
                                 '& .event-actions': {
-                                  opacity: 1
+                                  opacity: { xs: 0, sm: 1 }
                                 }
                               },
                               className: 'event-paper',
                               '&:hover .time-box': { 
-                                right: isUserJoining(a) ? '110px' : '72px'
+                                right: { xs: 0, sm: isUserJoining(a) ? '110px' : '72px' }
                               },
-                              '&:hover .event-actions': { opacity: 1 }
+                              '&:hover .event-actions': { 
+                                opacity: { xs: 0, sm: 1 }
+                              }
                             }}
+                            onClick={(e) => handleEventClick(a, e)}
                           >
                             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
                               <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -676,7 +699,8 @@ const Calendar = () => {
                                         textOverflow: 'ellipsis',
                                         transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
                                         zIndex: 2,
-                                        pointerEvents: 'none'
+                                        pointerEvents: 'none',
+                                        right: (window.innerWidth < 600 && activeEventId === a._id) ? (isUserJoining(a) ? '110px' : '72px') : 0
                                       }}
                                       className="time-box"
                                     >
@@ -690,11 +714,11 @@ const Calendar = () => {
                                         right: 0,
                                         display: 'flex',
                                         gap: 0.5,
-                                        opacity: 0,
+                                        opacity: (window.innerWidth < 600 && activeEventId === a._id) ? 1 : 0,
                                         transition: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)',
                                         zIndex: 1,
                                         '&.event-paper:hover .event-actions': {
-                                          opacity: 1,
+                                          opacity: { xs: 0, sm: 1 },
                                         },
                                       }}
                                     >
