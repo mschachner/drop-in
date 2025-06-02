@@ -434,6 +434,7 @@ const Calendar = () => {
                                       flexShrink: 0,
                                       padding: '0 8px',
                                       transition: 'all 0.2s ease',
+                                      marginLeft: 'auto',
                                       '&:hover': {
                                         transform: 'translateX(-60px)'
                                       }
@@ -648,6 +649,7 @@ const Calendar = () => {
                                         flexShrink: 0,
                                         padding: '0 8px',
                                         transition: 'all 0.2s ease',
+                                        marginLeft: 'auto',
                                         '&:hover': {
                                           transform: 'translateX(-60px)'
                                         }
