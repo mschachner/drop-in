@@ -435,10 +435,10 @@ const Calendar = () => {
                                   <Box
                                     sx={{
                                       position: 'absolute',
-                                      top: 12,
-                                      right: 12,
+                                      top: 0,
+                                      right: 0,
                                       minWidth: '60px',
-                                      height: '40px',
+                                      height: '24px',
                                       borderRadius: '8px',
                                       backgroundColor: 'rgba(255,255,255,0.2)',
                                       display: 'flex',
@@ -467,8 +467,8 @@ const Calendar = () => {
                                     className="event-actions"
                                     sx={{
                                       position: 'absolute',
-                                      top: 12,
-                                      right: 12,
+                                      top: 0,
+                                      right: 0,
                                       display: 'flex',
                                       gap: 0.5,
                                       opacity: 0,
@@ -647,10 +647,10 @@ const Calendar = () => {
                                     <Box
                                       sx={{
                                         position: 'absolute',
-                                        top: 12,
-                                        right: 12,
+                                        top: 0,
+                                        right: 0,
                                         minWidth: '60px',
-                                        height: '40px',
+                                        height: '24px',
                                         borderRadius: '8px',
                                         backgroundColor: 'rgba(255,255,255,0.2)',
                                         display: 'flex',
@@ -679,8 +679,8 @@ const Calendar = () => {
                                       className="event-actions"
                                       sx={{
                                         position: 'absolute',
-                                        top: 12,
-                                        right: 12,
+                                        top: 0,
+                                        right: 0,
                                         display: 'flex',
                                         gap: 0.5,
                                         opacity: 0,
