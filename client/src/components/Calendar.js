@@ -140,13 +140,27 @@ const Calendar = () => {
   };
 
   const handleJoin = async (eventId) => {
+    if (!userPreferences.name) {
+      setError('Please enter your name first');
+      return;
+    }
+
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}/join`, {
-        name: userPreferences.name
-      });
+      const event = availabilities.find(a => a._id === eventId);
+      const isJoining = !isUserJoining(event);
+      
+      if (isJoining) {
+        await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}/join`, {
+          name: userPreferences.name
+        });
+      } else {
+        await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}/unjoin`, {
+          name: userPreferences.name
+        });
+      }
       fetchData();
     } catch (err) {
-      setError(err.message || 'Failed to join event');
+      setError(err.message || 'Failed to update event');
     }
   };
 
