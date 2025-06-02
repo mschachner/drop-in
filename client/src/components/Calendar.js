@@ -466,17 +466,17 @@ const Calendar = () => {
                                     sx={{
                                       position: 'absolute',
                                       top: 0,
-                                      minWidth: '60px',
-                                      height: '24px',
+                                      minWidth: { xs: '80px', sm: '60px' },
+                                      height: { xs: '36px', sm: '24px' },
                                       borderRadius: '8px',
                                       backgroundColor: 'rgba(255,255,255,0.2)',
                                       display: 'flex',
                                       alignItems: 'center',
                                       justifyContent: 'center',
                                       flexShrink: 0,
-                                      padding: '0 8px',
+                                      padding: { xs: '0 12px', sm: '0 8px' },
                                       fontWeight: 600,
-                                      fontSize: '0.75rem',
+                                      fontSize: { xs: '0.875rem', sm: '0.75rem' },
                                       fontFamily: 'Nunito, sans-serif',
                                       whiteSpace: 'nowrap',
                                       overflow: 'hidden',
@@ -484,7 +484,7 @@ const Calendar = () => {
                                       transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
                                       zIndex: 2,
                                       pointerEvents: 'none',
-                                      right: isMobile ? (isUserJoining(a) ? '110px' : '72px') : (activeEventId === a._id ? (isUserJoining(a) ? '110px' : '72px') : 0)
+                                      right: isMobile ? (isUserJoining(a) ? '140px' : '102px') : (activeEventId === a._id ? (isUserJoining(a) ? '110px' : '72px') : 0)
                                     }}
                                     className="time-box"
                                   >
@@ -689,17 +689,17 @@ const Calendar = () => {
                                       sx={{
                                         position: 'absolute',
                                         top: 0,
-                                        minWidth: '60px',
-                                        height: '24px',
+                                        minWidth: { xs: '80px', sm: '60px' },
+                                        height: { xs: '36px', sm: '24px' },
                                         borderRadius: '8px',
                                         backgroundColor: 'rgba(255,255,255,0.2)',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         flexShrink: 0,
-                                        padding: '0 8px',
+                                        padding: { xs: '0 12px', sm: '0 8px' },
                                         fontWeight: 600,
-                                        fontSize: '0.75rem',
+                                        fontSize: { xs: '0.875rem', sm: '0.75rem' },
                                         fontFamily: 'Nunito, sans-serif',
                                         whiteSpace: 'nowrap',
                                         overflow: 'hidden',
@@ -707,7 +707,7 @@ const Calendar = () => {
                                         transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
                                         zIndex: 2,
                                         pointerEvents: 'none',
-                                        right: isMobile ? (isUserJoining(a) ? '110px' : '72px') : (activeEventId === a._id ? (isUserJoining(a) ? '110px' : '72px') : 0)
+                                        right: isMobile ? (isUserJoining(a) ? '140px' : '102px') : (activeEventId === a._id ? (isUserJoining(a) ? '110px' : '72px') : 0)
                                       }}
                                       className="time-box"
                                     >
