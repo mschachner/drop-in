@@ -8,7 +8,8 @@ import {
   Alert,
   Fab,
   IconButton,
-  Divider
+  Divider,
+  useMediaQuery
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -58,6 +59,7 @@ const Calendar = () => {
   });
   const [selectedColor, setSelectedColor] = useState('#008080');
   const [activeEventId, setActiveEventId] = useState(null);
+  const isMobile = useMediaQuery('(max-width:599px)');
 
   useEffect(() => {
     // Add Nunito font
@@ -196,14 +198,14 @@ const Calendar = () => {
 
   const handleEventClick = (event, e) => {
     e.stopPropagation();
-    if (window.innerWidth < 600) { // Mobile
+    if (isMobile) { // Mobile
       setActiveEventId(activeEventId === event._id ? null : event._id);
     } else { // Desktop
       handleDayClick(new Date(event.date), event.section, e);
     }
   };
 
-  const handleSectionClick = (e, section) => {
+  const handleSectionClick = (date, section, e) => {
     if (!isMobile) {
       handleDayClick(date, section, e);
     }
@@ -395,7 +397,7 @@ const Calendar = () => {
                         backgroundColor: { xs: 'transparent', sm: 'rgba(0, 0, 0, 0.02)' }
                       }
                     }}
-                    onClick={(e) => handleSectionClick(e, 'day')}
+                    onClick={(e) => handleSectionClick(date, 'day', e)}
                   >
                     {dayAvailabilities
                       .filter(a => a.section !== 'evening')
@@ -616,7 +618,7 @@ const Calendar = () => {
                           backgroundColor: { xs: 'transparent', sm: 'rgba(0, 0, 0, 0.02)' }
                         }
                       }}
-                      onClick={(e) => handleSectionClick(e, 'evening')}
+                      onClick={(e) => handleSectionClick(date, 'evening', e)}
                     >
                       {dayAvailabilities
                         .filter(a => a.section === 'evening')
