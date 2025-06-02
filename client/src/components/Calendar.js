@@ -456,11 +456,7 @@ const Calendar = () => {
                                       textOverflow: 'ellipsis',
                                       transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
                                       zIndex: 2,
-                                      pointerEvents: 'none',
-                                      right: 0,
-                                      '&.time-box': {
-                                        right: 0
-                                      }
+                                      pointerEvents: 'none'
                                     }}
                                     className="time-box"
                                   >
@@ -674,11 +670,7 @@ const Calendar = () => {
                                         textOverflow: 'ellipsis',
                                         transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
                                         zIndex: 2,
-                                        pointerEvents: 'none',
-                                        right: 0,
-                                        '&.time-box': {
-                                          right: 0
-                                        }
+                                        pointerEvents: 'none'
                                       }}
                                       className="time-box"
                                     >
