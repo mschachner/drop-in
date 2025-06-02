@@ -379,7 +379,9 @@ const Calendar = () => {
                                 opacity: 1
                               }
                             },
-                            className: 'event-paper'
+                            className: 'event-paper',
+                            '&:hover .time-box': { right: 72 },
+                            '&:hover .event-actions': { opacity: 1 }
                           }}
                         >
                           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
@@ -585,7 +587,9 @@ const Calendar = () => {
                                   opacity: 1
                                 }
                               },
-                              className: 'event-paper'
+                              className: 'event-paper',
+                              '&:hover .time-box': { right: 72 },
+                              '&:hover .event-actions': { opacity: 1 }
                             }}
                           >
                             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
