@@ -378,7 +378,8 @@ const Calendar = () => {
                               '& .event-actions': {
                                 opacity: 1
                               }
-                            }
+                            },
+                            className: 'event-paper'
                           }}
                         >
                           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
@@ -427,10 +428,11 @@ const Calendar = () => {
                                       transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
                                       zIndex: 2,
                                       pointerEvents: 'none',
-                                      '.MuiPaper-root:hover &': {
+                                      '&.event-paper:hover .time-box': {
                                         right: 72,
                                       },
                                     }}
+                                    className="time-box"
                                   >
                                     {a.timeSlot}
                                   </Box>
@@ -445,7 +447,7 @@ const Calendar = () => {
                                       opacity: 0,
                                       transition: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)',
                                       zIndex: 1,
-                                      '.MuiPaper-root:hover &': {
+                                      '&.event-paper:hover .event-actions': {
                                         opacity: 1,
                                       },
                                     }}
@@ -582,7 +584,8 @@ const Calendar = () => {
                                 '& .event-actions': {
                                   opacity: 1
                                 }
-                              }
+                              },
+                              className: 'event-paper'
                             }}
                           >
                             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
@@ -631,10 +634,11 @@ const Calendar = () => {
                                         transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
                                         zIndex: 2,
                                         pointerEvents: 'none',
-                                        '.MuiPaper-root:hover &': {
+                                        '&.event-paper:hover .time-box': {
                                           right: 72,
                                         },
                                       }}
+                                      className="time-box"
                                     >
                                       {a.timeSlot}
                                     </Box>
@@ -649,7 +653,7 @@ const Calendar = () => {
                                         opacity: 0,
                                         transition: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)',
                                         zIndex: 1,
-                                        '.MuiPaper-root:hover &': {
+                                        '&.event-paper:hover .event-actions': {
                                           opacity: 1,
                                         },
                                       }}
