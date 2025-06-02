@@ -201,6 +201,7 @@ const Calendar = () => {
     if (isMobile) { // Mobile
       handleDayClick(new Date(event.date), event.section, e);
     } else { // Desktop
+      setActiveEventId(event._id);
       handleDayClick(new Date(event.date), event.section, e);
     }
   };
