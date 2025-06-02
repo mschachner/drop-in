@@ -428,7 +428,7 @@ const Calendar = () => {
                             },
                             className: 'event-paper',
                             '&:hover .time-box': { 
-                              right: { xs: isUserJoining(a) ? '110px' : '72px', sm: isUserJoining(a) ? '110px' : '72px' }
+                              right: { xs: isUserJoining(a) ? '140px' : '102px', sm: isUserJoining(a) ? '110px' : '72px' }
                             },
                             '&:hover .event-actions': { 
                               opacity: { xs: 1, sm: 1 }
@@ -651,7 +651,7 @@ const Calendar = () => {
                               },
                               className: 'event-paper',
                               '&:hover .time-box': { 
-                                right: { xs: isUserJoining(a) ? '110px' : '72px', sm: isUserJoining(a) ? '110px' : '72px' }
+                                right: { xs: isUserJoining(a) ? '140px' : '102px', sm: isUserJoining(a) ? '110px' : '72px' }
                               },
                               '&:hover .event-actions': { 
                                 opacity: { xs: 1, sm: 1 }
