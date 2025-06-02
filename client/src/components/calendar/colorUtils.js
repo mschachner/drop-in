@@ -76,4 +76,10 @@ export const createHighlightColor = (hex) => {
   const highlightB = Math.round(rgb.b * 0.7);
   
   return `rgb(${highlightR}, ${highlightG}, ${highlightB})`;
+};
+
+// Function to check if a date is a weekend (Saturday or Sunday)
+export const isWeekend = (date) => {
+  const day = date.getDay();
+  return day === 0 || day === 6; // 0 = Sunday, 6 = Saturday
 }; 
