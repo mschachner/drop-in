@@ -16,9 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import { createPastelColor, getTextColor, createHighlightColor, isWeekend } from './calendar/colorUtils';
 import UserPreferences from './calendar/UserPreferences';
-import CalendarDay from './calendar/CalendarDay';
 import AddEventDialog from './calendar/AddEventDialog';
-import JoinEventDialog from './calendar/JoinEventDialog';
 
 // Function to convert hex to RGB
 const hexToRgb = (hex) => {
@@ -49,7 +47,6 @@ const Calendar = () => {
   const [loading, setLoading] = useState(true);
   const [availabilities, setAvailabilities] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [openJoinDialog, setOpenJoinDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [userPreferences, setUserPreferences] = useState({
@@ -169,31 +166,6 @@ const Calendar = () => {
     }
     clickEvent.stopPropagation(); // Stop the event from bubbling up
     setSelectedEvent(event);
-    setOpenJoinDialog(true);
-  };
-
-  const handleJoinEvent = async () => {
-    try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${selectedEvent._id}/join`, {
-        name: userPreferences.name
-      });
-      setOpenJoinDialog(false);
-      fetchData();
-    } catch (err) {
-      setError(err.message || 'Failed to join event');
-    }
-  };
-
-  const handleUnjoinEvent = async () => {
-    try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${selectedEvent._id}/unjoin`, {
-        name: userPreferences.name
-      });
-      setOpenJoinDialog(false);
-      fetchData();
-    } catch (err) {
-      setError(err.message || 'Failed to unjoin event');
-    }
   };
 
   const formatJoiners = (joiners) => {
