@@ -47,7 +47,6 @@ const Calendar = () => {
   const [loading, setLoading] = useState(true);
   const [availabilities, setAvailabilities] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [userPreferences, setUserPreferences] = useState({
     name: '',
@@ -157,15 +156,6 @@ const Calendar = () => {
   const handleDialogClose = () => {
     setOpenDialog(false);
     setDialogError(null);
-  };
-
-  const handleEventClick = (event, clickEvent) => {
-    if (!userPreferences.name) {
-      setError('Please enter your name first');
-      return;
-    }
-    clickEvent.stopPropagation(); // Stop the event from bubbling up
-    setSelectedEvent(event);
   };
 
   const formatJoiners = (joiners) => {
@@ -391,7 +381,6 @@ const Calendar = () => {
                               }
                             }
                           }}
-                          onClick={(e) => handleEventClick(a, e)}
                         >
                           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
                             <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -474,10 +463,6 @@ const Calendar = () => {
                                   >
                                     <IconButton
                                       size="small"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleEventClick(a, e);
-                                      }}
                                       sx={{
                                         color: getTextColor(a.color),
                                         backgroundColor: 'rgba(255,255,255,0.2)',
@@ -610,7 +595,6 @@ const Calendar = () => {
                                 }
                               }
                             }}
-                            onClick={(e) => handleEventClick(a, e)}
                           >
                             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
                               <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -693,10 +677,6 @@ const Calendar = () => {
                                     >
                                       <IconButton
                                         size="small"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleEventClick(a, e);
-                                        }}
                                         sx={{
                                           color: getTextColor(a.color),
                                           backgroundColor: 'rgba(255,255,255,0.2)',
