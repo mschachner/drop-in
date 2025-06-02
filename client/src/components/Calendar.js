@@ -480,7 +480,7 @@ const Calendar = () => {
                                       transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
                                       zIndex: 2,
                                       pointerEvents: 'none',
-                                      right: isMobile && activeEventId === a._id ? (isUserJoining(a) ? '110px' : '72px') : 0
+                                      right: isMobile ? (isUserJoining(a) ? '110px' : '72px') : (activeEventId === a._id ? (isUserJoining(a) ? '110px' : '72px') : 0)
                                     }}
                                     className="time-box"
                                   >
@@ -494,11 +494,11 @@ const Calendar = () => {
                                       right: 0,
                                       display: 'flex',
                                       gap: 0.5,
-                                      opacity: (isMobile && activeEventId === a._id) ? 1 : 0,
+                                      opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
                                       transition: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)',
                                       zIndex: 1,
                                       '&.event-paper:hover .event-actions': {
-                                        opacity: { xs: 0, sm: 1 },
+                                        opacity: { xs: 1, sm: 1 },
                                       },
                                     }}
                                   >
@@ -700,7 +700,7 @@ const Calendar = () => {
                                         transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
                                         zIndex: 2,
                                         pointerEvents: 'none',
-                                        right: isMobile && activeEventId === a._id ? (isUserJoining(a) ? '110px' : '72px') : 0
+                                        right: isMobile ? (isUserJoining(a) ? '110px' : '72px') : (activeEventId === a._id ? (isUserJoining(a) ? '110px' : '72px') : 0)
                                       }}
                                       className="time-box"
                                     >
@@ -714,11 +714,11 @@ const Calendar = () => {
                                         right: 0,
                                         display: 'flex',
                                         gap: 0.5,
-                                        opacity: (isMobile && activeEventId === a._id) ? 1 : 0,
+                                        opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
                                         transition: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)',
                                         zIndex: 1,
                                         '&.event-paper:hover .event-actions': {
-                                          opacity: { xs: 0, sm: 1 },
+                                          opacity: { xs: 1, sm: 1 },
                                         },
                                       }}
                                     >
