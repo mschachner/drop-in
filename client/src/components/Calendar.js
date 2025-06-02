@@ -418,7 +418,8 @@ const Calendar = () => {
                                 justifyContent: 'space-between', 
                                 alignItems: 'center', 
                                 mb: 0.5,
-                                position: 'relative'
+                                position: 'relative',
+                                minHeight: '40px'
                               }}>
                                 <Typography 
                                   variant="subtitle1" 
@@ -428,12 +429,14 @@ const Calendar = () => {
                                     wordBreak: 'break-word',
                                     lineHeight: 1.2,
                                     flex: 1,
-                                    pr: 1
+                                    pr: 1,
+                                    display: 'flex',
+                                    alignItems: 'center'
                                   }}
                                 >
                                   {a.name}
                                 </Typography>
-                                <Box sx={{ position: 'relative', minHeight: '40px' }}>
+                                <Box sx={{ position: 'relative', minHeight: '40px', display: 'flex', alignItems: 'center' }}>
                                   <Box
                                     sx={{
                                       position: 'absolute',
@@ -632,7 +635,8 @@ const Calendar = () => {
                                   justifyContent: 'space-between', 
                                   alignItems: 'center', 
                                   mb: 0.5,
-                                  position: 'relative'
+                                  position: 'relative',
+                                  minHeight: '40px'
                                 }}>
                                   <Typography 
                                     variant="subtitle1" 
@@ -642,12 +646,14 @@ const Calendar = () => {
                                       wordBreak: 'break-word',
                                       lineHeight: 1.2,
                                       flex: 1,
-                                      pr: 1
+                                      pr: 1,
+                                      display: 'flex',
+                                      alignItems: 'center'
                                     }}
                                   >
                                     {a.name}
                                   </Typography>
-                                  <Box sx={{ position: 'relative', minHeight: '40px' }}>
+                                  <Box sx={{ position: 'relative', minHeight: '40px', display: 'flex', alignItems: 'center' }}>
                                     <Box
                                       sx={{
                                         position: 'absolute',
