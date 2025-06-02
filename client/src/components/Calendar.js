@@ -514,12 +514,12 @@ const Calendar = () => {
                                         '&:hover': {
                                           backgroundColor: 'rgba(255,255,255,0.3)'
                                         },
-                                        minWidth: isUserJoining(a) ? '50px' : 'auto',
-                                        height: '24px',
+                                        minWidth: isUserJoining(a) ? { xs: '80px', sm: '50px' } : { xs: '60px', sm: 'auto' },
+                                        height: { xs: '36px', sm: '24px' },
                                         justifyContent: 'flex-start',
                                         gap: 0.5,
-                                        fontSize: '0.75rem',
-                                        padding: '0 8px',
+                                        fontSize: { xs: '0.875rem', sm: '0.75rem' },
+                                        padding: { xs: '0 12px', sm: '0 8px' },
                                         borderRadius: '12px',
                                         backdropFilter: 'blur(4px)'
                                       }}
@@ -545,10 +545,13 @@ const Calendar = () => {
                                         '&:hover': {
                                           backgroundColor: 'rgba(255,255,255,0.3)'
                                         },
-                                        height: '24px',
-                                        width: '24px',
+                                        height: { xs: '36px', sm: '24px' },
+                                        width: { xs: '36px', sm: '24px' },
                                         borderRadius: '12px',
-                                        backdropFilter: 'blur(4px)'
+                                        backdropFilter: 'blur(4px)',
+                                        '& .MuiSvgIcon-root': {
+                                          fontSize: { xs: '1.25rem', sm: '1rem' }
+                                        }
                                       }}
                                       onClick={(e) => {
                                         e.stopPropagation();
@@ -734,12 +737,12 @@ const Calendar = () => {
                                           '&:hover': {
                                             backgroundColor: 'rgba(255,255,255,0.3)'
                                           },
-                                          minWidth: isUserJoining(a) ? '50px' : 'auto',
-                                          height: '24px',
+                                          minWidth: isUserJoining(a) ? { xs: '80px', sm: '50px' } : { xs: '60px', sm: 'auto' },
+                                          height: { xs: '36px', sm: '24px' },
                                           justifyContent: 'flex-start',
                                           gap: 0.5,
-                                          fontSize: '0.75rem',
-                                          padding: '0 8px',
+                                          fontSize: { xs: '0.875rem', sm: '0.75rem' },
+                                          padding: { xs: '0 12px', sm: '0 8px' },
                                           borderRadius: '12px',
                                           backdropFilter: 'blur(4px)'
                                         }}
@@ -765,10 +768,13 @@ const Calendar = () => {
                                           '&:hover': {
                                             backgroundColor: 'rgba(255,255,255,0.3)'
                                           },
-                                          height: '24px',
-                                          width: '24px',
+                                          height: { xs: '36px', sm: '24px' },
+                                          width: { xs: '36px', sm: '24px' },
                                           borderRadius: '12px',
-                                          backdropFilter: 'blur(4px)'
+                                          backdropFilter: 'blur(4px)',
+                                          '& .MuiSvgIcon-root': {
+                                            fontSize: { xs: '1.25rem', sm: '1rem' }
+                                          }
                                         }}
                                         onClick={(e) => {
                                           e.stopPropagation();
