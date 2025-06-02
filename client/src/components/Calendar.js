@@ -481,6 +481,10 @@ const Calendar = () => {
                                         borderRadius: '12px',
                                         backdropFilter: 'blur(4px)'
                                       }}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleJoin(a._id);
+                                      }}
                                     >
                                       {isUserJoining(a) ? (
                                         <>
@@ -688,6 +692,10 @@ const Calendar = () => {
                                           padding: '4px 8px',
                                           borderRadius: '12px',
                                           backdropFilter: 'blur(4px)'
+                                        }}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleJoin(a._id);
                                         }}
                                       >
                                         {isUserJoining(a) ? (
