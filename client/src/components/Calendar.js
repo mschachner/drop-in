@@ -199,7 +199,7 @@ const Calendar = () => {
   const handleEventClick = (event, e) => {
     e.stopPropagation();
     if (isMobile) { // Mobile
-      setActiveEventId(activeEventId === event._id ? null : event._id);
+      handleDayClick(new Date(event.date), event.section, e);
     } else { // Desktop
       handleDayClick(new Date(event.date), event.section, e);
     }
