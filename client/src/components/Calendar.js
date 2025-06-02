@@ -405,7 +405,9 @@ const Calendar = () => {
                               }
                             },
                             className: 'event-paper',
-                            '&:hover .time-box': { right: 72 },
+                            '&:hover .time-box': { 
+                              right: isUserJoining(a) ? '110px' : '72px'
+                            },
                             '&:hover .event-actions': { opacity: 1 }
                           }}
                         >
@@ -455,9 +457,10 @@ const Calendar = () => {
                                       transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
                                       zIndex: 2,
                                       pointerEvents: 'none',
-                                      '&.event-paper:hover .time-box': {
-                                        right: a.joiners?.includes(userPreferences.name) ? '110px' : '72px',
-                                      },
+                                      right: 0,
+                                      '&.time-box': {
+                                        right: 0
+                                      }
                                     }}
                                     className="time-box"
                                   >
@@ -620,7 +623,9 @@ const Calendar = () => {
                                 }
                               },
                               className: 'event-paper',
-                              '&:hover .time-box': { right: 72 },
+                              '&:hover .time-box': { 
+                                right: isUserJoining(a) ? '110px' : '72px'
+                              },
                               '&:hover .event-actions': { opacity: 1 }
                             }}
                           >
@@ -670,9 +675,10 @@ const Calendar = () => {
                                         transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
                                         zIndex: 2,
                                         pointerEvents: 'none',
-                                        '&.event-paper:hover .time-box': {
-                                          right: a.joiners?.includes(userPreferences.name) ? '110px' : '72px',
-                                        },
+                                        right: 0,
+                                        '&.time-box': {
+                                          right: 0
+                                        }
                                       }}
                                       className="time-box"
                                     >
