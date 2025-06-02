@@ -404,26 +404,12 @@ const Calendar = () => {
                                 >
                                   {a.name}
                                 </Typography>
-                                <Box sx={{ 
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: 1,
-                                  transition: 'all 0.2s ease',
-                                  transform: 'translateX(0)',
-                                  '.event-actions': {
-                                    opacity: 0,
-                                    transform: 'translateX(20px)',
-                                    transition: 'all 0.2s ease'
-                                  },
-                                  '&:hover': {
-                                    '.event-actions': {
-                                      opacity: 1,
-                                      transform: 'translateX(0)'
-                                    }
-                                  }
-                                }}>
-                                  <Tooltip title={a.timeSlot} arrow placement="top">
-                                    <Box sx={{ 
+                                <Box sx={{ position: 'relative', minHeight: '40px' }}>
+                                  <Box
+                                    sx={{
+                                      position: 'absolute',
+                                      top: 12,
+                                      right: 12,
                                       minWidth: '60px',
                                       height: '40px',
                                       borderRadius: '8px',
@@ -433,33 +419,36 @@ const Calendar = () => {
                                       justifyContent: 'center',
                                       flexShrink: 0,
                                       padding: '0 8px',
-                                      transition: 'all 0.2s ease',
-                                      marginLeft: 'auto',
-                                      '&:hover': {
-                                        transform: 'translateX(-60px)'
-                                      }
-                                    }}>
-                                      <Typography variant="body2" sx={{ 
-                                        fontWeight: 600,
-                                        fontSize: '0.75rem',
-                                        fontFamily: 'Nunito, sans-serif',
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis'
-                                      }}>
-                                        {a.timeSlot}
-                                      </Typography>
-                                    </Box>
-                                  </Tooltip>
-                                  <Box 
+                                      fontWeight: 600,
+                                      fontSize: '0.75rem',
+                                      fontFamily: 'Nunito, sans-serif',
+                                      whiteSpace: 'nowrap',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
+                                      zIndex: 2,
+                                      pointerEvents: 'none',
+                                      '.MuiPaper-root:hover &': {
+                                        right: 72,
+                                      },
+                                    }}
+                                  >
+                                    {a.timeSlot}
+                                  </Box>
+                                  <Box
                                     className="event-actions"
-                                    sx={{ 
+                                    sx={{
+                                      position: 'absolute',
+                                      top: 12,
+                                      right: 12,
                                       display: 'flex',
                                       gap: 0.5,
-                                      backgroundColor: 'transparent',
-                                      padding: '0 4px',
-                                      borderRadius: '12px',
-                                      zIndex: 1
+                                      opacity: 0,
+                                      transition: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)',
+                                      zIndex: 1,
+                                      '.MuiPaper-root:hover &': {
+                                        opacity: 1,
+                                      },
                                     }}
                                   >
                                     <IconButton
@@ -619,26 +608,12 @@ const Calendar = () => {
                                   >
                                     {a.name}
                                   </Typography>
-                                  <Box sx={{ 
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 1,
-                                    transition: 'all 0.2s ease',
-                                    transform: 'translateX(0)',
-                                    '.event-actions': {
-                                      opacity: 0,
-                                      transform: 'translateX(20px)',
-                                      transition: 'all 0.2s ease'
-                                    },
-                                    '&:hover': {
-                                      '.event-actions': {
-                                        opacity: 1,
-                                        transform: 'translateX(0)'
-                                      }
-                                    }
-                                  }}>
-                                    <Tooltip title={a.timeSlot} arrow placement="top">
-                                      <Box sx={{ 
+                                  <Box sx={{ position: 'relative', minHeight: '40px' }}>
+                                    <Box
+                                      sx={{
+                                        position: 'absolute',
+                                        top: 12,
+                                        right: 12,
                                         minWidth: '60px',
                                         height: '40px',
                                         borderRadius: '8px',
@@ -648,33 +623,36 @@ const Calendar = () => {
                                         justifyContent: 'center',
                                         flexShrink: 0,
                                         padding: '0 8px',
-                                        transition: 'all 0.2s ease',
-                                        marginLeft: 'auto',
-                                        '&:hover': {
-                                          transform: 'translateX(-60px)'
-                                        }
-                                      }}>
-                                        <Typography variant="body2" sx={{ 
-                                          fontWeight: 600,
-                                          fontSize: '0.75rem',
-                                          fontFamily: 'Nunito, sans-serif',
-                                          whiteSpace: 'nowrap',
-                                          overflow: 'hidden',
-                                          textOverflow: 'ellipsis'
-                                        }}>
-                                          {a.timeSlot}
-                                        </Typography>
-                                      </Box>
-                                    </Tooltip>
-                                    <Box 
+                                        fontWeight: 600,
+                                        fontSize: '0.75rem',
+                                        fontFamily: 'Nunito, sans-serif',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
+                                        zIndex: 2,
+                                        pointerEvents: 'none',
+                                        '.MuiPaper-root:hover &': {
+                                          right: 72,
+                                        },
+                                      }}
+                                    >
+                                      {a.timeSlot}
+                                    </Box>
+                                    <Box
                                       className="event-actions"
-                                      sx={{ 
+                                      sx={{
+                                        position: 'absolute',
+                                        top: 12,
+                                        right: 12,
                                         display: 'flex',
                                         gap: 0.5,
-                                        backgroundColor: 'transparent',
-                                        padding: '0 4px',
-                                        borderRadius: '12px',
-                                        zIndex: 1
+                                        opacity: 0,
+                                        transition: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)',
+                                        zIndex: 1,
+                                        '.MuiPaper-root:hover &': {
+                                          opacity: 1,
+                                        },
                                       }}
                                     >
                                       <IconButton
