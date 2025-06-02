@@ -488,10 +488,11 @@ const Calendar = () => {
                                           backgroundColor: 'rgba(255,255,255,0.3)'
                                         },
                                         minWidth: isUserJoining(a) ? '50px' : 'auto',
+                                        height: '24px',
                                         justifyContent: 'flex-start',
                                         gap: 0.5,
                                         fontSize: '0.75rem',
-                                        padding: '4px 8px',
+                                        padding: '0 8px',
                                         borderRadius: '12px',
                                         backdropFilter: 'blur(4px)'
                                       }}
@@ -517,6 +518,8 @@ const Calendar = () => {
                                         '&:hover': {
                                           backgroundColor: 'rgba(255,255,255,0.3)'
                                         },
+                                        height: '24px',
+                                        width: '24px',
                                         borderRadius: '12px',
                                         backdropFilter: 'blur(4px)'
                                       }}
@@ -700,10 +703,11 @@ const Calendar = () => {
                                             backgroundColor: 'rgba(255,255,255,0.3)'
                                           },
                                           minWidth: isUserJoining(a) ? '50px' : 'auto',
+                                          height: '24px',
                                           justifyContent: 'flex-start',
                                           gap: 0.5,
                                           fontSize: '0.75rem',
-                                          padding: '4px 8px',
+                                          padding: '0 8px',
                                           borderRadius: '12px',
                                           backdropFilter: 'blur(4px)'
                                         }}
@@ -729,6 +733,8 @@ const Calendar = () => {
                                           '&:hover': {
                                             backgroundColor: 'rgba(255,255,255,0.3)'
                                           },
+                                          height: '24px',
+                                          width: '24px',
                                           borderRadius: '12px',
                                           backdropFilter: 'blur(4px)'
                                         }}
