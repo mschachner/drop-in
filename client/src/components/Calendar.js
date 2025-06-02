@@ -509,24 +509,6 @@ const Calendar = () => {
                                     >
                                       <DeleteIcon fontSize="small" />
                                     </IconButton>
-                                    <IconButton
-                                      size="small"
-                                      sx={{
-                                        color: getTextColor(a.color),
-                                        backgroundColor: 'rgba(255,255,255,0.2)',
-                                        '&:hover': {
-                                          backgroundColor: 'rgba(255,255,255,0.3)'
-                                        },
-                                        borderRadius: '12px',
-                                        backdropFilter: 'blur(4px)'
-                                      }}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleJoin(a._id);
-                                      }}
-                                    >
-                                      <AddIcon fontSize="small" />
-                                    </IconButton>
                                   </Box>
                                 </Box>
                               </Box>
@@ -734,24 +716,6 @@ const Calendar = () => {
                                         }}
                                       >
                                         <DeleteIcon fontSize="small" />
-                                      </IconButton>
-                                      <IconButton
-                                        size="small"
-                                        sx={{
-                                          color: getTextColor(a.color),
-                                          backgroundColor: 'rgba(255,255,255,0.2)',
-                                          '&:hover': {
-                                            backgroundColor: 'rgba(255,255,255,0.3)'
-                                          },
-                                          borderRadius: '12px',
-                                          backdropFilter: 'blur(4px)'
-                                        }}
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleJoin(a._id);
-                                        }}
-                                      >
-                                        <AddIcon fontSize="small" />
                                       </IconButton>
                                     </Box>
                                   </Box>
