@@ -456,7 +456,7 @@ const Calendar = () => {
                                       zIndex: 2,
                                       pointerEvents: 'none',
                                       '&.event-paper:hover .time-box': {
-                                        right: isUserJoining(a) ? '90px' : '72px',
+                                        right: isUserJoining(a) ? '110px' : '72px',
                                       },
                                     }}
                                     className="time-box"
@@ -671,7 +671,7 @@ const Calendar = () => {
                                         zIndex: 2,
                                         pointerEvents: 'none',
                                         '&.event-paper:hover .time-box': {
-                                          right: isUserJoining(a) ? '90px' : '72px',
+                                          right: isUserJoining(a) ? '110px' : '72px',
                                         },
                                       }}
                                       className="time-box"
