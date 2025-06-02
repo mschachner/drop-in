@@ -139,6 +139,17 @@ const Calendar = () => {
     }
   };
 
+  const handleJoin = async (eventId) => {
+    try {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}/join`, {
+        name: userPreferences.name
+      });
+      fetchData();
+    } catch (err) {
+      setError(err.message || 'Failed to join event');
+    }
+  };
+
   const getNextSevenDays = () => {
     const days = [];
     for (let i = 0; i < 7; i++) {
@@ -498,6 +509,24 @@ const Calendar = () => {
                                     >
                                       <DeleteIcon fontSize="small" />
                                     </IconButton>
+                                    <IconButton
+                                      size="small"
+                                      sx={{
+                                        color: getTextColor(a.color),
+                                        backgroundColor: 'rgba(255,255,255,0.2)',
+                                        '&:hover': {
+                                          backgroundColor: 'rgba(255,255,255,0.3)'
+                                        },
+                                        borderRadius: '12px',
+                                        backdropFilter: 'blur(4px)'
+                                      }}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleJoin(a._id);
+                                      }}
+                                    >
+                                      <AddIcon fontSize="small" />
+                                    </IconButton>
                                   </Box>
                                 </Box>
                               </Box>
@@ -705,6 +734,24 @@ const Calendar = () => {
                                         }}
                                       >
                                         <DeleteIcon fontSize="small" />
+                                      </IconButton>
+                                      <IconButton
+                                        size="small"
+                                        sx={{
+                                          color: getTextColor(a.color),
+                                          backgroundColor: 'rgba(255,255,255,0.2)',
+                                          '&:hover': {
+                                            backgroundColor: 'rgba(255,255,255,0.3)'
+                                          },
+                                          borderRadius: '12px',
+                                          backdropFilter: 'blur(4px)'
+                                        }}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleJoin(a._id);
+                                        }}
+                                      >
+                                        <AddIcon fontSize="small" />
                                       </IconButton>
                                     </Box>
                                   </Box>
