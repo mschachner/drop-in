@@ -481,7 +481,7 @@ const Calendar = () => {
                                       whiteSpace: 'nowrap',
                                       overflow: 'hidden',
                                       textOverflow: 'ellipsis',
-                                      transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
+                                      transition: { xs: 'none', sm: 'right 0.3s cubic-bezier(0.4,0,0.2,1)' },
                                       zIndex: 2,
                                       pointerEvents: 'none',
                                       right: isMobile ? (isUserJoining(a) ? '140px' : '102px') : (activeEventId === a._id ? (isUserJoining(a) ? '110px' : '72px') : 0)
@@ -499,7 +499,7 @@ const Calendar = () => {
                                       display: 'flex',
                                       gap: 0.5,
                                       opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
-                                      transition: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)',
+                                      transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },
                                       zIndex: 1,
                                       '&.event-paper:hover .event-actions': {
                                         opacity: { xs: 1, sm: 1 },
@@ -704,7 +704,7 @@ const Calendar = () => {
                                         whiteSpace: 'nowrap',
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
-                                        transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
+                                        transition: { xs: 'none', sm: 'right 0.3s cubic-bezier(0.4,0,0.2,1)' },
                                         zIndex: 2,
                                         pointerEvents: 'none',
                                         right: isMobile ? (isUserJoining(a) ? '140px' : '102px') : (activeEventId === a._id ? (isUserJoining(a) ? '110px' : '72px') : 0)
@@ -722,7 +722,7 @@ const Calendar = () => {
                                         display: 'flex',
                                         gap: 0.5,
                                         opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
-                                        transition: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)',
+                                        transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },
                                         zIndex: 1,
                                         '&.event-paper:hover .event-actions': {
                                           opacity: { xs: 1, sm: 1 },
