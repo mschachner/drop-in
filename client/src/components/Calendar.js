@@ -69,10 +69,6 @@ const Calendar = () => {
     document.head.appendChild(link);
   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -90,6 +86,10 @@ const Calendar = () => {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleDayClick = useCallback((date, section) => {
     if (!userPreferences.name) {
@@ -142,6 +142,10 @@ const Calendar = () => {
     }
   }, [fetchData]);
 
+  const isUserJoining = useCallback((event) => {
+    return event?.joiners?.includes(userPreferences.name) || false;
+  }, [userPreferences.name]);
+
   const handleJoin = useCallback(async (eventId) => {
     if (!userPreferences.name) {
       setError('Please enter your name first');
@@ -193,10 +197,6 @@ const Calendar = () => {
     if (joiners.length === 1) return `${joiners[0]} will join!`;
     if (joiners.length === 2) return `${joiners[0]} and ${joiners[1]} will join!`;
     return `${joiners.slice(0, -1).join(', ')}, and ${joiners[joiners.length - 1]} will join!`;
-  };
-
-  const isUserJoining = (event) => {
-    return event?.joiners?.includes(userPreferences.name) || false;
   };
 
   const handleEventClick = useCallback((event, e) => {
