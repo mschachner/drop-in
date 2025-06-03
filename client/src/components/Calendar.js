@@ -6,15 +6,10 @@ import {
   Grid,
   CircularProgress,
   Alert,
-  Fab,
-  IconButton,
-  Divider,
   useMediaQuery
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
-import { createPastelColor, getTextColor, createHighlightColor, isWeekend } from './calendar/colorUtils';
+import { createPastelColor } from './calendar/colorUtils';
 import UserPreferences from './calendar/UserPreferences';
 import AddEventDialog from './calendar/AddEventDialog';
 
@@ -210,11 +205,6 @@ const Calendar = () => {
     }
   }, [isMobile, handleDayClick]);
 
-  const handleSectionClick = useCallback((date, section, e) => {
-    if (!isMobile) {
-      handleDayClick(date, section, e);
-    }
-  }, [isMobile, handleDayClick]);
 
   if (loading) {
     return (
