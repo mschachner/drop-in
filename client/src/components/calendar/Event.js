@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { 
   Paper, 
   Typography, 
@@ -9,7 +9,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getTextColor } from './colorUtils';
 
-const Event = ({ 
+const Event = memo(({ 
   event, 
   onEventClick, 
   onDelete, 
@@ -29,6 +29,7 @@ const Event = ({
         cursor: 'pointer',
         transition: 'all 0.2s ease',
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        willChange: 'transform, box-shadow',
         '&:hover': {
           transform: 'translateY(-2px)',
           boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
@@ -176,6 +177,8 @@ const Event = ({
       </Box>
     </Paper>
   );
-};
+});
+
+Event.displayName = 'Event';
 
 export default Event; 

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Box, Typography, Fab, Divider, useMediaQuery } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Event from './Event';
 import { createHighlightColor, getTextColor } from './colorUtils';
 
-const CalendarDay = ({
+const CalendarDay = memo(({
   date,
   dayAvailabilities,
   handleDayClick,
@@ -37,7 +37,9 @@ const CalendarDay = ({
         flexDirection: 'column',
         overflow: 'visible',
         minHeight: 0,
-        height: { xs: 'auto', sm: '100%' }
+        height: { xs: 'auto', sm: '100%' },
+        willChange: 'background-color',
+        transition: 'background-color 0.3s ease'
       }}
     >
       <Box sx={{ 
@@ -161,6 +163,8 @@ const CalendarDay = ({
       </Box>
     </Box>
   );
-};
+});
+
+CalendarDay.displayName = 'CalendarDay';
 
 export default CalendarDay; 

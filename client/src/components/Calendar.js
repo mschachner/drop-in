@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   Box, 
   Typography, 
@@ -73,7 +73,7 @@ const Calendar = () => {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/availability`, {
@@ -89,9 +89,9 @@ const Calendar = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const handleDayClick = (date, section) => {
+  const handleDayClick = useCallback((date, section) => {
     if (!userPreferences.name) {
       setError('Please enter your name first');
       return;
@@ -103,9 +103,9 @@ const Calendar = () => {
       section: section
     });
     setOpenDialog(true);
-  };
+  }, [userPreferences.name]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     if (!newEvent.timeSlot || !newEvent.location) {
       setDialogError('Please fill in all fields');
       return;
@@ -125,24 +125,24 @@ const Calendar = () => {
     } catch (err) {
       setError(err.message || 'Failed to add event');
     }
-  };
+  }, [newEvent, userPreferences, selectedDate, fetchData]);
 
-  const handleKeyPress = (event) => {
+  const handleKeyPress = useCallback((event) => {
     if (event.key === 'Enter' && newEvent.timeSlot && newEvent.location) {
       handleSubmit();
     }
-  };
+  }, [newEvent, handleSubmit]);
 
-  const handleDelete = async (eventId) => {
+  const handleDelete = useCallback(async (eventId) => {
     try {
       await axios.delete(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}`);
       fetchData();
     } catch (err) {
       setError(err.message || 'Failed to delete event');
     }
-  };
+  }, [fetchData]);
 
-  const handleJoin = async (eventId) => {
+  const handleJoin = useCallback(async (eventId) => {
     if (!userPreferences.name) {
       setError('Please enter your name first');
       return;
@@ -165,7 +165,7 @@ const Calendar = () => {
     } catch (err) {
       setError(err.message || 'Failed to update event');
     }
-  };
+  }, [userPreferences.name, availabilities, isUserJoining, fetchData]);
 
   const getNextSevenDays = () => {
     const days = [];
@@ -177,16 +177,16 @@ const Calendar = () => {
     return days;
   };
 
-  const pastelColor = createPastelColor(userPreferences.color);
-  const darkColor = darkenColor(userPreferences.color);
+  const pastelColor = useMemo(() => createPastelColor(userPreferences.color), [userPreferences.color]);
+  const darkColor = useMemo(() => darkenColor(userPreferences.color), [userPreferences.color]);
 
-  const handleDialogClose = () => {
+  const handleDialogClose = useCallback(() => {
     setOpenDialog(false);
     setDialogError(null);
     if (!isMobile) {
       setActiveEventId(null);
     }
-  };
+  }, [isMobile]);
 
   const formatJoiners = (joiners) => {
     if (!joiners || joiners.length === 0) return '';
@@ -199,21 +199,21 @@ const Calendar = () => {
     return event?.joiners?.includes(userPreferences.name) || false;
   };
 
-  const handleEventClick = (event, e) => {
+  const handleEventClick = useCallback((event, e) => {
     e.stopPropagation();
-    if (isMobile) { // Mobile
+    if (isMobile) {
       handleDayClick(new Date(event.date), event.section, e);
-    } else { // Desktop
+    } else {
       setActiveEventId(event._id);
       handleDayClick(new Date(event.date), event.section, e);
     }
-  };
+  }, [isMobile, handleDayClick]);
 
-  const handleSectionClick = (date, section, e) => {
+  const handleSectionClick = useCallback((date, section, e) => {
     if (!isMobile) {
       handleDayClick(date, section, e);
     }
-  };
+  }, [isMobile, handleDayClick]);
 
   if (loading) {
     return (
@@ -228,10 +228,12 @@ const Calendar = () => {
       p: 4, 
       height: { xs: 'auto', sm: '92.5vh' },
       minHeight: { xs: '100vh', sm: 'auto' },
-      backgroundColor: pastelColor,
+      '--calendar-bg': pastelColor,
+      backgroundColor: 'var(--calendar-bg)',
       borderRadius: 2,
       fontFamily: 'Nunito, sans-serif',
       transition: 'background-color 0.5s ease',
+      willChange: 'background-color',
       display: 'flex',
       flexDirection: 'column',
       overflow: { xs: 'auto', sm: 'hidden' }
@@ -841,4 +843,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar;
+export default React.memo(Calendar);
