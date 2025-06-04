@@ -23,15 +23,25 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
             onChange={(e) => setUserPreferences({ ...userPreferences, name: e.target.value })}
             required
             InputProps={{
-              sx: { fontFamily: 'Nunito, sans-serif' }
+              sx: {
+                fontFamily: 'Nunito, sans-serif',
+                backgroundColor: darkMode ? '#616161' : 'white',
+                color: darkMode ? '#fff' : 'inherit',
+                '& fieldset': {
+                  borderColor: darkMode ? '#bbb' : 'inherit'
+                }
+              }
             }}
             InputLabelProps={{
-              sx: { fontFamily: 'Nunito, sans-serif' }
+              sx: {
+                fontFamily: 'Nunito, sans-serif',
+                color: darkMode ? '#fff' : 'inherit'
+              }
             }}
           />
         </Grid>
         <Grid item xs={12} sm={8}>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
             {COLORS.map((color) => (
               <Box
                 key={color.value}
@@ -102,8 +112,16 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                 color="primary"
               />
             }
-            label="☾"
-            sx={{ ml: 2 }}
+            label={<Box component="span" sx={{ fontSize: 24, fontWeight: 700 }}>☾</Box>}
+            sx={{
+              ml: { xs: 0, sm: 2 },
+              mt: { xs: 1, sm: 0 },
+              flexBasis: { xs: '100%', sm: 'auto' },
+              '& .MuiFormControlLabel-label': {
+                fontSize: 24,
+                fontWeight: 700
+              }
+            }}
           />
           </Box>
         </Grid>
