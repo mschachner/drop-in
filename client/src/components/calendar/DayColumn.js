@@ -24,7 +24,8 @@ const DayColumn = ({
   formatJoiners,
   userPreferences,
   isMobile,
-  activeEventId
+  activeEventId,
+  darkMode
 }) => {
   const handleSectionClick = (section, e) => {
     if (!isMobile) {
@@ -39,8 +40,8 @@ const DayColumn = ({
       sm
       key={index}
       sx={{
-        borderRight: { sm: index < 6 ? '1px solid #e0e0e0' : 'none' },
-        borderBottom: { xs: index < 6 ? '1px solid #e0e0e0' : 'none', sm: 'none' },
+        borderRight: { sm: index < 6 ? `1px solid ${darkMode ? '#555' : '#e0e0e0'}` : 'none' },
+        borderBottom: { xs: index < 6 ? `1px solid ${darkMode ? '#555' : '#e0e0e0'}` : 'none', sm: 'none' },
         '&:last-child': {
           borderRight: 'none',
           borderBottom: 'none'
@@ -57,7 +58,9 @@ const DayColumn = ({
       <Box
         sx={{
           p: 2,
-          backgroundColor: isWeekend(date) ? '#F5F5F5' : 'white',
+          backgroundColor: darkMode
+            ? (isWeekend(date) ? '#383838' : '#303030')
+            : isWeekend(date) ? '#F5F5F5' : 'white',
           position: 'relative',
           display: 'flex',
           flexDirection: 'column',
@@ -72,7 +75,12 @@ const DayColumn = ({
               variant="subtitle2"
               sx={{
                 fontWeight: 600,
-                color: date.toDateString() === new Date().toDateString() ? createHighlightColor(userPreferences.color) : 'inherit',
+                color:
+                  date.toDateString() === new Date().toDateString()
+                    ? createHighlightColor(userPreferences.color)
+                    : darkMode
+                    ? '#ddd'
+                    : 'inherit',
                 fontFamily: 'Nunito, sans-serif',
                 transition: 'color 0.5s ease'
               }}
@@ -82,7 +90,12 @@ const DayColumn = ({
             <Typography
               variant="h6"
               sx={{
-                color: date.toDateString() === new Date().toDateString() ? createHighlightColor(userPreferences.color) : 'inherit',
+                color:
+                  date.toDateString() === new Date().toDateString()
+                    ? createHighlightColor(userPreferences.color)
+                    : darkMode
+                    ? '#fff'
+                    : 'inherit',
                 fontFamily: 'Nunito, sans-serif',
                 fontWeight: 700,
                 transition: 'color 0.5s ease'
@@ -321,7 +334,7 @@ const DayColumn = ({
             variant="subtitle2"
             sx={{
               mb: 1,
-              color: '#666',
+              color: darkMode ? '#ddd' : '#666',
               fontFamily: 'Nunito, sans-serif',
               fontWeight: 600
             }}

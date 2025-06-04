@@ -1,12 +1,13 @@
 // Color constants
+// Slightly lighter presets so they look good on a dark background as well
 export const COLORS = [
-  { value: '#4CAF50', label: 'Green' },
-  { value: '#2196F3', label: 'Blue' },
-  { value: '#FF9800', label: 'Orange' },
-  { value: '#9C27B0', label: 'Purple' },
-  { value: '#F44336', label: 'Red' },
-  { value: '#FF80AB', label: 'Pink' },
-  { value: '#795548', label: 'Brown' }
+  { value: '#66BB6A', label: 'Green' },
+  { value: '#64B5F6', label: 'Blue' },
+  { value: '#FFB74D', label: 'Orange' },
+  { value: '#BA68C8', label: 'Purple' },
+  { value: '#EF5350', label: 'Red' },
+  { value: '#FF99C8', label: 'Pink' },
+  { value: '#A1887F', label: 'Brown' }
 ];
 
 // Function to convert hex to RGB
@@ -43,12 +44,24 @@ export const getTextColor = (backgroundColor) => {
 export const createPastelColor = (hex) => {
   const rgb = hexToRgb(hex);
   if (!rgb) return hex;
-  
+
   // Mix with white to create a very light pastel (80% white, 20% color)
   const pastelR = Math.round((rgb.r * 0.2) + (255 * 0.8));
   const pastelG = Math.round((rgb.g * 0.2) + (255 * 0.8));
   const pastelB = Math.round((rgb.b * 0.2) + (255 * 0.8));
-  
+
+  return `rgb(${pastelR}, ${pastelG}, ${pastelB})`;
+};
+
+// Function to create a dark pastel version of a color (60% black, 40% color)
+export const createDarkPastelColor = (hex) => {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return hex;
+
+  const pastelR = Math.round(rgb.r * 0.4);
+  const pastelG = Math.round(rgb.g * 0.4);
+  const pastelB = Math.round(rgb.b * 0.4);
+
   return `rgb(${pastelR}, ${pastelG}, ${pastelB})`;
 };
 
