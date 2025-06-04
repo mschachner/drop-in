@@ -9,7 +9,7 @@ import {
   useMediaQuery
 } from '@mui/material';
 import axios from 'axios';
-import { createPastelColor } from './calendar/colorUtils';
+import { createPastelColor, createDarkPastelColor } from './calendar/colorUtils';
 import UserPreferences from './calendar/UserPreferences';
 import AddEventDialog from './calendar/AddEventDialog';
 
@@ -46,7 +46,7 @@ const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [userPreferences, setUserPreferences] = useState({
     name: '',
-    color: '#4CAF50'
+    color: '#66BB6A'
   });
   const [newEvent, setNewEvent] = useState({
     timeSlot: '',
@@ -54,6 +54,7 @@ const Calendar = () => {
     section: 'day'
   });
   const [selectedColor, setSelectedColor] = useState('#008080');
+  const [darkMode, setDarkMode] = useState(false);
   const [activeEventId, setActiveEventId] = useState(null);
   const isMobile = useMediaQuery('(max-width:599px)');
 
@@ -194,8 +195,18 @@ const Calendar = () => {
     return days;
   };
 
-  const pastelColor = useMemo(() => createPastelColor(userPreferences.color), [userPreferences.color]);
-  const darkColor = useMemo(() => darkenColor(userPreferences.color), [userPreferences.color]);
+  const pastelColor = useMemo(
+    () =>
+      darkMode
+        ? createDarkPastelColor(userPreferences.color)
+        : createPastelColor(userPreferences.color),
+    [userPreferences.color, darkMode]
+  );
+  const darkColor = useMemo(
+    () =>
+      darkMode ? userPreferences.color : darkenColor(userPreferences.color),
+    [userPreferences.color, darkMode]
+  );
 
   const handleDialogClose = useCallback(() => {
     setOpenDialog(false);
@@ -232,12 +243,13 @@ const Calendar = () => {
   }
 
   return (
-    <Box sx={{ 
-      p: 4, 
+    <Box sx={{
+      p: 4,
       height: { xs: 'auto', sm: '92.5vh' },
       minHeight: { xs: '100vh', sm: 'auto' },
       '--calendar-bg': pastelColor,
       backgroundColor: 'var(--calendar-bg)',
+      color: darkMode ? '#fff' : 'inherit',
       borderRadius: 2,
       fontFamily: 'Nunito, sans-serif',
       transition: 'background-color 0.5s ease',
@@ -287,6 +299,8 @@ const Calendar = () => {
         setUserPreferences={setUserPreferences}
         selectedColor={selectedColor}
         setSelectedColor={setSelectedColor}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
       />
 
       <Paper sx={{ 
@@ -331,6 +345,7 @@ const Calendar = () => {
                 formatJoiners={formatJoiners}
                 isMobile={isMobile}
                 activeEventId={activeEventId}
+                darkMode={darkMode}
               />
             );
           })}
@@ -347,6 +362,7 @@ const Calendar = () => {
         handleKeyPress={handleKeyPress}
         dialogError={dialogError}
         userPreferences={userPreferences}
+        darkMode={darkMode}
       />
     </Box>
   );

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Paper, Grid, TextField, Box } from '@mui/material';
+import { Paper, Grid, TextField, Box, Switch, FormControlLabel } from '@mui/material';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import { COLORS, getTextColor } from './colorUtils';
 
-const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, setSelectedColor }) => {
+const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, setSelectedColor, darkMode, setDarkMode }) => {
   return (
     <Paper sx={{ 
       p: 2, 
@@ -90,8 +90,19 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                   left: 0
                 }}
               />
-              <ColorLensIcon sx={{ color: getTextColor(selectedColor), fontSize: 20 }} />
-            </Box>
+            <ColorLensIcon sx={{ color: getTextColor(selectedColor), fontSize: 20 }} />
+          </Box>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={darkMode}
+                onChange={(e) => setDarkMode(e.target.checked)}
+                color="primary"
+              />
+            }
+            label="\u263E"
+            sx={{ ml: 2 }}
+          />
           </Box>
         </Grid>
       </Grid>
