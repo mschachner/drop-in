@@ -114,14 +114,14 @@ const Calendar = () => {
         color: userPreferences.color,
         date: selectedDate.toISOString()
       };
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/availability`, eventData);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/availability`, eventData);
+      setAvailabilities(prev => [...prev, response.data]);
       setOpenDialog(false);
       setDialogError(null);
-      fetchData();
     } catch (err) {
       setError(err.message || 'Failed to add event');
     }
-  }, [newEvent, userPreferences, selectedDate, fetchData]);
+  }, [newEvent, userPreferences, selectedDate]);
 
   const handleKeyPress = useCallback((event) => {
     if (event.key === 'Enter' && newEvent.timeSlot && newEvent.location) {
@@ -132,11 +132,11 @@ const Calendar = () => {
   const handleDelete = useCallback(async (eventId) => {
     try {
       await axios.delete(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}`);
-      fetchData();
+      setAvailabilities(prev => prev.filter(a => a._id !== eventId));
     } catch (err) {
       setError(err.message || 'Failed to delete event');
     }
-  }, [fetchData]);
+  }, []);
 
   const isUserJoining = useCallback((event) => {
     return event?.joiners?.includes(userPreferences.name) || false;
