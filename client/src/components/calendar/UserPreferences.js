@@ -1,6 +1,7 @@
 import React from 'react';
 import { Paper, Grid, TextField, Box, Switch, FormControlLabel } from '@mui/material';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { COLORS, getTextColor } from './colorUtils';
 
 const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, setSelectedColor, darkMode, setDarkMode }) => {
@@ -41,7 +42,7 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
           />
         </Grid>
         <Grid item xs={12} sm={8}>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
             {COLORS.map((color) => (
               <Box
                 key={color.value}
@@ -55,7 +56,7 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                   backgroundColor: color.value,
                   borderRadius: '50%',
                   cursor: 'pointer',
-                  border: userPreferences.color === color.value ? '3px solid #000' : 'none',
+                  border: userPreferences.color === color.value ? `3px solid ${darkMode ? '#fff' : '#000'}` : 'none',
                   transition: 'all 0.3s ease',
                   '&:hover': {
                     transform: 'scale(1.1)',
@@ -72,7 +73,7 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                 backgroundColor: selectedColor,
                 borderRadius: '50%',
                 cursor: 'pointer',
-                border: userPreferences.color === selectedColor ? '3px solid #000' : 'none',
+                border: userPreferences.color === selectedColor ? `3px solid ${darkMode ? '#fff' : '#000'}` : 'none',
                 transition: 'all 0.3s ease',
                 display: 'flex',
                 alignItems: 'center',
@@ -112,14 +113,13 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                 color="primary"
               />
             }
-            label={<Box component="span" sx={{ fontSize: 24, fontWeight: 700 }}>☾</Box>}
+            label={<DarkModeIcon sx={{ fontSize: 28 }} />}
             sx={{
               ml: { xs: 0, sm: 2 },
               mt: { xs: 1, sm: 0 },
               flexBasis: { xs: '100%', sm: 'auto' },
               '& .MuiFormControlLabel-label': {
-                fontSize: 24,
-                fontWeight: 700
+                fontSize: 28
               }
             }}
           />
