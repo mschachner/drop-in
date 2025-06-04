@@ -151,7 +151,7 @@ const Calendar = () => {
     try {
       const event = availabilities.find(a => a._id === eventId);
       const isJoining = !isUserJoining(event);
-      
+
       if (isJoining) {
         await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}/join`, {
           name: userPreferences.name
@@ -161,11 +161,22 @@ const Calendar = () => {
           name: userPreferences.name
         });
       }
-      fetchData();
+      setAvailabilities(prev =>
+        prev.map(a =>
+          a._id === eventId
+            ? {
+                ...a,
+                joiners: isJoining
+                  ? [...(a.joiners || []), userPreferences.name]
+                  : a.joiners.filter(j => j !== userPreferences.name)
+              }
+            : a
+        )
+      );
     } catch (err) {
       setError(err.message || 'Failed to update event');
     }
-  }, [userPreferences.name, availabilities, isUserJoining, fetchData]);
+  }, [userPreferences.name, availabilities, isUserJoining]);
 
   const getNextSevenDays = () => {
     const days = [];
