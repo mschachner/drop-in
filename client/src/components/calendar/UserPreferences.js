@@ -1,16 +1,18 @@
 import React from 'react';
-import { Paper, Grid, TextField, Box } from '@mui/material';
+import { Paper, Grid, TextField, Box, Switch, FormControlLabel } from '@mui/material';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import { COLORS, getTextColor } from './colorUtils';
 
-const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, setSelectedColor }) => {
+const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, setSelectedColor, darkMode, setDarkMode }) => {
   return (
-    <Paper sx={{ 
-      p: 2, 
-      mb: 3, 
-      borderRadius: 2, 
+    <Paper sx={{
+      p: 2,
+      mb: 3,
+      borderRadius: 2,
       fontFamily: 'Nunito, sans-serif',
-      width: 'fit-content'
+      width: 'fit-content',
+      backgroundColor: darkMode ? '#424242' : 'white',
+      color: darkMode ? '#fff' : 'inherit'
     }}>
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} sm={4}>
@@ -21,15 +23,25 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
             onChange={(e) => setUserPreferences({ ...userPreferences, name: e.target.value })}
             required
             InputProps={{
-              sx: { fontFamily: 'Nunito, sans-serif' }
+              sx: {
+                fontFamily: 'Nunito, sans-serif',
+                backgroundColor: darkMode ? '#616161' : 'white',
+                color: darkMode ? '#fff' : 'inherit',
+                '& fieldset': {
+                  borderColor: darkMode ? '#bbb' : 'inherit'
+                }
+              }
             }}
             InputLabelProps={{
-              sx: { fontFamily: 'Nunito, sans-serif' }
+              sx: {
+                fontFamily: 'Nunito, sans-serif',
+                color: darkMode ? '#fff' : 'inherit'
+              }
             }}
           />
         </Grid>
         <Grid item xs={12} sm={8}>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
             {COLORS.map((color) => (
               <Box
                 key={color.value}
@@ -90,8 +102,27 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                   left: 0
                 }}
               />
-              <ColorLensIcon sx={{ color: getTextColor(selectedColor), fontSize: 20 }} />
-            </Box>
+            <ColorLensIcon sx={{ color: getTextColor(selectedColor), fontSize: 20 }} />
+          </Box>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={darkMode}
+                onChange={(e) => setDarkMode(e.target.checked)}
+                color="primary"
+              />
+            }
+            label={<Box component="span" sx={{ fontSize: 24, fontWeight: 700 }}>☾</Box>}
+            sx={{
+              ml: { xs: 0, sm: 2 },
+              mt: { xs: 1, sm: 0 },
+              flexBasis: { xs: '100%', sm: 'auto' },
+              '& .MuiFormControlLabel-label': {
+                fontSize: 24,
+                fontWeight: 700
+              }
+            }}
+          />
           </Box>
         </Grid>
       </Grid>
