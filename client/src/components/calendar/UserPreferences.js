@@ -5,12 +5,14 @@ import { COLORS, getTextColor } from './colorUtils';
 
 const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, setSelectedColor, darkMode, setDarkMode }) => {
   return (
-    <Paper sx={{ 
-      p: 2, 
-      mb: 3, 
-      borderRadius: 2, 
+    <Paper sx={{
+      p: 2,
+      mb: 3,
+      borderRadius: 2,
       fontFamily: 'Nunito, sans-serif',
-      width: 'fit-content'
+      width: 'fit-content',
+      backgroundColor: darkMode ? '#424242' : 'white',
+      color: darkMode ? '#fff' : 'inherit'
     }}>
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} sm={4}>
@@ -100,7 +102,7 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                 color="primary"
               />
             }
-            label="\u263E"
+            label="☾"
             sx={{ ml: 2 }}
           />
           </Box>
