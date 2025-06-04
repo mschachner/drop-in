@@ -87,6 +87,12 @@ const Calendar = () => {
     fetchData();
   }, [fetchData]);
 
+  useEffect(() => {
+    if (error === 'Please enter your name first' && userPreferences.name) {
+      setError(null);
+    }
+  }, [userPreferences.name, error]);
+
   const handleDayClick = useCallback((date, section) => {
     if (!userPreferences.name) {
       setError('Please enter your name first');
