@@ -24,7 +24,8 @@ const AddEventDialog = ({
   handleSubmit,
   handleKeyPress,
   dialogError,
-  userPreferences
+  userPreferences,
+  darkMode
 }) => {
   return (
     <Dialog 
@@ -36,7 +37,9 @@ const AddEventDialog = ({
           fontFamily: 'Nunito, sans-serif',
           margin: { xs: '16px', sm: '32px' },
           position: { xs: 'absolute', sm: 'relative' },
-          top: { xs: '10%', sm: 'auto' }
+          top: { xs: '10%', sm: 'auto' },
+          backgroundColor: darkMode ? '#424242' : 'white',
+          color: darkMode ? '#fff' : 'inherit'
         }
       }}
     >
