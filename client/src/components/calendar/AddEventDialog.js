@@ -57,17 +57,17 @@ const AddEventDialog = ({
             value={newEvent.section}
             onChange={(e) => setNewEvent({ ...newEvent, section: e.target.value })}
           >
-            <FormControlLabel 
-              value="day" 
-              control={<Radio />} 
-              label="Day" 
-              sx={{ fontFamily: 'Nunito, sans-serif' }}
+            <FormControlLabel
+              value="day"
+              control={<Radio />}
+              label="Day"
+              sx={{ fontFamily: 'Nunito, sans-serif', color: darkMode ? '#fff' : 'inherit' }}
             />
-            <FormControlLabel 
-              value="evening" 
-              control={<Radio />} 
-              label="Evening" 
-              sx={{ fontFamily: 'Nunito, sans-serif' }}
+            <FormControlLabel
+              value="evening"
+              control={<Radio />}
+              label="Evening"
+              sx={{ fontFamily: 'Nunito, sans-serif', color: darkMode ? '#fff' : 'inherit' }}
             />
           </RadioGroup>
         </FormControl>

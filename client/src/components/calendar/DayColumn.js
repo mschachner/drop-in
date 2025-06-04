@@ -75,7 +75,12 @@ const DayColumn = ({
               variant="subtitle2"
               sx={{
                 fontWeight: 600,
-                color: date.toDateString() === new Date().toDateString() ? createHighlightColor(userPreferences.color) : 'inherit',
+                color:
+                  date.toDateString() === new Date().toDateString()
+                    ? createHighlightColor(userPreferences.color)
+                    : darkMode
+                    ? '#ddd'
+                    : 'inherit',
                 fontFamily: 'Nunito, sans-serif',
                 transition: 'color 0.5s ease'
               }}
@@ -85,7 +90,12 @@ const DayColumn = ({
             <Typography
               variant="h6"
               sx={{
-                color: date.toDateString() === new Date().toDateString() ? createHighlightColor(userPreferences.color) : 'inherit',
+                color:
+                  date.toDateString() === new Date().toDateString()
+                    ? createHighlightColor(userPreferences.color)
+                    : darkMode
+                    ? '#fff'
+                    : 'inherit',
                 fontFamily: 'Nunito, sans-serif',
                 fontWeight: 700,
                 transition: 'color 0.5s ease'
@@ -324,7 +334,7 @@ const DayColumn = ({
             variant="subtitle2"
             sx={{
               mb: 1,
-              color: '#666',
+              color: darkMode ? '#ddd' : '#666',
               fontFamily: 'Nunito, sans-serif',
               fontWeight: 600
             }}

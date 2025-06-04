@@ -100,7 +100,7 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                 color="primary"
               />
             }
-            label="Dark Mode"
+            label="\u263E"
             sx={{ ml: 2 }}
           />
           </Box>
