@@ -113,11 +113,14 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                 color="primary"
               />
             }
-            label={<DarkModeIcon sx={{ fontSize: 28 }} />}
+            label={
+              <DarkModeIcon sx={{ fontSize: 28, verticalAlign: 'middle' }} />
+            }
             sx={{
               ml: { xs: 0, sm: 2 },
               mt: { xs: 1, sm: 0 },
               flexBasis: { xs: '100%', sm: 'auto' },
+              alignItems: 'center',
               '& .MuiFormControlLabel-label': {
                 fontSize: 28
               }
