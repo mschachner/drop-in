@@ -113,9 +113,7 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                 color="primary"
               />
             }
-            label={
-              <DarkModeIcon sx={{ fontSize: 28, verticalAlign: 'middle' }} />
-            }
+            label={<DarkModeIcon sx={{ fontSize: 28, verticalAlign: 'middle' }} />}
             sx={{
               ml: { xs: 0, sm: 2 },
               mt: { xs: 1, sm: 0 },
