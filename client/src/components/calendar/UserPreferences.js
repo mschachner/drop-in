@@ -114,7 +114,9 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
               />
             }
             label={
-              <DarkModeIcon sx={{ fontSize: 28, verticalAlign: 'middle' }} />
+              <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+                <DarkModeIcon sx={{ fontSize: 28 }} />
+              </Box>
             }
             sx={{
               ml: { xs: 0, sm: 2 },
