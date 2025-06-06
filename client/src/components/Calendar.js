@@ -245,8 +245,8 @@ const Calendar = () => {
   return (
     <Box sx={{
       p: 4,
-      height: { xs: 'auto', sm: '100vh' },
-      minHeight: '100vh',
+      height: { xs: '100dvh', sm: '100vh' },
+      minHeight: { xs: '100dvh', sm: '100vh' },
       '--calendar-bg': pastelColor,
       backgroundColor: 'var(--calendar-bg)',
       color: darkMode ? '#fff' : 'inherit',
