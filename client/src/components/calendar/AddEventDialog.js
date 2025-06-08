@@ -38,7 +38,7 @@ const AddEventDialog = ({
           margin: { xs: '16px', sm: '32px' },
           position: { xs: 'absolute', sm: 'relative' },
           top: { xs: '10%', sm: 'auto' },
-          backgroundColor: darkMode ? '#424242' : 'white',
+          backgroundColor: darkMode ? '#616161' : 'white',
           color: darkMode ? '#fff' : 'inherit'
         }
       }}
@@ -82,10 +82,17 @@ const AddEventDialog = ({
           sx={{ mb: 2 }}
           placeholder={selectedDate ? (newEvent.section === 'evening' ? '6-7pm' : '9-5') : ''}
           InputProps={{
-            sx: { fontFamily: 'Nunito, sans-serif' }
+            sx: {
+              fontFamily: 'Nunito, sans-serif',
+              backgroundColor: darkMode ? '#757575' : 'white',
+              color: darkMode ? '#fff' : 'inherit',
+              '& fieldset': {
+                borderColor: darkMode ? '#bbb' : 'inherit'
+              }
+            }
           }}
           InputLabelProps={{
-            sx: { fontFamily: 'Nunito, sans-serif' }
+            sx: { fontFamily: 'Nunito, sans-serif', color: darkMode ? '#fff' : 'inherit' }
           }}
         />
         <TextField
@@ -96,10 +103,17 @@ const AddEventDialog = ({
           onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
           onKeyPress={handleKeyPress}
           InputProps={{
-            sx: { fontFamily: 'Nunito, sans-serif' }
+            sx: {
+              fontFamily: 'Nunito, sans-serif',
+              backgroundColor: darkMode ? '#757575' : 'white',
+              color: darkMode ? '#fff' : 'inherit',
+              '& fieldset': {
+                borderColor: darkMode ? '#bbb' : 'inherit'
+              }
+            }
           }}
           InputLabelProps={{
-            sx: { fontFamily: 'Nunito, sans-serif' }
+            sx: { fontFamily: 'Nunito, sans-serif', color: darkMode ? '#fff' : 'inherit' }
           }}
         />
       </DialogContent>
