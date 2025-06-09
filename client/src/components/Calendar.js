@@ -44,17 +44,26 @@ const Calendar = () => {
   const [availabilities, setAvailabilities] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [userPreferences, setUserPreferences] = useState({
-    name: '',
-    color: '#66BB6A'
+  const [userPreferences, setUserPreferences] = useState(() => {
+    const storedColor = localStorage.getItem('preferredColor');
+    return {
+      name: '',
+      color: storedColor || '#66BB6A'
+    };
   });
   const [newEvent, setNewEvent] = useState({
     timeSlot: '',
     location: '',
     section: 'day'
   });
-  const [selectedColor, setSelectedColor] = useState('#008080');
-  const [darkMode, setDarkMode] = useState(false);
+  const [selectedColor, setSelectedColor] = useState(() => {
+    const storedColor = localStorage.getItem('preferredColor');
+    return storedColor || '#008080';
+  });
+  const [darkMode, setDarkMode] = useState(() => {
+    const storedDark = localStorage.getItem('darkMode');
+    return storedDark === 'true';
+  });
   const [activeEventId, setActiveEventId] = useState(null);
   const isMobile = useMediaQuery('(max-width:599px)');
 
@@ -65,6 +74,14 @@ const Calendar = () => {
     link.rel = 'stylesheet';
     document.head.appendChild(link);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('preferredColor', userPreferences.color);
+  }, [userPreferences.color]);
+
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
 
   const fetchData = useCallback(async () => {
     try {
