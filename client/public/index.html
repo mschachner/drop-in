@@ -10,6 +10,14 @@
     <link rel="icon" type="image/png" sizes="512x512" href="%PUBLIC_URL%/android-chrome-512x512.png" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png" />
     <title>Drop In</title>
+    <script>
+      (function() {
+        try {
+          var dark = localStorage.getItem('darkMode') === 'true';
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

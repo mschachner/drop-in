@@ -9,7 +9,7 @@ import {
   useMediaQuery
 } from '@mui/material';
 import axios from 'axios';
-import { createPastelColor, createDarkPastelColor } from './calendar/colorUtils';
+import { createPastelColor, createDarkPastelColor, COLORS } from './calendar/colorUtils';
 import UserPreferences from './calendar/UserPreferences';
 import AddEventDialog from './calendar/AddEventDialog';
 
@@ -58,7 +58,10 @@ const Calendar = () => {
   });
   const [selectedColor, setSelectedColor] = useState(() => {
     const storedColor = localStorage.getItem('preferredColor');
-    return storedColor || '#008080';
+    if (storedColor && !COLORS.find(c => c.value === storedColor)) {
+      return storedColor;
+    }
+    return '#008080';
   });
   const [darkMode, setDarkMode] = useState(() => {
     const storedDark = localStorage.getItem('darkMode');
@@ -81,6 +84,10 @@ const Calendar = () => {
 
   useEffect(() => {
     localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
   const fetchData = useCallback(async () => {
