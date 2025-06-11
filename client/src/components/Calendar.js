@@ -71,9 +71,9 @@ const Calendar = () => {
   const isMobile = useMediaQuery('(max-width:599px)');
 
   useEffect(() => {
-    // Add Nunito font
+    // Load fonts
     const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap';
+    link.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Courgette&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
   }, []);
@@ -288,29 +288,17 @@ const Calendar = () => {
         mb: 2,
         gap: 2
       }}>
-        <Typography 
-          variant="h3" 
-          sx={{ 
+        <Typography
+          variant="h3"
+          sx={{
             color: darkColor,
             fontWeight: 700,
-            fontFamily: 'Nunito, sans-serif',
+            fontFamily: 'Courgette, cursive',
             letterSpacing: '-0.5px',
-            position: 'relative',
-            transition: 'color 0.5s ease',
-            '&::after': {
-              content: '""',
-              position: 'absolute',
-              bottom: -8,
-              left: 0,
-              width: '100%',
-              height: '3px',
-              backgroundColor: darkColor,
-              borderRadius: '2px',
-              transition: 'background-color 0.5s ease'
-            }
+            transition: 'color 0.5s ease'
           }}
         >
-          Next 7 Days
+          Drop in!
         </Typography>
       </Box>
       
