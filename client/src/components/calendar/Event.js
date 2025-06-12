@@ -7,6 +7,7 @@ import {
   Tooltip 
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import * as Icons from '@mui/icons-material';
 import { getTextColor } from './colorUtils';
 
 const Event = memo(({ 
@@ -43,6 +44,28 @@ const Event = memo(({
         onEventClick(event, e);
       }}
     >
+      {event.icon && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 8,
+            left: 8,
+            width: 32,
+            height: 32,
+            borderRadius: '50%',
+            backgroundColor: 'rgba(255,255,255,0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          {Icons[event.icon] ? (
+            React.createElement(Icons[event.icon], { fontSize: 'small' })
+          ) : (
+            <span style={{ fontSize: '1rem' }}>{event.icon}</span>
+          )}
+        </Box>
+      )}
       <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>

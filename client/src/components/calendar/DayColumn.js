@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import * as Icons from '@mui/icons-material';
 import { createHighlightColor, getTextColor, isWeekend } from './colorUtils';
 
 const DayColumn = ({
@@ -169,6 +170,50 @@ const DayColumn = ({
                 }}
                 onClick={(e) => handleEventClick(a, e)}
               >
+                {a.icon && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 8,
+                      left: 8,
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      backgroundColor: 'rgba(255,255,255,0.3)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    {Icons[a.icon] ? (
+                      React.createElement(Icons[a.icon], { fontSize: 'small' })
+                    ) : (
+                      <span style={{ fontSize: '1rem' }}>{a.icon}</span>
+                    )}
+                  </Box>
+                )}
+                {a.icon && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 8,
+                      left: 8,
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      backgroundColor: 'rgba(255,255,255,0.3)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    {Icons[a.icon] ? (
+                      React.createElement(Icons[a.icon], { fontSize: 'small' })
+                    ) : (
+                      <span style={{ fontSize: '1rem' }}>{a.icon}</span>
+                    )}
+                  </Box>
+                )}
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
                   <Box sx={{ flex: 1, minWidth: 0 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5, position: 'relative', minHeight: '40px' }}>
