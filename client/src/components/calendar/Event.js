@@ -44,32 +44,29 @@ const Event = memo(({
         onEventClick(event, e);
       }}
     >
-      {event.icon && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 8,
-            left: 8,
-            width: 32,
-            height: 32,
-            borderRadius: '50%',
-            backgroundColor: 'rgba(255,255,255,0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          {Icons[event.icon] ? (
-            React.createElement(Icons[event.icon], { fontSize: 'small' })
-          ) : (
-            <span style={{ fontSize: '1rem' }}>{event.icon}</span>
-          )}
-        </Box>
-      )}
-      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        {event.icon && (
+          <Box
+            sx={{
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255,255,255,0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            {Icons[event.icon] ? (
+              React.createElement(Icons[event.icon], { fontSize: 'small' })
+            ) : (
+              <span style={{ fontSize: '1rem' }}>{event.icon}</span>
+            )}
+          </Box>
+        )}
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
-            <Typography 
+            <Typography
               variant="subtitle1" 
               sx={{ 
                 fontWeight: 700, 
