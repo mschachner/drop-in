@@ -54,7 +54,8 @@ const Calendar = () => {
   const [newEvent, setNewEvent] = useState({
     timeSlot: '',
     location: '',
-    section: 'day'
+    section: 'day',
+    icon: ''
   });
   const [selectedColor, setSelectedColor] = useState(() => {
     const storedColor = localStorage.getItem('preferredColor');
@@ -127,7 +128,8 @@ const Calendar = () => {
     setNewEvent({
       timeSlot: '',
       location: '',
-      section: section
+      section: section,
+      icon: ''
     });
     setOpenDialog(true);
   }, [userPreferences.name]);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -6,6 +6,7 @@ import {
   DialogActions,
   Button,
   TextField,
+  Box,
   FormControl,
   FormLabel,
   RadioGroup,
@@ -14,6 +15,8 @@ import {
   Alert
 } from '@mui/material';
 import { getTextColor } from './colorUtils';
+import IconPickerDialog from './IconPickerDialog';
+import * as Icons from '@mui/icons-material';
 
 const AddEventDialog = ({
   open,
@@ -27,6 +30,11 @@ const AddEventDialog = ({
   userPreferences,
   darkMode
 }) => {
+  const [iconDialogOpen, setIconDialogOpen] = useState(false);
+
+  const handleIconSelect = (icon) => {
+    setNewEvent({ ...newEvent, icon });
+  };
   return (
     <Dialog 
       open={open} 
@@ -116,6 +124,39 @@ const AddEventDialog = ({
             sx: { fontFamily: 'Nunito, sans-serif', color: darkMode ? '#fff' : 'inherit' }
           }}
         />
+        <Button
+          variant="outlined"
+          onClick={() => setIconDialogOpen(true)}
+          sx={{
+            mt: 2,
+            textTransform: 'none',
+            fontFamily: 'Nunito, sans-serif'
+          }}
+        >
+          {newEvent.icon ? 'Change Icon' : 'Select Icon'}
+        </Button>
+        {newEvent.icon && (
+          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+            <Box
+              sx={{
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                backgroundColor: darkMode ? '#757575' : '#eee',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 32
+              }}
+            >
+              {Icons[newEvent.icon] ? (
+                React.createElement(Icons[newEvent.icon])
+              ) : (
+                <span>{newEvent.icon}</span>
+              )}
+            </Box>
+          </Box>
+        )}
       </DialogContent>
       <DialogActions>
         <Button 
@@ -148,6 +189,11 @@ const AddEventDialog = ({
           add
         </Button>
       </DialogActions>
+      <IconPickerDialog
+        open={iconDialogOpen}
+        onClose={() => setIconDialogOpen(false)}
+        onSelect={handleIconSelect}
+      />
     </Dialog>
   );
 };

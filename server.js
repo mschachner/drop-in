@@ -57,6 +57,7 @@ const availabilitySchema = new mongoose.Schema({
   location: String,
   name: String,
   color: String,
+  icon: String,
   section: {
     type: String,
     enum: ['day', 'evening'],
