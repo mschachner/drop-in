@@ -46,8 +46,15 @@ const IconPickerDialog = ({ open, onClose, onSelect }) => {
         ) : (
           <Box sx={{ display:'flex', flexWrap:'wrap', gap:1, maxHeight:300, overflowY:'auto' }}>
             {emojiList.map((emo) => (
-              <IconButton key={emo} onClick={() => { onSelect(emo); onClose(); }}>
-                <span style={{ fontSize: '24px' }}>{emo}</span>
+              <IconButton
+                key={emo}
+                onClick={() => {
+                  onSelect(emo);
+                  onClose();
+                }}
+                sx={{ color: 'initial' }}
+              >
+                <span style={{ fontSize: '24px', color: 'initial' }}>{emo}</span>
               </IconButton>
             ))}
           </Box>
