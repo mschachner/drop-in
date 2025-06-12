@@ -11,19 +11,25 @@ import {
 import * as Icons from '@mui/icons-material';
 
 const emojiList = [
-  '😀','😁','😂','😊','😍','🤔','😎','🎉','🎂','🍕','🍔','🍻','🎵','🏃','⭐','🔥','💻','📚','✈️','🚀'
+  '😀','😁','😂','😅','😊','😍','🤔','😎','🥳','🎉','🎁','🎂','🍕','🍔','🍣','🍜',
+  '🍻','🍺','☕','🎵','🎸','🎮','🏃','🚴','⚽','🏀','⭐','🌟','🌈','🔥','💻','📱',
+  '📚','🎓','✈️','🚀','🚗','🏡','🐶','🐱'
 ];
 
 const IconPickerDialog = ({ open, onClose, onSelect }) => {
   const [tab, setTab] = useState(0);
-  const iconNames = Object.keys(Icons);
+  const iconNames = [
+    'Home','Work','School','Star','CheckCircle','Event','Alarm','Flight',
+    'DirectionsRun','MusicNote','Restaurant','SportsEsports','ShoppingCart',
+    'Pets','Face','ThumbUp','Group','Laptop','Book','TravelExplore'
+  ];
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Select Icon</DialogTitle>
       <Tabs value={tab} onChange={(e,v)=>setTab(v)} centered>
-        <Tab label="Icons" />
-        <Tab label="Emoji" />
+        <Tab label="icons" />
+        <Tab label="emoji" />
       </Tabs>
       <DialogContent dividers>
         {tab === 0 ? (
