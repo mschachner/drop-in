@@ -240,7 +240,7 @@ const Calendar = () => {
     // Always apply the random color and show it in the palette icon
     setSelectedColor(randomColor);
     setUserPreferences((prev) => ({ ...prev, color: randomColor }));
-  }, [userPreferences.color]);
+  }, []);
 
   const handleDialogClose = useCallback(() => {
     setOpenDialog(false);
