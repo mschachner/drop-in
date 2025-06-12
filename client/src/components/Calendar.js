@@ -232,6 +232,14 @@ const Calendar = () => {
     [userPreferences.color, darkMode]
   );
 
+  const handleHeaderClick = useCallback(() => {
+    const randomColor = `#${Math.floor(Math.random() * 16777215)
+      .toString(16)
+      .padStart(6, '0')}`;
+    setSelectedColor(randomColor);
+    setUserPreferences((prev) => ({ ...prev, color: randomColor }));
+  }, []);
+
   const handleDialogClose = useCallback(() => {
     setOpenDialog(false);
     setDialogError(null);
@@ -295,8 +303,15 @@ const Calendar = () => {
             fontWeight: 700,
             fontFamily: 'Courgette, cursive',
             letterSpacing: '-0.5px',
-            transition: 'color 0.5s ease'
+            transition: 'color 0.5s ease, transform 0.2s ease, text-shadow 0.2s ease',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+            cursor: 'pointer',
+            '&:hover': {
+              transform: 'scale(1.05)',
+              textShadow: '4px 4px 8px rgba(0,0,0,0.5)'
+            }
           }}
+          onClick={handleHeaderClick}
         >
           Drop in!
         </Typography>
