@@ -236,9 +236,11 @@ const Calendar = () => {
     const randomColor = `#${Math.floor(Math.random() * 16777215)
       .toString(16)
       .padStart(6, '0')}`;
+
+    // Always apply the random color and show it in the palette icon
     setSelectedColor(randomColor);
     setUserPreferences((prev) => ({ ...prev, color: randomColor }));
-  }, []);
+  }, [userPreferences.color]);
 
   const handleDialogClose = useCallback(() => {
     setOpenDialog(false);
@@ -303,12 +305,16 @@ const Calendar = () => {
             fontWeight: 700,
             fontFamily: 'Courgette, cursive',
             letterSpacing: '-0.5px',
+            userSelect: 'none',
             transition: 'color 0.5s ease, transform 0.2s ease, text-shadow 0.2s ease',
-            textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+            textShadow: '1px 1px 3px rgba(0,0,0,0.25)',
             cursor: 'pointer',
             '&:hover': {
               transform: 'scale(1.05)',
-              textShadow: '4px 4px 8px rgba(0,0,0,0.5)'
+              textShadow: '2px 2px 4px rgba(0,0,0,0.4)'
+            },
+            '&:active': {
+              transform: 'scale(0.95)'
             }
           }}
           onClick={handleHeaderClick}
