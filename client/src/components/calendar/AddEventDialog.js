@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  IconButton,
   TextField,
   Box,
   FormControl,
@@ -30,10 +31,11 @@ const AddEventDialog = ({
   userPreferences,
   darkMode
 }) => {
-  const [iconDialogOpen, setIconDialogOpen] = useState(false);
+  const [iconAnchorEl, setIconAnchorEl] = useState(null);
 
   const handleIconSelect = (icon) => {
     setNewEvent({ ...newEvent, icon });
+    setIconAnchorEl(null);
   };
   return (
     <Dialog 
@@ -58,27 +60,50 @@ const AddEventDialog = ({
         {dialogError && (
           <Alert severity="error" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>{dialogError}</Alert>
         )}
-        <FormControl component="fieldset" sx={{ mb: 2, width: '100%' }}>
-          <FormLabel component="legend" sx={{ fontFamily: 'Nunito, sans-serif' }}>Event Time</FormLabel>
-          <RadioGroup
-            row
-            value={newEvent.section}
-            onChange={(e) => setNewEvent({ ...newEvent, section: e.target.value })}
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <IconButton
+            onClick={(e) => setIconAnchorEl(e.currentTarget)}
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: '50%',
+              backgroundColor: darkMode ? '#757575' : '#eee',
+              color: darkMode ? '#fff' : 'inherit',
+              mr: 2
+            }}
           >
-            <FormControlLabel
-              value="day"
-              control={<Radio />}
-              label="Day"
-              sx={{ fontFamily: 'Nunito, sans-serif', color: darkMode ? '#fff' : 'inherit' }}
-            />
-            <FormControlLabel
-              value="evening"
-              control={<Radio />}
-              label="Evening"
-              sx={{ fontFamily: 'Nunito, sans-serif', color: darkMode ? '#fff' : 'inherit' }}
-            />
-          </RadioGroup>
-        </FormControl>
+            {newEvent.icon ? (
+              Icons[newEvent.icon] ? (
+                React.createElement(Icons[newEvent.icon])
+              ) : (
+                <span>{newEvent.icon}</span>
+              )
+            ) : (
+              <Icons.Add />
+            )}
+          </IconButton>
+          <FormControl component="fieldset" sx={{ width: '100%' }}>
+            <FormLabel component="legend" sx={{ fontFamily: 'Nunito, sans-serif' }}>Event Time</FormLabel>
+            <RadioGroup
+              row
+              value={newEvent.section}
+              onChange={(e) => setNewEvent({ ...newEvent, section: e.target.value })}
+            >
+              <FormControlLabel
+                value="day"
+                control={<Radio />}
+                label="Day"
+                sx={{ fontFamily: 'Nunito, sans-serif', color: darkMode ? '#fff' : 'inherit' }}
+              />
+              <FormControlLabel
+                value="evening"
+                control={<Radio />}
+                label="Evening"
+                sx={{ fontFamily: 'Nunito, sans-serif', color: darkMode ? '#fff' : 'inherit' }}
+              />
+            </RadioGroup>
+          </FormControl>
+        </Box>
         <TextField
           autoFocus
           margin="dense"
@@ -124,39 +149,6 @@ const AddEventDialog = ({
             sx: { fontFamily: 'Nunito, sans-serif', color: darkMode ? '#fff' : 'inherit' }
           }}
         />
-        <Button
-          variant="outlined"
-          onClick={() => setIconDialogOpen(true)}
-          sx={{
-            mt: 2,
-            textTransform: 'none',
-            fontFamily: 'Nunito, sans-serif'
-          }}
-        >
-          {newEvent.icon ? 'Change Icon' : 'Select Icon'}
-        </Button>
-        {newEvent.icon && (
-          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-            <Box
-              sx={{
-                width: 48,
-                height: 48,
-                borderRadius: '50%',
-                backgroundColor: darkMode ? '#757575' : '#eee',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 32
-              }}
-            >
-              {Icons[newEvent.icon] ? (
-                React.createElement(Icons[newEvent.icon])
-              ) : (
-                <span>{newEvent.icon}</span>
-              )}
-            </Box>
-          </Box>
-        )}
       </DialogContent>
       <DialogActions>
         <Button 
@@ -190,9 +182,11 @@ const AddEventDialog = ({
         </Button>
       </DialogActions>
       <IconPickerDialog
-        open={iconDialogOpen}
-        onClose={() => setIconDialogOpen(false)}
+        anchorEl={iconAnchorEl}
+        onClose={() => setIconAnchorEl(null)}
         onSelect={handleIconSelect}
+        userColor={userPreferences.color}
+        darkMode={darkMode}
       />
     </Dialog>
   );
