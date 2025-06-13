@@ -51,12 +51,10 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
           p: 2,
           fontFamily: 'Nunito, sans-serif',
           maxWidth: 320,
+          borderRadius: 6,
         }
       }}
     >
-      <Typography sx={{ fontFamily: 'Nunito, sans-serif', fontWeight: 600, mb: 1 }}>
-        Select Icon
-      </Typography>
       <Tabs
         value={tab}
         onChange={(e, v) => setTab(v)}
