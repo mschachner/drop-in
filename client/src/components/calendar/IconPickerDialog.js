@@ -31,7 +31,7 @@ const IconPickerDialog = ({ open, onClose, onSelect }) => {
   'Fastfood', 'RamenDining', 'Coffee', 'WineBar', 'LocalBar', 'BakeryDining',
   'Laptop', 'Draw', 'InsertChart', 'TrendingUp', 'AttachFile',
   'Work', 'Build', 'Construction', 'Phone', 'DirectionsCar', 'Flight', 'DirectionsBus',
-  'LocalHospital', 'School', 'AccountBalance', 'Church', 'ShoppingCart', 'Luggage', 'Home'
+  'LocalHospital', 'AccountBalance', 'Church', 'ShoppingCart', 'Luggage', 'Home'
   ];
 
   return (
