@@ -11,18 +11,29 @@ import {
 import * as Icons from '@mui/icons-material';
 
 const emojiList = [
-  '😀','😁','😂','😅','😊','😍','🤔','😎','🥳','🎉','🎁','🎂','🍕','🍔','🍣','🍜',
-  '🍻','🍺','☕','🎵','🎸','🎮','🏃','🚴','⚽','🏀','⭐','🌟','🌈','🔥','💻','📱',
-  '📚','🎓','✈️','🚀','🚗','🏡','🐶','🐱'
+  '📅', '⏰', '🗓️', '📆', '🎉', '🎂', '🎁', '🎈', '🪅', '🎊',
+  '🎵', '🎶', '🎧', '🎤', '🎸', '🎻', '🎷', '🥁', '🎬', '📽️',
+  '🍿', '🎮', '🧩', '♟️', '🃏', '🧠', '💡', '📚', '✏️', '📝',
+  '🏃', '🏋️', '🧘', '🚴', '🏕️', '🎣', '🎿', '🏖️', '🏝️', '🗺️',
+  '🍽️', '🍕', '🍔', '🍣', '🍰', '☕', '🍺', '🍷', '🧁', '🥗',
+  '💻', '🖥️', '🖋️', '📊', '📈', '📎', '🗂️', '🛠️', '🧰', '📞',
+  '🚗', '✈️', '🚌', '🏥', '🏫', '🏛️', '⛪', '🛒', '🧳', '🏠'
 ];
 
 const IconPickerDialog = ({ open, onClose, onSelect }) => {
   const [tab, setTab] = useState(0);
   const iconNames = [
-    'Home','Work','School','Star','CheckCircle','Event','Alarm','Flight',
-    'DirectionsRun','MusicNote','Restaurant','SportsEsports','ShoppingCart',
-    'Pets','Face','ThumbUp','Group','Laptop','Book','TravelExplore'
-  ];
+  'Event', 'Schedule', 'AccessTime', 'CalendarToday', 'Celebration', 'Cake', 'CardGiftcard',
+  'EmojiEvents', 'PartyMode', 'MusicNote', 'Audiotrack', 'Headphones', 'Mic', 'Movie',
+  'Theaters', 'Videocam', 'Games', 'Extension', 'SportsEsports', 'Psychology',
+  'Lightbulb', 'MenuBook', 'EditNote', 'EditCalendar', 'School', 'Science',
+  'FitnessCenter', 'DirectionsRun', 'SelfImprovement', 'DirectionsBike', 'Camping',
+  'Kitesurfing', 'Hiking', 'BeachAccess', 'Map', 'Restaurant', 'LocalPizza',
+  'Fastfood', 'RamenDining', 'Coffee', 'WineBar', 'LocalBar', 'BakeryDining',
+  'Laptop', 'Computer', 'Draw', 'InsertChart', 'TrendingUp', 'AttachFile',
+  'Work', 'Build', 'Construction', 'Phone', 'DirectionsCar', 'Flight', 'DirectionsBus',
+  'LocalHospital', 'School', 'AccountBalance', 'Church', 'ShoppingCart', 'Luggage', 'Home'
+];
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
