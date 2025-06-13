@@ -25,28 +25,27 @@ const lightenColor = (color, amount = 0.1) => {
 };
 
 const emojiList = [
-  '📅', '⏰', '🎉', '🎂', '🎁', '🎈', '🔥','🪅', '🎊',
-  '🎵', '🎧', '🎤', '🎻', '🎬', '📽️',
-  '🍿', '🎮', '🧩', '♟️', '🃏', '🧠', '💡', '📚', '✏️', '📝',
-  '🏃', '🏋️', '🧘', '🚴', '🏕️', '🎣', '🎿', '🏖️',
-  '🍽️', '🍕', '🍔', '☕', '🍺', '🍷',
-  '💻', '🖋️', '📊', '📎', '🛠️', '📞',
-  '🚗', '✈️', '🚌', '🏥', '🏫', '🏛️', '⛪', '🛒', '🧳', '🏠',
+  '📅','⏰','🎉','🎂','🎵','🎧','🎤','🎬','🍿','📽️',
+  '♟️','🧩','🎮','🧠','💡','📚','📝','🏫','🔥','✏️',
+  '🏋️','🏃','🧘','🚴','🏕️','🎣','🎿','🏖️','🎈','🍽️',
+  '🍕','🍔','🪅','☕','🧇','🍷','🍺','🎁','💻','🖋️','📊',
+  '🃏','📎','💻','🛠️','🛠️','📞','🚗','✈️','🚌','🏥',
+  '🏛️','⛪','🛒','🧳','🏠'
 ];
 
 const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) => {
   const [tab, setTab] = useState(0);
   const iconNames = [
-  'Event', 'Schedule', 'Celebration', 'Cake', 'MusicNote', 'Headphones', 'Mic', 'Movie',
-  'Theaters', 'Videocam', 'Games', 'Extension', 'SportsEsports', 'Psychology',
-  'Lightbulb', 'MenuBook', 'EditNote', 'School', 'Science','Functions',
-  'FitnessCenter', 'DirectionsRun', 'SelfImprovement', 'DirectionsBike', 'Cabin',
-  'Kitesurfing', 'Hiking', 'BeachAccess', 'Map', 'Restaurant', 'LocalPizza',
-  'Fastfood', 'RamenDining', 'Coffee', 'WineBar', 'LocalBar', 'BakeryDining',
-  'Laptop', 'Draw', 'InsertChart', 'TrendingUp', 'AttachFile',
-  'Work', 'Build', 'Construction', 'Phone', 'DirectionsCar', 'Flight', 'DirectionsBus',
-  'LocalHospital', 'AccountBalance', 'Church', 'ShoppingCart', 'Luggage', 'Home'
-  ];
+  'Event','Schedule','Celebration','Cake','MusicNote','Headphones','Mic','Movie',
+  'Theaters','Videocam','Games','Extension','SportsEsports','Psychology',
+  'Lightbulb','MenuBook','EditNote','School','Science','Functions',
+  'FitnessCenter','DirectionsRun','SelfImprovement','DirectionsBike','Cabin',
+  'Kitesurfing','Hiking','BeachAccess','Map','Restaurant','LocalPizza',
+  'Fastfood','RamenDining','Coffee','WineBar','LocalBar','BakeryDining','GridOn',
+  'Laptop','Draw','InsertChart','TrendingUp','AttachFile',
+  'Work','Build','Construction','Phone','DirectionsCar','Flight','DirectionsBus',
+  'LocalHospital','AccountBalance','Church','ShoppingCart','Luggage','Home'
+];
 
   const open = Boolean(anchorEl);
   const baseBgColor = darkMode ? createDarkPastelColor(userColor) : createPastelColor(userColor);
