@@ -170,68 +170,43 @@ const DayColumn = ({
                 }}
                 onClick={(e) => handleEventClick(a, e)}
               >
-                {a.icon && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: 8,
-                      left: 8,
-                      width: 32,
-                      height: 32,
-                      borderRadius: '50%',
-                      backgroundColor: 'rgba(255,255,255,0.3)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    {Icons[a.icon] ? (
-                      React.createElement(Icons[a.icon], { fontSize: 'small' })
-                    ) : (
-                      <span style={{ fontSize: '1rem' }}>{a.icon}</span>
-                    )}
-                  </Box>
-                )}
-                {a.icon && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: 8,
-                      left: 8,
-                      width: 32,
-                      height: 32,
-                      borderRadius: '50%',
-                      backgroundColor: 'rgba(255,255,255,0.3)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    {Icons[a.icon] ? (
-                      React.createElement(Icons[a.icon], { fontSize: 'small' })
-                    ) : (
-                      <span style={{ fontSize: '1rem' }}>{a.icon}</span>
-                    )}
-                  </Box>
-                )}
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
                   <Box sx={{ flex: 1, minWidth: 0 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5, position: 'relative', minHeight: '40px' }}>
-                      <Typography
-                        variant="subtitle1"
-                        sx={{
-                          fontWeight: 700,
-                          fontFamily: 'Nunito, sans-serif',
-                          wordBreak: 'break-word',
-                          lineHeight: 1.2,
-                          flex: 1,
-                          pr: 1,
-                          display: 'flex',
-                          alignItems: 'center'
-                        }}
-                      >
-                        {a.name}
-                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {a.icon && (
+                          <Box
+                            sx={{
+                              width: 32,
+                              height: 32,
+                              borderRadius: '50%',
+                              backgroundColor: 'rgba(255,255,255,0.3)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}
+                          >
+                            {Icons[a.icon] ? (
+                              React.createElement(Icons[a.icon], { fontSize: 'small' })
+                            ) : (
+                              <span style={{ fontSize: '1rem' }}>{a.icon}</span>
+                            )}
+                          </Box>
+                        )}
+                        <Typography
+                          variant="subtitle1"
+                          sx={{
+                            fontWeight: 700,
+                            fontFamily: 'Nunito, sans-serif',
+                            wordBreak: 'break-word',
+                            lineHeight: 1.2,
+                            flex: 1,
+                            pr: 1
+                          }}
+                        >
+                          {a.name}
+                        </Typography>
+                      </Box>
                       <Box sx={{ position: 'relative', minHeight: '40px', display: 'flex', alignItems: 'center' }}>
                         <Box
                           sx={{
@@ -432,21 +407,40 @@ const DayColumn = ({
                   <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
                     <Box sx={{ flex: 1, minWidth: 0 }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5, position: 'relative', minHeight: '40px' }}>
-                        <Typography
-                          variant="subtitle1"
-                          sx={{
-                            fontWeight: 700,
-                            fontFamily: 'Nunito, sans-serif',
-                            wordBreak: 'break-word',
-                            lineHeight: 1.2,
-                            flex: 1,
-                            pr: 1,
-                            display: 'flex',
-                            alignItems: 'center'
-                          }}
-                        >
-                          {a.name}
-                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          {a.icon && (
+                            <Box
+                              sx={{
+                                width: 32,
+                                height: 32,
+                                borderRadius: '50%',
+                                backgroundColor: 'rgba(255,255,255,0.3)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                              }}
+                            >
+                              {Icons[a.icon] ? (
+                                React.createElement(Icons[a.icon], { fontSize: 'small' })
+                              ) : (
+                                <span style={{ fontSize: '1rem' }}>{a.icon}</span>
+                              )}
+                            </Box>
+                          )}
+                          <Typography
+                            variant="subtitle1"
+                            sx={{
+                              fontWeight: 700,
+                              fontFamily: 'Nunito, sans-serif',
+                              wordBreak: 'break-word',
+                              lineHeight: 1.2,
+                              flex: 1,
+                              pr: 1
+                            }}
+                          >
+                            {a.name}
+                          </Typography>
+                        </Box>
                         <Box sx={{ position: 'relative', minHeight: '40px', display: 'flex', alignItems: 'center' }}>
                           <Box
                             sx={{
