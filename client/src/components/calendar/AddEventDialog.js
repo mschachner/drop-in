@@ -67,11 +67,11 @@ const AddEventDialog = ({
               width: 40,
               height: 40,
               borderRadius: '50%',
-              backgroundColor: darkMode ? '#757575' : '#eee',
-              color: darkMode ? '#fff' : 'inherit',
-              mr: 2
-            }}
-          >
+            backgroundColor: darkMode ? '#757575' : '#ccc',
+            color: darkMode ? '#fff' : '#333',
+            mr: 2
+          }}
+        >
             {newEvent.icon ? (
               Icons[newEvent.icon] ? (
                 React.createElement(Icons[newEvent.icon])

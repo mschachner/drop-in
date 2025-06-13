@@ -36,7 +36,7 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
 
   const open = Boolean(anchorEl);
   const bgColor = darkMode ? createDarkPastelColor(userColor) : createPastelColor(userColor);
-  const textColor = getTextColor(bgColor);
+  const textColor = darkMode ? getTextColor(bgColor) : '#333';
 
   return (
     <Popover
@@ -83,8 +83,8 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
                     width: 40,
                     height: 40,
                     borderRadius: '50%',
-                    backgroundColor: darkMode ? '#757575' : '#eee',
-                    color: darkMode ? '#fff' : 'inherit',
+                    backgroundColor: darkMode ? '#757575' : '#ccc',
+                    color: darkMode ? '#fff' : '#333',
                   }}
                 >
                   <IconComp />
@@ -105,8 +105,8 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
                   width: 40,
                   height: 40,
                   borderRadius: '50%',
-                  backgroundColor: darkMode ? '#757575' : '#eee',
-                  color: darkMode ? '#fff' : 'inherit',
+                  backgroundColor: darkMode ? '#757575' : '#ccc',
+                  color: darkMode ? '#fff' : '#333',
                 }}
               >
                 <span style={{ fontSize: '24px' }}>{emo}</span>
