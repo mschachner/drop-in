@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
+  Popover,
   Tabs,
   Tab,
   Box,
-  IconButton
+  IconButton,
+  Typography
 } from '@mui/material';
 import * as Icons from '@mui/icons-material';
+import { createPastelColor, createDarkPastelColor, getTextColor } from './colorUtils';
 
 const emojiList = [
   '📅', '⏰', '🎉', '🎂', '🎁', '🎈', '🔥','🪅', '🎊',
@@ -20,7 +20,7 @@ const emojiList = [
   '🚗', '✈️', '🚌', '🏥', '🏫', '🏛️', '⛪', '🛒', '🧳', '🏠',
 ];
 
-const IconPickerDialog = ({ open, onClose, onSelect }) => {
+const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) => {
   const [tab, setTab] = useState(0);
   const iconNames = [
   'Event', 'Schedule', 'Celebration', 'Cake', 'MusicNote', 'Headphones', 'Mic', 'Movie',
@@ -34,16 +34,41 @@ const IconPickerDialog = ({ open, onClose, onSelect }) => {
   'LocalHospital', 'AccountBalance', 'Church', 'ShoppingCart', 'Luggage', 'Home'
   ];
 
+  const open = Boolean(anchorEl);
+  const bgColor = darkMode ? createDarkPastelColor(userColor) : createPastelColor(userColor);
+  const textColor = getTextColor(userColor);
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Select Icon</DialogTitle>
-      <Tabs value={tab} onChange={(e,v)=>setTab(v)} centered>
-        <Tab label="icons" />
-        <Tab label="emoji" />
+    <Popover
+      open={open}
+      anchorEl={anchorEl}
+      onClose={onClose}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      PaperProps={{
+        sx: {
+          backgroundColor: bgColor,
+          color: textColor,
+          p: 2,
+          fontFamily: 'Nunito, sans-serif',
+        }
+      }}
+    >
+      <Typography sx={{ fontFamily: 'Nunito, sans-serif', fontWeight: 600, mb: 1 }}>
+        Select Icon
+      </Typography>
+      <Tabs
+        value={tab}
+        onChange={(e, v) => setTab(v)}
+        centered
+        textColor="inherit"
+        TabIndicatorProps={{ sx: { backgroundColor: textColor } }}
+      >
+        <Tab label="icons" sx={{ textTransform: 'lowercase', fontFamily: 'Nunito, sans-serif', color: textColor }} />
+        <Tab label="emoji" sx={{ textTransform: 'lowercase', fontFamily: 'Nunito, sans-serif', color: textColor }} />
       </Tabs>
-      <DialogContent dividers>
+      <Box sx={{ mt: 1 }}>
         {tab === 0 ? (
-          <Box sx={{ display:'flex', flexWrap:'wrap', gap:1, maxHeight:300, overflowY:'auto' }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: 300, overflowY: 'auto' }}>
             {iconNames.map((name) => {
               const IconComp = Icons[name];
               return (
@@ -54,7 +79,7 @@ const IconPickerDialog = ({ open, onClose, onSelect }) => {
             })}
           </Box>
         ) : (
-          <Box sx={{ display:'flex', flexWrap:'wrap', gap:1, maxHeight:300, overflowY:'auto' }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: 300, overflowY: 'auto' }}>
             {emojiList.map((emo) => (
               <IconButton
                 key={emo}
@@ -69,8 +94,8 @@ const IconPickerDialog = ({ open, onClose, onSelect }) => {
             ))}
           </Box>
         )}
-      </DialogContent>
-    </Dialog>
+      </Box>
+    </Popover>
   );
 };
 
