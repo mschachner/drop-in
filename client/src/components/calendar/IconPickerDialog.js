@@ -25,7 +25,7 @@ const IconPickerDialog = ({ open, onClose, onSelect }) => {
   const iconNames = [
   'Event', 'Schedule', 'Celebration', 'Cake', 'MusicNote', 'Headphones', 'Mic', 'Movie',
   'Theaters', 'Videocam', 'Games', 'Extension', 'SportsEsports', 'Psychology',
-  'Lightbulb', 'MenuBook', 'EditNote', 'School', 'Science',
+  'Lightbulb', 'MenuBook', 'EditNote', 'School', 'Science','Functions',
   'FitnessCenter', 'DirectionsRun', 'SelfImprovement', 'DirectionsBike', 'Cabin',
   'Kitesurfing', 'Hiking', 'BeachAccess', 'Map', 'Restaurant', 'LocalPizza',
   'Fastfood', 'RamenDining', 'Coffee', 'WineBar', 'LocalBar', 'BakeryDining',
