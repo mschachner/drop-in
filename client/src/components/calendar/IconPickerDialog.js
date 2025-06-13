@@ -5,7 +5,6 @@ import {
   Tab,
   Box,
   IconButton,
-  Typography
 } from '@mui/material';
 import * as Icons from '@mui/icons-material';
 import { createPastelColor, createDarkPastelColor, getTextColor } from './colorUtils';
