@@ -7,7 +7,22 @@ import {
   IconButton,
 } from '@mui/material';
 import * as Icons from '@mui/icons-material';
-import { createPastelColor, createDarkPastelColor, getTextColor } from './colorUtils';
+import { createPastelColor, createDarkPastelColor, getTextColor, hexToRgb } from './colorUtils';
+
+const lightenColor = (color, amount = 0.1) => {
+  let r, g, b;
+  if (color.startsWith('#')) {
+    const rgb = hexToRgb(color);
+    if (!rgb) return color;
+    ({ r, g, b } = rgb);
+  } else {
+    [r, g, b] = color.match(/\d+/g).map(Number);
+  }
+  const newR = Math.min(255, Math.round(r + (255 - r) * amount));
+  const newG = Math.min(255, Math.round(g + (255 - g) * amount));
+  const newB = Math.min(255, Math.round(b + (255 - b) * amount));
+  return `rgb(${newR}, ${newG}, ${newB})`;
+};
 
 const emojiList = [
   '📅', '⏰', '🎉', '🎂', '🎁', '🎈', '🔥','🪅', '🎊',
@@ -34,7 +49,8 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
   ];
 
   const open = Boolean(anchorEl);
-  const bgColor = darkMode ? createDarkPastelColor(userColor) : createPastelColor(userColor);
+  const baseBgColor = darkMode ? createDarkPastelColor(userColor) : createPastelColor(userColor);
+  const bgColor = darkMode ? baseBgColor : lightenColor(baseBgColor, 0.1);
   const textColor = darkMode ? getTextColor(bgColor) : '#333';
 
   return (
@@ -49,7 +65,7 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
           color: textColor,
           p: 2,
           fontFamily: 'Nunito, sans-serif',
-          maxWidth: 320,
+          maxWidth: 400,
           borderRadius: 6,
         }
       }}
@@ -61,12 +77,12 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
         textColor="inherit"
         TabIndicatorProps={{ sx: { backgroundColor: textColor } }}
       >
-        <Tab label="icons" sx={{ textTransform: 'lowercase', fontFamily: 'Nunito, sans-serif', color: textColor }} />
-        <Tab label="emoji" sx={{ textTransform: 'lowercase', fontFamily: 'Nunito, sans-serif', color: textColor }} />
+        <Tab label="icons" sx={{ textTransform: 'lowercase', fontFamily: 'Nunito, sans-serif', color: textColor, fontSize: '1.1rem' }} />
+        <Tab label="emoji" sx={{ textTransform: 'lowercase', fontFamily: 'Nunito, sans-serif', color: textColor, fontSize: '1.1rem' }} />
       </Tabs>
       <Box sx={{ mt: 1 }}>
         {tab === 0 ? (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: 300, overflowY: 'auto' }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
             {iconNames.map((name) => {
               const IconComp = Icons[name];
               return (
@@ -80,7 +96,7 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
                     width: 40,
                     height: 40,
                     borderRadius: '50%',
-                    backgroundColor: darkMode ? '#757575' : '#ccc',
+                    backgroundColor: darkMode ? '#757575' : '#e0e0e0',
                     color: darkMode ? '#fff' : '#333',
                   }}
                 >
@@ -90,7 +106,7 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
             })}
           </Box>
         ) : (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: 300, overflowY: 'auto' }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
             {emojiList.map((emo) => (
               <IconButton
                 key={emo}
@@ -102,7 +118,7 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
                   width: 40,
                   height: 40,
                   borderRadius: '50%',
-                  backgroundColor: darkMode ? '#757575' : '#ccc',
+                  backgroundColor: darkMode ? '#757575' : '#e0e0e0',
                   color: darkMode ? '#fff' : '#333',
                 }}
               >
