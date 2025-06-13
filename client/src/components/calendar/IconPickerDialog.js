@@ -36,7 +36,7 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
 
   const open = Boolean(anchorEl);
   const bgColor = darkMode ? createDarkPastelColor(userColor) : createPastelColor(userColor);
-  const textColor = getTextColor(userColor);
+  const textColor = getTextColor(bgColor);
 
   return (
     <Popover
@@ -50,6 +50,7 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
           color: textColor,
           p: 2,
           fontFamily: 'Nunito, sans-serif',
+          maxWidth: 320,
         }
       }}
     >
@@ -72,7 +73,20 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
             {iconNames.map((name) => {
               const IconComp = Icons[name];
               return (
-                <IconButton key={name} onClick={() => { onSelect(name); onClose(); }}>
+                <IconButton
+                  key={name}
+                  onClick={() => {
+                    onSelect(name);
+                    onClose();
+                  }}
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: '50%',
+                    backgroundColor: darkMode ? '#757575' : '#eee',
+                    color: darkMode ? '#fff' : 'inherit',
+                  }}
+                >
                   <IconComp />
                 </IconButton>
               );
@@ -87,9 +101,15 @@ const IconPickerDialog = ({ anchorEl, onClose, onSelect, userColor, darkMode }) 
                   onSelect(emo);
                   onClose();
                 }}
-                sx={{ color: 'initial' }}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  backgroundColor: darkMode ? '#757575' : '#eee',
+                  color: darkMode ? '#fff' : 'inherit',
+                }}
               >
-                <span style={{ fontSize: '24px', color: 'initial' }}>{emo}</span>
+                <span style={{ fontSize: '24px' }}>{emo}</span>
               </IconButton>
             ))}
           </Box>
