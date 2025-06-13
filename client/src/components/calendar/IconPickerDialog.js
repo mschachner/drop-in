@@ -12,24 +12,24 @@ import * as Icons from '@mui/icons-material';
 
 const emojiList = [
   '📅', '⏰', '🗓️', '📆', '🎉', '🎂', '🎁', '🎈', '🪅', '🎊',
-  '🎵', '🎶', '🎧', '🎤', '🎸', '🎻', '🎷', '🥁', '🎬', '📽️',
+  '🎵', '🎶', '🎧', '🎤', '🎸', '🥁', '🎬', '📽️',
   '🍿', '🎮', '🧩', '♟️', '🃏', '🧠', '💡', '📚', '✏️', '📝',
-  '🏃', '🏋️', '🧘', '🚴', '🏕️', '🎣', '🎿', '🏖️', '🏝️', '🗺️',
+  '🏃', '🏋️', '🧘', '🚴', '🏕️', '🎣', '🎿', '🏖️', '🗺️',
   '🍽️', '🍕', '🍔', '🍣', '🍰', '☕', '🍺', '🍷', '🧁', '🥗',
-  '💻', '🖥️', '🖋️', '📊', '📈', '📎', '🗂️', '🛠️', '🧰', '📞',
+  '💻', '🖋️', '📊', '📈', '📎', '🛠️', '🧰', '📞',
   '🚗', '✈️', '🚌', '🏥', '🏫', '🏛️', '⛪', '🛒', '🧳', '🏠'
 ];
 
 const IconPickerDialog = ({ open, onClose, onSelect }) => {
   const [tab, setTab] = useState(0);
   const iconNames = [
-  'Event', 'Schedule', 'AccessTime', 'CalendarToday', 'Celebration', 'Cake', 'CardGiftcard', 'MusicNote', 'Headphones', 'Mic', 'Movie',
+  'Event', 'Schedule', 'Celebration', 'Cake', 'MusicNote', 'Headphones', 'Mic', 'Movie',
   'Theaters', 'Videocam', 'Games', 'Extension', 'SportsEsports', 'Psychology',
-  'Lightbulb', 'MenuBook', 'EditNote', 'EditCalendar', 'School', 'Science',
+  'Lightbulb', 'MenuBook', 'EditNote', 'School', 'Science',
   'FitnessCenter', 'DirectionsRun', 'SelfImprovement', 'DirectionsBike', 'Cabin',
   'Kitesurfing', 'Hiking', 'BeachAccess', 'Map', 'Restaurant', 'LocalPizza',
   'Fastfood', 'RamenDining', 'Coffee', 'WineBar', 'LocalBar', 'BakeryDining',
-  'Laptop', 'Computer', 'Draw', 'InsertChart', 'TrendingUp', 'AttachFile',
+  'Laptop', 'Draw', 'InsertChart', 'TrendingUp', 'AttachFile',
   'Work', 'Build', 'Construction', 'Phone', 'DirectionsCar', 'Flight', 'DirectionsBus',
   'LocalHospital', 'School', 'AccountBalance', 'Church', 'ShoppingCart', 'Luggage', 'Home'
   ];
