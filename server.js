@@ -91,6 +91,22 @@ app.post('/api/availability', async (req, res) => {
   }
 });
 
+app.put('/api/availability/:id', async (req, res) => {
+  try {
+    const updated = await Availability.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updated) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+    res.json(updated);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 app.delete('/api/availability/:id', async (req, res) => {
   try {
     await Availability.findByIdAndDelete(req.params.id);

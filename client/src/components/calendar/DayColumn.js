@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import * as Icons from '@mui/icons-material';
 import { createHighlightColor, getTextColor, isWeekend } from './colorUtils';
 
@@ -20,6 +21,7 @@ const DayColumn = ({
   handleDayClick,
   handleEventClick,
   handleDelete,
+  handleEdit,
   handleJoin,
   isUserJoining,
   formatJoiners,
@@ -162,7 +164,7 @@ const DayColumn = ({
                   },
                   className: 'event-paper',
                   '&:hover .time-box': {
-                    right: { xs: isUserJoining(a) ? '140px' : '102px', sm: isUserJoining(a) ? '110px' : '72px' }
+                    right: { xs: isUserJoining(a) ? '180px' : '142px', sm: isUserJoining(a) ? '150px' : '112px' }
                   },
                   '&:hover .event-actions': {
                     opacity: { xs: 1, sm: 1 }
@@ -230,7 +232,7 @@ const DayColumn = ({
                             transition: { xs: 'none', sm: 'right 0.3s cubic-bezier(0.4,0,0.2,1)' },
                             zIndex: 2,
                             pointerEvents: 'none',
-                            right: isMobile ? (isUserJoining(a) ? '140px' : '102px') : (activeEventId === a._id ? (isUserJoining(a) ? '110px' : '72px') : 0)
+                            right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : (activeEventId === a._id ? (isUserJoining(a) ? '150px' : '112px') : 0)
                           }}
                           className="time-box"
                         >
@@ -282,6 +284,29 @@ const DayColumn = ({
                             ) : (
                               'Join'
                             )}
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            sx={{
+                              color: getTextColor(a.color),
+                              backgroundColor: 'rgba(255,255,255,0.2)',
+                              '&:hover': {
+                                backgroundColor: 'rgba(255,255,255,0.3)'
+                              },
+                              height: { xs: '36px', sm: '24px' },
+                              width: { xs: '36px', sm: '24px' },
+                              borderRadius: '12px',
+                              backdropFilter: 'blur(4px)',
+                              '& .MuiSvgIcon-root': {
+                                fontSize: { xs: '1.25rem', sm: '1rem' }
+                              }
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEdit(a);
+                            }}
+                          >
+                            <EditIcon fontSize="small" />
                           </IconButton>
                           <IconButton
                             size="small"
@@ -396,7 +421,7 @@ const DayColumn = ({
                     },
                     className: 'event-paper',
                     '&:hover .time-box': {
-                      right: { xs: isUserJoining(a) ? '140px' : '102px', sm: isUserJoining(a) ? '110px' : '72px' }
+                      right: { xs: isUserJoining(a) ? '180px' : '142px', sm: isUserJoining(a) ? '150px' : '112px' }
                     },
                     '&:hover .event-actions': {
                       opacity: { xs: 1, sm: 1 }
@@ -464,7 +489,7 @@ const DayColumn = ({
                               transition: { xs: 'none', sm: 'right 0.3s cubic-bezier(0.4,0,0.2,1)' },
                               zIndex: 2,
                               pointerEvents: 'none',
-                              right: isMobile ? (isUserJoining(a) ? '140px' : '102px') : (activeEventId === a._id ? (isUserJoining(a) ? '110px' : '72px') : 0)
+                              right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : (activeEventId === a._id ? (isUserJoining(a) ? '150px' : '112px') : 0)
                             }}
                             className="time-box"
                           >
@@ -535,6 +560,29 @@ const DayColumn = ({
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
+                                handleEdit(a);
+                              }}
+                            >
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              sx={{
+                                color: getTextColor(a.color),
+                                backgroundColor: 'rgba(255,255,255,0.2)',
+                                '&:hover': {
+                                  backgroundColor: 'rgba(255,255,255,0.3)'
+                                },
+                                height: { xs: '36px', sm: '24px' },
+                                width: { xs: '36px', sm: '24px' },
+                                borderRadius: '12px',
+                                backdropFilter: 'blur(4px)',
+                                '& .MuiSvgIcon-root': {
+                                  fontSize: { xs: '1.25rem', sm: '1rem' }
+                                }
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 handleDelete(a._id);
                               }}
                             >
@@ -582,3 +630,4 @@ const DayColumn = ({
 };
 
 export default DayColumn;
+
