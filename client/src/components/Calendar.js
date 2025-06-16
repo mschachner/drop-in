@@ -12,6 +12,7 @@ import axios from 'axios';
 import { createPastelColor, createDarkPastelColor, COLORS } from './calendar/colorUtils';
 import UserPreferences from './calendar/UserPreferences';
 import AddEventDialog from './calendar/AddEventDialog';
+import EditEventDialog from './calendar/EditEventDialog';
 
 import DayColumn from "./calendar/DayColumn";
 // Function to convert hex to RGB
@@ -43,6 +44,8 @@ const Calendar = () => {
   const [loading, setLoading] = useState(true);
   const [availabilities, setAvailabilities] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [userPreferences, setUserPreferences] = useState(() => {
     const storedColor = localStorage.getItem('preferredColor');
@@ -211,6 +214,55 @@ const Calendar = () => {
     }
   }, [userPreferences.name, availabilities, isUserJoining]);
 
+  const handleEdit = useCallback((event) => {
+    if (!userPreferences.name) {
+      setError('Please enter your name first');
+      return;
+    }
+    if (userPreferences.name !== event.name) {
+      setError(`Only ${event.name} can edit this event`);
+      return;
+    }
+
+    setSelectedEvent(event);
+    setSelectedDate(new Date(event.date));
+    setNewEvent({
+      timeSlot: event.timeSlot,
+      location: event.location,
+      section: event.section,
+      icon: event.icon || ''
+    });
+    setOpenEditDialog(true);
+  }, [userPreferences.name]);
+
+  const handleEditSubmit = useCallback(async () => {
+    if (!newEvent.timeSlot || !newEvent.location || !selectedEvent) {
+      setDialogError('Please fill in all fields');
+      return;
+    }
+
+    try {
+      const eventData = {
+        ...newEvent,
+        name: selectedEvent.name,
+        color: selectedEvent.color,
+        date: selectedEvent.date
+      };
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/availability/${selectedEvent._id}`, eventData);
+      setAvailabilities(prev => prev.map(a => a._id === selectedEvent._id ? response.data : a));
+      setOpenEditDialog(false);
+      setDialogError(null);
+    } catch (err) {
+      setError(err.message || 'Failed to update event');
+    }
+  }, [newEvent, selectedEvent]);
+
+  const handleEditKeyPress = useCallback((event) => {
+    if (event.key === 'Enter' && newEvent.timeSlot && newEvent.location) {
+      handleEditSubmit();
+    }
+  }, [newEvent, handleEditSubmit]);
+
   const getNextSevenDays = () => {
     const days = [];
     for (let i = 0; i < 7; i++) {
@@ -246,6 +298,14 @@ const Calendar = () => {
 
   const handleDialogClose = useCallback(() => {
     setOpenDialog(false);
+    setDialogError(null);
+    if (!isMobile) {
+      setActiveEventId(null);
+    }
+  }, [isMobile]);
+
+  const handleEditDialogClose = useCallback(() => {
+    setOpenEditDialog(false);
     setDialogError(null);
     if (!isMobile) {
       setActiveEventId(null);
@@ -375,6 +435,7 @@ const Calendar = () => {
                 handleDayClick={handleDayClick}
                 handleEventClick={handleEventClick}
                 handleDelete={handleDelete}
+                handleEdit={handleEdit}
                 handleJoin={handleJoin}
                 isUserJoining={isUserJoining}
                 formatJoiners={formatJoiners}
@@ -395,6 +456,18 @@ const Calendar = () => {
         setNewEvent={setNewEvent}
         handleSubmit={handleSubmit}
         handleKeyPress={handleKeyPress}
+        dialogError={dialogError}
+        userPreferences={userPreferences}
+        darkMode={darkMode}
+      />
+      <EditEventDialog
+        open={openEditDialog}
+        onClose={handleEditDialogClose}
+        selectedDate={selectedDate}
+        newEvent={newEvent}
+        setNewEvent={setNewEvent}
+        handleSubmit={handleEditSubmit}
+        handleKeyPress={handleEditKeyPress}
         dialogError={dialogError}
         userPreferences={userPreferences}
         darkMode={darkMode}
