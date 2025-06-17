@@ -221,7 +221,7 @@ const DayColumn = ({
                           sx={{
                             position: 'absolute',
                             top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '120px' : '84px' },
+                            minWidth: { xs: '78px', sm: isUserJoining(a) ? '120px' : '78px' },
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
                             backgroundColor: 'rgba(255,255,255,0.235)',
@@ -231,7 +231,7 @@ const DayColumn = ({
                             alignItems: 'center',
                             justifyContent: 'center',
                             flexShrink: 0,
-                            padding: { xs: '0 12px', sm: '0 8px' },
+                            padding: '0 8px',
                             fontWeight: 600,
                             fontSize: { xs: '0.875rem', sm: '0.875rem' },
                             fontFamily: 'Nunito, sans-serif',
@@ -285,6 +285,7 @@ const DayColumn = ({
                               justifyContent: 'flex-start',
                               gap: 0.5,
                               fontSize: { xs: '0.875rem', sm: '0.75rem' },
+                              fontFamily: 'Nunito, sans-serif',
                               padding: { xs: '0 12px', sm: '0 8px' },
                               borderRadius: '8px',
                               backdropFilter: 'blur(4px)'
@@ -495,7 +496,7 @@ const DayColumn = ({
                           sx={{
                             position: 'absolute',
                             top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '120px' : '84px' },
+                            minWidth: { xs: '78px', sm: isUserJoining(a) ? '120px' : '78px' },
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
                             backgroundColor: 'rgba(255,255,255,0.235)',
@@ -505,7 +506,7 @@ const DayColumn = ({
                             alignItems: 'center',
                             justifyContent: 'center',
                             flexShrink: 0,
-                            padding: { xs: '0 12px', sm: '0 8px' },
+                            padding: '0 8px',
                             fontWeight: 600,
                             fontSize: { xs: '0.875rem', sm: '0.875rem' },
                             fontFamily: 'Nunito, sans-serif',
@@ -559,6 +560,7 @@ const DayColumn = ({
                                 justifyContent: 'flex-start',
                                 gap: 0.5,
                                 fontSize: { xs: '0.875rem', sm: '0.75rem' },
+                                fontFamily: 'Nunito, sans-serif',
                                 padding: { xs: '0 12px', sm: '0 8px' },
                                 borderRadius: '8px',
                                 backdropFilter: 'blur(4px)'

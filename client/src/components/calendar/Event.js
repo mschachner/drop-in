@@ -83,7 +83,7 @@ const Event = memo(({
             </Box>
             <Tooltip title={event.timeSlot} arrow placement="top">
               <Box sx={{
-                minWidth: '60px',
+                minWidth: '78px',
                 height: '40px',
                 borderRadius: '8px',
                 backgroundColor: 'rgba(255,255,255,0.235)',
@@ -166,6 +166,7 @@ const Event = memo(({
             justifyContent: 'flex-start',
             gap: 0.5,
             fontSize: '0.75rem',
+            fontFamily: 'Nunito, sans-serif',
             padding: '4px 8px',
             borderRadius: '12px'
           }}
