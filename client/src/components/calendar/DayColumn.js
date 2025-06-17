@@ -242,6 +242,7 @@ const DayColumn = ({
                               inset: '-2px',
                               backgroundColor: a.color,
                               borderRadius: 'inherit',
+                              opacity: 0.6,
                               zIndex: -1
                             }
                           }}
@@ -509,6 +510,7 @@ const DayColumn = ({
                               inset: '-2px',
                               backgroundColor: a.color,
                               borderRadius: 'inherit',
+                              opacity: 0.6,
                               zIndex: -1
                             }
                           }}
