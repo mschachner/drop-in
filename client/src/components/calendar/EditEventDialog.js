@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Dialog,
   DialogTitle,
@@ -190,6 +191,26 @@ const EditEventDialog = ({
       />
     </Dialog>
   );
+};
+
+EditEventDialog.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  selectedDate: PropTypes.instanceOf(Date),
+  newEvent: PropTypes.shape({
+    timeSlot: PropTypes.string,
+    location: PropTypes.string,
+    section: PropTypes.string,
+    icon: PropTypes.string,
+  }).isRequired,
+  setNewEvent: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  handleKeyPress: PropTypes.func.isRequired,
+  dialogError: PropTypes.string,
+  userPreferences: PropTypes.shape({
+    color: PropTypes.string.isRequired,
+  }).isRequired,
+  darkMode: PropTypes.bool.isRequired,
 };
 
 export default EditEventDialog;

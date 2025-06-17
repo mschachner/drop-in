@@ -81,13 +81,6 @@ const Calendar = () => {
   const [activeEventId, setActiveEventId] = useState(null);
   const isMobile = useMediaQuery('(max-width:599px)');
 
-  useEffect(() => {
-    // Load fonts
-    const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Courgette&display=swap';
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
-  }, []);
 
   useEffect(() => {
     localStorage.setItem('preferredColor', userPreferences.color);
