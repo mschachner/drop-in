@@ -165,7 +165,11 @@ const DayColumn = ({
                   },
                   className: 'event-paper',
                   '&:hover .time-box': {
-                    top: { xs: 0, sm: '-36px' }
+                    top: { xs: 0, sm: '-36px' },
+                    backgroundColor: a.color,
+                    '&::before': {
+                      opacity: 0
+                    }
                   },
                   '&:hover .event-actions': {
                     opacity: { xs: 1, sm: 1 }
@@ -217,7 +221,7 @@ const DayColumn = ({
                           sx={{
                             position: 'absolute',
                             top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '120px' : '100px' },
+                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '120px' : '84px' },
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
                             backgroundColor: 'rgba(255,255,255,0.2)',
@@ -435,7 +439,11 @@ const DayColumn = ({
                     },
                     className: 'event-paper',
                     '&:hover .time-box': {
-                      top: { xs: 0, sm: '-36px' }
+                      top: { xs: 0, sm: '-36px' },
+                      backgroundColor: a.color,
+                      '&::before': {
+                        opacity: 0
+                      }
                     },
                     '&:hover .event-actions': {
                       opacity: { xs: 1, sm: 1 }
@@ -487,7 +495,7 @@ const DayColumn = ({
                           sx={{
                             position: 'absolute',
                             top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '120px' : '100px' },
+                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '120px' : '84px' },
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
                             backgroundColor: 'rgba(255,255,255,0.2)',
