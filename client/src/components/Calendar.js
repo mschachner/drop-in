@@ -106,7 +106,7 @@ const Calendar = () => {
     if (error === 'Please enter your name first' && userPreferences.name) {
       setError(null);
     }
-  }, [userPreferences.name, error]);
+  }, [userPreferences.name, error, setError]);
 
   const handleDayClick = useCallback((date, section) => {
     if (!userPreferences.name) {
@@ -121,7 +121,7 @@ const Calendar = () => {
       icon: ''
     });
     setOpenDialog(true);
-  }, [userPreferences.name]);
+  }, [userPreferences.name, setError]);
 
   const handleSubmit = useCallback(async () => {
     if (!newEvent.timeSlot || !newEvent.location) {
@@ -195,7 +195,7 @@ const Calendar = () => {
       icon: event.icon || ''
     });
     setOpenEditDialog(true);
-  }, [userPreferences.name]);
+  }, [userPreferences.name, setError]);
 
   const handleEditSubmit = useCallback(async () => {
     if (!newEvent.timeSlot || !newEvent.location || !selectedEvent) {
