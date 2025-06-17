@@ -19,6 +19,7 @@ import {
 import { getTextColor } from './colorUtils';
 import IconPickerDialog from './IconPickerDialog';
 import * as Icons from '@mui/icons-material';
+import ErrorTooltip from '../ErrorTooltip';
 
 const AddEventDialog = ({
   open,
@@ -30,7 +31,8 @@ const AddEventDialog = ({
   handleKeyPress,
   dialogError,
   userPreferences,
-  darkMode
+  darkMode,
+  isMobile
 }) => {
   const [iconAnchorEl, setIconAnchorEl] = useState(null);
 
@@ -58,9 +60,10 @@ const AddEventDialog = ({
         What are your plans on {selectedDate?.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}?
       </DialogTitle>
       <DialogContent>
-        {dialogError && (
+        {dialogError && isMobile && (
           <Alert severity="error" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>{dialogError}</Alert>
         )}
+        {!isMobile && <ErrorTooltip message={dialogError} />}
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <IconButton
             onClick={(e) => setIconAnchorEl(e.currentTarget)}
@@ -211,6 +214,7 @@ AddEventDialog.propTypes = {
     color: PropTypes.string.isRequired,
   }).isRequired,
   darkMode: PropTypes.bool.isRequired,
+  isMobile: PropTypes.bool.isRequired,
 };
 
 export default AddEventDialog;
