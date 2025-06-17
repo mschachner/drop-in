@@ -8,7 +8,7 @@ import {
   Alert,
   useMediaQuery
 } from '@mui/material';
-import axios from 'axios';
+import useAvailabilities from '../hooks/useAvailabilities';
 import { createPastelColor, createDarkPastelColor, COLORS } from './calendar/colorUtils';
 import UserPreferences from './calendar/UserPreferences';
 import AddEventDialog from './calendar/AddEventDialog';
@@ -39,10 +39,7 @@ const darkenColor = (hex) => {
 };
 
 const Calendar = () => {
-  const [error, setError] = useState(null);
   const [dialogError, setDialogError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [availabilities, setAvailabilities] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -54,6 +51,16 @@ const Calendar = () => {
       color: storedColor || '#66BB6A'
     };
   });
+  const {
+    availabilities,
+    loading,
+    error,
+    setError,
+    addAvailability,
+    updateAvailability,
+    deleteAvailability,
+    toggleJoin,
+  } = useAvailabilities(userPreferences.name);
   const [newEvent, setNewEvent] = useState({
     timeSlot: '',
     location: '',
@@ -94,33 +101,12 @@ const Calendar = () => {
     document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/availability`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true
-      });
-      setAvailabilities(response.data);
-      setError(null);
-    } catch (err) {
-      setError(err.message || 'Failed to load availabilities');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
 
   useEffect(() => {
     if (error === 'Please enter your name first' && userPreferences.name) {
       setError(null);
     }
-  }, [userPreferences.name, error]);
+  }, [userPreferences.name, error, setError]);
 
   const handleDayClick = useCallback((date, section) => {
     if (!userPreferences.name) {
@@ -135,7 +121,7 @@ const Calendar = () => {
       icon: ''
     });
     setOpenDialog(true);
-  }, [userPreferences.name]);
+  }, [userPreferences.name, setError]);
 
   const handleSubmit = useCallback(async () => {
     if (!newEvent.timeSlot || !newEvent.location) {
@@ -148,16 +134,15 @@ const Calendar = () => {
         ...newEvent,
         name: userPreferences.name,
         color: userPreferences.color,
-        date: selectedDate.toISOString()
+        date: selectedDate.toISOString(),
       };
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/availability`, eventData);
-      setAvailabilities(prev => [...prev, response.data]);
+      await addAvailability(eventData);
       setOpenDialog(false);
       setDialogError(null);
     } catch (err) {
       setError(err.message || 'Failed to add event');
     }
-  }, [newEvent, userPreferences, selectedDate]);
+  }, [newEvent, userPreferences, selectedDate, addAvailability, setError]);
 
   const handleKeyPress = useCallback((event) => {
     if (event.key === 'Enter' && newEvent.timeSlot && newEvent.location) {
@@ -167,12 +152,11 @@ const Calendar = () => {
 
   const handleDelete = useCallback(async (eventId) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}`);
-      setAvailabilities(prev => prev.filter(a => a._id !== eventId));
+      await deleteAvailability(eventId);
     } catch (err) {
       setError(err.message || 'Failed to delete event');
     }
-  }, []);
+  }, [deleteAvailability, setError]);
 
   const isUserJoining = useCallback((event) => {
     return event?.joiners?.includes(userPreferences.name) || false;
@@ -186,33 +170,11 @@ const Calendar = () => {
 
     try {
       const event = availabilities.find(a => a._id === eventId);
-      const isJoining = !isUserJoining(event);
-
-      if (isJoining) {
-        await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}/join`, {
-          name: userPreferences.name
-        });
-      } else {
-        await axios.post(`${process.env.REACT_APP_API_URL}/api/availability/${eventId}/unjoin`, {
-          name: userPreferences.name
-        });
-      }
-      setAvailabilities(prev =>
-        prev.map(a =>
-          a._id === eventId
-            ? {
-                ...a,
-                joiners: isJoining
-                  ? [...(a.joiners || []), userPreferences.name]
-                  : a.joiners.filter(j => j !== userPreferences.name)
-              }
-            : a
-        )
-      );
+      await toggleJoin(event);
     } catch (err) {
       setError(err.message || 'Failed to update event');
     }
-  }, [userPreferences.name, availabilities, isUserJoining]);
+  }, [userPreferences.name, availabilities, toggleJoin, setError]);
 
   const handleEdit = useCallback((event) => {
     if (!userPreferences.name) {
@@ -233,7 +195,7 @@ const Calendar = () => {
       icon: event.icon || ''
     });
     setOpenEditDialog(true);
-  }, [userPreferences.name]);
+  }, [userPreferences.name, setError]);
 
   const handleEditSubmit = useCallback(async () => {
     if (!newEvent.timeSlot || !newEvent.location || !selectedEvent) {
@@ -246,16 +208,15 @@ const Calendar = () => {
         ...newEvent,
         name: selectedEvent.name,
         color: selectedEvent.color,
-        date: selectedEvent.date
+        date: selectedEvent.date,
       };
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/availability/${selectedEvent._id}`, eventData);
-      setAvailabilities(prev => prev.map(a => a._id === selectedEvent._id ? response.data : a));
+      await updateAvailability(selectedEvent._id, eventData);
       setOpenEditDialog(false);
       setDialogError(null);
     } catch (err) {
       setError(err.message || 'Failed to update event');
     }
-  }, [newEvent, selectedEvent]);
+  }, [newEvent, selectedEvent, updateAvailability, setError]);
 
   const handleEditKeyPress = useCallback((event) => {
     if (event.key === 'Enter' && newEvent.timeSlot && newEvent.location) {
