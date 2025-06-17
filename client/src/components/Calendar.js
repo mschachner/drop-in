@@ -13,6 +13,7 @@ import { createPastelColor, createDarkPastelColor, COLORS } from './calendar/col
 import UserPreferences from './calendar/UserPreferences';
 import AddEventDialog from './calendar/AddEventDialog';
 import EditEventDialog from './calendar/EditEventDialog';
+import ErrorTooltip from './ErrorTooltip';
 
 import DayColumn from "./calendar/DayColumn";
 // Function to convert hex to RGB
@@ -100,6 +101,18 @@ const Calendar = () => {
       setError(null);
     }
   }, [userPreferences.name, error, setError]);
+
+  useEffect(() => {
+    if (!error) return;
+    const timer = setTimeout(() => setError(null), 3000);
+    return () => clearTimeout(timer);
+  }, [error, setError]);
+
+  useEffect(() => {
+    if (!dialogError) return;
+    const timer = setTimeout(() => setDialogError(null), 3000);
+    return () => clearTimeout(timer);
+  }, [dialogError]);
 
   const handleDayClick = useCallback((date, section) => {
     if (!userPreferences.name) {
@@ -339,9 +352,10 @@ const Calendar = () => {
         </Typography>
       </Box>
       
-      {error && (
+      {error && isMobile && (
         <Alert severity="error" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>{error}</Alert>
       )}
+      {!isMobile && <ErrorTooltip message={error} />}
 
       <UserPreferences
         userPreferences={userPreferences}
@@ -413,6 +427,7 @@ const Calendar = () => {
         dialogError={dialogError}
         userPreferences={userPreferences}
         darkMode={darkMode}
+        isMobile={isMobile}
       />
       <EditEventDialog
         open={openEditDialog}
@@ -425,6 +440,7 @@ const Calendar = () => {
         dialogError={dialogError}
         userPreferences={userPreferences}
         darkMode={darkMode}
+        isMobile={isMobile}
       />
     </Box>
   );
