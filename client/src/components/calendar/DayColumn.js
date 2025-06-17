@@ -224,7 +224,7 @@ const DayColumn = ({
                             minWidth: { xs: '80px', sm: isUserJoining(a) ? '120px' : '84px' },
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
-                            backgroundColor: 'rgba(255,255,255,0.2)',
+                            backgroundColor: 'rgba(255,255,255,0.235)',
                             backdropFilter: 'blur(4px)',
                             color: getTextColor(a.color),
                             display: 'flex',
@@ -286,7 +286,7 @@ const DayColumn = ({
                               gap: 0.5,
                               fontSize: { xs: '0.875rem', sm: '0.75rem' },
                               padding: { xs: '0 12px', sm: '0 8px' },
-                              borderRadius: '12px',
+                              borderRadius: '8px',
                               backdropFilter: 'blur(4px)'
                             }}
                             onClick={(e) => {
@@ -313,7 +313,7 @@ const DayColumn = ({
                               },
                               height: { xs: '36px', sm: '24px' },
                               width: { xs: '36px', sm: '24px' },
-                              borderRadius: '12px',
+                              borderRadius: '8px',
                               backdropFilter: 'blur(4px)',
                               '& .MuiSvgIcon-root': {
                                 fontSize: { xs: '1.25rem', sm: '1rem' }
@@ -336,7 +336,7 @@ const DayColumn = ({
                               },
                               height: { xs: '36px', sm: '24px' },
                               width: { xs: '36px', sm: '24px' },
-                              borderRadius: '12px',
+                              borderRadius: '8px',
                               backdropFilter: 'blur(4px)',
                               '& .MuiSvgIcon-root': {
                                 fontSize: { xs: '1.25rem', sm: '1rem' }
@@ -498,7 +498,7 @@ const DayColumn = ({
                             minWidth: { xs: '80px', sm: isUserJoining(a) ? '120px' : '84px' },
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
-                            backgroundColor: 'rgba(255,255,255,0.2)',
+                            backgroundColor: 'rgba(255,255,255,0.235)',
                             backdropFilter: 'blur(4px)',
                             color: getTextColor(a.color),
                             display: 'flex',
@@ -560,7 +560,7 @@ const DayColumn = ({
                                 gap: 0.5,
                                 fontSize: { xs: '0.875rem', sm: '0.75rem' },
                                 padding: { xs: '0 12px', sm: '0 8px' },
-                                borderRadius: '12px',
+                                borderRadius: '8px',
                                 backdropFilter: 'blur(4px)'
                               }}
                               onClick={(e) => {
@@ -587,7 +587,7 @@ const DayColumn = ({
                                 },
                                 height: { xs: '36px', sm: '24px' },
                                 width: { xs: '36px', sm: '24px' },
-                                borderRadius: '12px',
+                                borderRadius: '8px',
                                 backdropFilter: 'blur(4px)',
                                 '& .MuiSvgIcon-root': {
                                   fontSize: { xs: '1.25rem', sm: '1rem' }
@@ -610,7 +610,7 @@ const DayColumn = ({
                                 },
                                 height: { xs: '36px', sm: '24px' },
                                 width: { xs: '36px', sm: '24px' },
-                                borderRadius: '12px',
+                                borderRadius: '8px',
                                 backdropFilter: 'blur(4px)',
                                 '& .MuiSvgIcon-root': {
                                   fontSize: { xs: '1.25rem', sm: '1rem' }
