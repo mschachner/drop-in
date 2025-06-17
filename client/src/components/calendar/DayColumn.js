@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Grid,
   Box,
@@ -627,6 +628,25 @@ const DayColumn = ({
       </Box>
     </Grid>
   );
+};
+
+DayColumn.propTypes = {
+  date: PropTypes.instanceOf(Date).isRequired,
+  index: PropTypes.number.isRequired,
+  dayAvailabilities: PropTypes.arrayOf(PropTypes.object).isRequired,
+  handleDayClick: PropTypes.func.isRequired,
+  handleEventClick: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  handleEdit: PropTypes.func.isRequired,
+  handleJoin: PropTypes.func.isRequired,
+  isUserJoining: PropTypes.func.isRequired,
+  formatJoiners: PropTypes.func.isRequired,
+  userPreferences: PropTypes.shape({
+    color: PropTypes.string.isRequired,
+  }).isRequired,
+  isMobile: PropTypes.bool.isRequired,
+  activeEventId: PropTypes.string,
+  darkMode: PropTypes.bool.isRequired,
 };
 
 export default DayColumn;
