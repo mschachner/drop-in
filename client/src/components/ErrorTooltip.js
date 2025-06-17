@@ -1,37 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Tooltip } from '@mui/material';
+import { Tooltip, Fade } from '@mui/material';
+import useMousePosition from '../hooks/useMousePosition';
 
-const ErrorTooltip = ({ message }) => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+const ErrorTooltip = ({ message, duration = 3000 }) => {
+  const { x, y } = useMousePosition();
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setPosition({ x: e.clientX + 12, y: e.clientY + 12 });
-    };
+    if (!message) return;
+    setOpen(true);
+    const timer = setTimeout(() => setOpen(false), duration);
+    return () => clearTimeout(timer);
+  }, [message, duration]);
 
-    if (message) {
-      window.addEventListener('mousemove', handleMouseMove);
-    }
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [message]);
-
-  if (!message) return null;
+  if (!message && !open) return null;
 
   return (
     <div
       style={{
         position: 'fixed',
-        left: position.x,
-        top: position.y,
+        left: x + 12,
+        top: y + 12,
         pointerEvents: 'none',
         zIndex: 1500,
       }}
     >
-      <Tooltip open title={message} placement="right" arrow>
+      <Tooltip
+        open={open}
+        title={message}
+        placement="right"
+        arrow
+        TransitionComponent={Fade}
+      >
         <span />
       </Tooltip>
     </div>
@@ -40,6 +41,7 @@ const ErrorTooltip = ({ message }) => {
 
 ErrorTooltip.propTypes = {
   message: PropTypes.string,
+  duration: PropTypes.number,
 };
 
 export default ErrorTooltip;
