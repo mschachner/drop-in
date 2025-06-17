@@ -165,7 +165,7 @@ const DayColumn = ({
                   },
                   className: 'event-paper',
                   '&:hover .time-box': {
-                    top: { xs: 0, sm: '-28px' }
+                    top: { xs: 0, sm: '-36px' }
                   },
                   '&:hover .event-actions': {
                     opacity: { xs: 1, sm: 1 }
@@ -214,11 +214,12 @@ const DayColumn = ({
                         <Box
                           sx={{
                             position: 'absolute',
-                            top: { xs: 0, sm: activeEventId === a._id ? '-28px' : 0 },
-                            minWidth: { xs: '80px', sm: '60px' },
-                            height: { xs: '36px', sm: '24px' },
+                            top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
+                            minWidth: { xs: '80px', sm: '70px' },
+                            height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
-                            backgroundColor: a.color,
+                            backgroundColor: 'rgba(255,255,255,0.2)',
+                            backdropFilter: 'blur(4px)',
                             color: getTextColor(a.color),
                             display: 'flex',
                             alignItems: 'center',
@@ -234,7 +235,15 @@ const DayColumn = ({
                             transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
                             zIndex: 2,
                             pointerEvents: 'none',
-                            right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : 0
+                            right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : 0,
+                            '&::before': {
+                              content: '""',
+                              position: 'absolute',
+                              inset: 0,
+                              backgroundColor: a.color,
+                              borderRadius: 'inherit',
+                              zIndex: -1
+                            }
                           }}
                           className="time-box"
                         >
@@ -423,7 +432,7 @@ const DayColumn = ({
                     },
                     className: 'event-paper',
                     '&:hover .time-box': {
-                      top: { xs: 0, sm: '-28px' }
+                      top: { xs: 0, sm: '-36px' }
                     },
                     '&:hover .event-actions': {
                       opacity: { xs: 1, sm: 1 }
@@ -472,11 +481,12 @@ const DayColumn = ({
                           <Box
                           sx={{
                             position: 'absolute',
-                            top: { xs: 0, sm: activeEventId === a._id ? '-28px' : 0 },
-                            minWidth: { xs: '80px', sm: '60px' },
-                            height: { xs: '36px', sm: '24px' },
+                            top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
+                            minWidth: { xs: '80px', sm: '70px' },
+                            height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
-                            backgroundColor: a.color,
+                            backgroundColor: 'rgba(255,255,255,0.2)',
+                            backdropFilter: 'blur(4px)',
                             color: getTextColor(a.color),
                             display: 'flex',
                             alignItems: 'center',
@@ -492,7 +502,15 @@ const DayColumn = ({
                             transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
                             zIndex: 2,
                             pointerEvents: 'none',
-                            right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : 0
+                            right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : 0,
+                            '&::before': {
+                              content: '""',
+                              position: 'absolute',
+                              inset: 0,
+                              backgroundColor: a.color,
+                              borderRadius: 'inherit',
+                              zIndex: -1
+                            }
                           }}
                             className="time-box"
                           >
