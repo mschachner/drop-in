@@ -215,7 +215,7 @@ const DayColumn = ({
                           sx={{
                             position: 'absolute',
                             top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            minWidth: { xs: '80px', sm: '70px' },
+                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '150px' : '112px' },
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
                             backgroundColor: 'rgba(255,255,255,0.2)',
@@ -227,7 +227,7 @@ const DayColumn = ({
                             flexShrink: 0,
                             padding: { xs: '0 12px', sm: '0 8px' },
                             fontWeight: 600,
-                            fontSize: { xs: '0.875rem', sm: '0.75rem' },
+                            fontSize: { xs: '0.875rem', sm: '0.875rem' },
                             fontFamily: 'Nunito, sans-serif',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
@@ -239,7 +239,7 @@ const DayColumn = ({
                             '&::before': {
                               content: '""',
                               position: 'absolute',
-                              inset: 0,
+                              inset: '-2px',
                               backgroundColor: a.color,
                               borderRadius: 'inherit',
                               zIndex: -1
@@ -482,7 +482,7 @@ const DayColumn = ({
                           sx={{
                             position: 'absolute',
                             top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            minWidth: { xs: '80px', sm: '70px' },
+                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '150px' : '112px' },
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
                             backgroundColor: 'rgba(255,255,255,0.2)',
@@ -494,7 +494,7 @@ const DayColumn = ({
                             flexShrink: 0,
                             padding: { xs: '0 12px', sm: '0 8px' },
                             fontWeight: 600,
-                            fontSize: { xs: '0.875rem', sm: '0.75rem' },
+                            fontSize: { xs: '0.875rem', sm: '0.875rem' },
                             fontFamily: 'Nunito, sans-serif',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
@@ -506,7 +506,7 @@ const DayColumn = ({
                             '&::before': {
                               content: '""',
                               position: 'absolute',
-                              inset: 0,
+                              inset: '-2px',
                               backgroundColor: a.color,
                               borderRadius: 'inherit',
                               zIndex: -1
