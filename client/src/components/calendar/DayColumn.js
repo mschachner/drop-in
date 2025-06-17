@@ -165,7 +165,7 @@ const DayColumn = ({
                   },
                   className: 'event-paper',
                   '&:hover .time-box': {
-                    right: { xs: isUserJoining(a) ? '180px' : '142px', sm: isUserJoining(a) ? '150px' : '112px' }
+                    top: { xs: 0, sm: '-36px' }
                   },
                   '&:hover .event-actions': {
                     opacity: { xs: 1, sm: 1 }
@@ -214,26 +214,36 @@ const DayColumn = ({
                         <Box
                           sx={{
                             position: 'absolute',
-                            top: 0,
-                            minWidth: { xs: '80px', sm: '60px' },
-                            height: { xs: '36px', sm: '24px' },
+                            top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
+                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '150px' : '112px' },
+                            height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
                             backgroundColor: 'rgba(255,255,255,0.2)',
+                            backdropFilter: 'blur(4px)',
+                            color: getTextColor(a.color),
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             flexShrink: 0,
                             padding: { xs: '0 12px', sm: '0 8px' },
                             fontWeight: 600,
-                            fontSize: { xs: '0.875rem', sm: '0.75rem' },
+                            fontSize: { xs: '0.875rem', sm: '0.875rem' },
                             fontFamily: 'Nunito, sans-serif',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
-                            transition: { xs: 'none', sm: 'right 0.3s cubic-bezier(0.4,0,0.2,1)' },
+                            transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
                             zIndex: 2,
                             pointerEvents: 'none',
-                            right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : (activeEventId === a._id ? (isUserJoining(a) ? '150px' : '112px') : 0)
+                            right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : 0,
+                            '&::before': {
+                              content: '""',
+                              position: 'absolute',
+                              inset: '-2px',
+                              backgroundColor: a.color,
+                              borderRadius: 'inherit',
+                              zIndex: -1
+                            }
                           }}
                           className="time-box"
                         >
@@ -422,7 +432,7 @@ const DayColumn = ({
                     },
                     className: 'event-paper',
                     '&:hover .time-box': {
-                      right: { xs: isUserJoining(a) ? '180px' : '142px', sm: isUserJoining(a) ? '150px' : '112px' }
+                      top: { xs: 0, sm: '-36px' }
                     },
                     '&:hover .event-actions': {
                       opacity: { xs: 1, sm: 1 }
@@ -469,29 +479,39 @@ const DayColumn = ({
                         </Box>
                         <Box sx={{ position: 'relative', minHeight: '40px', display: 'flex', alignItems: 'center' }}>
                           <Box
-                            sx={{
+                          sx={{
+                            position: 'absolute',
+                            top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
+                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '150px' : '112px' },
+                            height: { xs: '36px', sm: '28px' },
+                            borderRadius: '8px',
+                            backgroundColor: 'rgba(255,255,255,0.2)',
+                            backdropFilter: 'blur(4px)',
+                            color: getTextColor(a.color),
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                            padding: { xs: '0 12px', sm: '0 8px' },
+                            fontWeight: 600,
+                            fontSize: { xs: '0.875rem', sm: '0.875rem' },
+                            fontFamily: 'Nunito, sans-serif',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
+                            zIndex: 2,
+                            pointerEvents: 'none',
+                            right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : 0,
+                            '&::before': {
+                              content: '""',
                               position: 'absolute',
-                              top: 0,
-                              minWidth: { xs: '80px', sm: '60px' },
-                              height: { xs: '36px', sm: '24px' },
-                              borderRadius: '8px',
-                              backgroundColor: 'rgba(255,255,255,0.2)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              flexShrink: 0,
-                              padding: { xs: '0 12px', sm: '0 8px' },
-                              fontWeight: 600,
-                              fontSize: { xs: '0.875rem', sm: '0.75rem' },
-                              fontFamily: 'Nunito, sans-serif',
-                              whiteSpace: 'nowrap',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              transition: { xs: 'none', sm: 'right 0.3s cubic-bezier(0.4,0,0.2,1)' },
-                              zIndex: 2,
-                              pointerEvents: 'none',
-                              right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : (activeEventId === a._id ? (isUserJoining(a) ? '150px' : '112px') : 0)
-                            }}
+                              inset: '-2px',
+                              backgroundColor: a.color,
+                              borderRadius: 'inherit',
+                              zIndex: -1
+                            }
+                          }}
                             className="time-box"
                           >
                             {a.timeSlot}
