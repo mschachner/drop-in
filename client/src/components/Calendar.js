@@ -102,6 +102,18 @@ const Calendar = () => {
     }
   }, [userPreferences.name, error, setError]);
 
+  useEffect(() => {
+    if (!error) return;
+    const timer = setTimeout(() => setError(null), 3000);
+    return () => clearTimeout(timer);
+  }, [error, setError]);
+
+  useEffect(() => {
+    if (!dialogError) return;
+    const timer = setTimeout(() => setDialogError(null), 3000);
+    return () => clearTimeout(timer);
+  }, [dialogError]);
+
   const handleDayClick = useCallback((date, section) => {
     if (!userPreferences.name) {
       setError('Please enter your name first');
