@@ -165,7 +165,11 @@ const DayColumn = ({
                   },
                   className: 'event-paper',
                   '&:hover .time-box': {
-                    top: { xs: 0, sm: '-36px' }
+                    top: { xs: 0, sm: '-36px' },
+                    backgroundColor: a.color,
+                    '&::before': {
+                      opacity: 0
+                    }
                   },
                   '&:hover .event-actions': {
                     opacity: { xs: 1, sm: 1 }
@@ -204,7 +208,9 @@ const DayColumn = ({
                             wordBreak: 'break-word',
                             lineHeight: 1.2,
                             flex: 1,
-                            pr: 1
+                            pr: 1,
+                            position: 'relative',
+                            zIndex: 3
                           }}
                         >
                           {a.name}
@@ -215,7 +221,7 @@ const DayColumn = ({
                           sx={{
                             position: 'absolute',
                             top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '150px' : '112px' },
+                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '120px' : '84px' },
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
                             backgroundColor: 'rgba(255,255,255,0.2)',
@@ -433,7 +439,11 @@ const DayColumn = ({
                     },
                     className: 'event-paper',
                     '&:hover .time-box': {
-                      top: { xs: 0, sm: '-36px' }
+                      top: { xs: 0, sm: '-36px' },
+                      backgroundColor: a.color,
+                      '&::before': {
+                        opacity: 0
+                      }
                     },
                     '&:hover .event-actions': {
                       opacity: { xs: 1, sm: 1 }
@@ -472,7 +482,9 @@ const DayColumn = ({
                               wordBreak: 'break-word',
                               lineHeight: 1.2,
                               flex: 1,
-                              pr: 1
+                              pr: 1,
+                              position: 'relative',
+                              zIndex: 3
                             }}
                           >
                             {a.name}
@@ -483,7 +495,7 @@ const DayColumn = ({
                           sx={{
                             position: 'absolute',
                             top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '150px' : '112px' },
+                            minWidth: { xs: '80px', sm: isUserJoining(a) ? '120px' : '84px' },
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
                             backgroundColor: 'rgba(255,255,255,0.2)',
