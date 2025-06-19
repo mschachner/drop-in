@@ -1,10 +1,11 @@
 import React, { memo, useRef } from 'react';
-import { 
-  Paper, 
-  Typography, 
-  Box, 
-  IconButton, 
-  Tooltip 
+import {
+  Paper,
+  Typography,
+  Box,
+  IconButton,
+  Tooltip,
+  useMediaQuery
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import * as Icons from '@mui/icons-material';
@@ -23,9 +24,12 @@ const Event = memo(({
   const actionsRef = useRef(null);
   const width = useElementWidth(paperRef);
   const actionsWidth = useChildrenWidth(actionsRef);
-  const half = width / 2;
-  const timeBoxWidth = half - 16;
-  const actionsMaxWidth = half - 8;
+  const isMobile = useMediaQuery('(max-width:599px)');
+  const timeRatio = isMobile ? 0.25 : 0.5;
+  const timeBoxWidth = width * timeRatio - 16;
+  const actionsMaxWidth = isMobile
+    ? width - timeBoxWidth - 8
+    : width * 0.5 - 8;
   const shouldWrapActions = actionsWidth > actionsMaxWidth;
 
   return (
@@ -179,7 +183,9 @@ const Event = memo(({
               backgroundColor: 'rgba(255,255,255,0.3)'
             },
             minWidth: isUserJoining(event) ? '50px' : 'auto',
-            justifyContent: 'flex-start',
+            justifyContent: isUserJoining(event)
+              ? 'flex-start'
+              : { xs: 'center', sm: 'flex-start' },
             gap: 0.5,
             fontSize: '0.75rem',
             fontFamily: 'Nunito, sans-serif',
