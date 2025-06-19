@@ -221,7 +221,7 @@ const DayColumn = ({
                           sx={{
                             position: 'absolute',
                             top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            minWidth: { xs: '78px', sm: isUserJoining(a) ? '120px' : '78px' },
+                            width: { xs: '78px', sm: isUserJoining(a) ? '120px' : '78px' },
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
                             backgroundColor: 'rgba(255,255,255,0.235)',
@@ -237,7 +237,7 @@ const DayColumn = ({
                             fontFamily: 'Nunito, sans-serif',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
-                            textOverflow: 'ellipsis',
+                            maxWidth: 'calc(50% - 16px)',
                             transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
                             zIndex: 2,
                             pointerEvents: 'none',
@@ -264,6 +264,8 @@ const DayColumn = ({
                             right: 0,
                             display: 'flex',
                             gap: 0.5,
+                            flexWrap: 'wrap',
+                            maxWidth: 'calc(50% - 8px)',
                             opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
                             transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },
                             zIndex: 1,
@@ -496,7 +498,7 @@ const DayColumn = ({
                           sx={{
                             position: 'absolute',
                             top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            minWidth: { xs: '78px', sm: isUserJoining(a) ? '120px' : '78px' },
+                            width: { xs: '78px', sm: isUserJoining(a) ? '120px' : '78px' },
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
                             backgroundColor: 'rgba(255,255,255,0.235)',
@@ -512,7 +514,7 @@ const DayColumn = ({
                             fontFamily: 'Nunito, sans-serif',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
-                            textOverflow: 'ellipsis',
+                            maxWidth: 'calc(50% - 16px)',
                             transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
                             zIndex: 2,
                             pointerEvents: 'none',
@@ -533,12 +535,14 @@ const DayColumn = ({
                           </Box>
                           <Box
                             className="event-actions"
-                            sx={{
+                          sx={{
                               position: 'absolute',
                               top: 0,
                               right: 0,
                               display: 'flex',
                               gap: 0.5,
+                              flexWrap: 'wrap',
+                              maxWidth: 'calc(50% - 8px)',
                               opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
                               transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },
                               zIndex: 1,
