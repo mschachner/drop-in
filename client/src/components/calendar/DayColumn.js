@@ -174,7 +174,9 @@ const ColumnEvent = ({
                     },
                     minWidth: isUserJoining(a) ? { xs: '80px', sm: '50px' } : { xs: '60px', sm: 'auto' },
                     height: { xs: '36px', sm: '24px' },
-                    justifyContent: 'flex-start',
+                    justifyContent: isUserJoining(a)
+                      ? 'flex-start'
+                      : { xs: 'center', sm: 'flex-start' },
                     gap: 0.5,
                     fontSize: { xs: '0.875rem', sm: '0.75rem' },
                     fontFamily: 'Nunito, sans-serif',
@@ -296,9 +298,10 @@ const DayColumn = ({
 }) => {
   const containerRef = useRef(null);
   const width = useElementWidth(containerRef);
-  const half = width / 2;
-  const timeBoxWidth = half - 16;
-  const actionsMaxWidth = half - 8;
+  const ratio = isMobile ? 0.25 : 0.5;
+  const portion = width * ratio;
+  const timeBoxWidth = portion - 16;
+  const actionsMaxWidth = portion - 8;
   const handleSectionClick = (section, e) => {
     if (!isMobile) {
       handleDayClick(date, section, e);
