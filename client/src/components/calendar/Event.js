@@ -92,7 +92,7 @@ const Event = memo(({
                 justifyContent: 'center',
                 flexShrink: 0,
                 padding: '0 8px',
-                maxWidth: '50%',
+                maxWidth: 'calc(50% - 16px)',
                 overflow: 'hidden'
               }}>
                 <Typography variant="body2" sx={{
@@ -145,7 +145,7 @@ const Event = memo(({
           display: 'flex',
           gap: 0.5,
           flexWrap: 'wrap',
-          maxWidth: '50%',
+          maxWidth: 'calc(50% - 8px)',
           opacity: 0,
           transition: 'opacity 0.2s ease',
           backgroundColor: event.color,
