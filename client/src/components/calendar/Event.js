@@ -91,15 +91,16 @@ const Event = memo(({
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0,
-                padding: '0 8px'
+                padding: '0 8px',
+                maxWidth: '50%',
+                overflow: 'hidden'
               }}>
-                <Typography variant="body2" sx={{ 
+                <Typography variant="body2" sx={{
                   fontWeight: 600,
                   fontSize: '0.75rem',
                   fontFamily: 'Nunito, sans-serif',
                   whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
+                  overflow: 'hidden'
                 }}>
                   {event.timeSlot}
                 </Typography>
@@ -135,14 +136,16 @@ const Event = memo(({
           )}
         </Box>
       </Box>
-      <Box 
+      <Box
         className="event-actions"
-        sx={{ 
-          position: 'absolute', 
-          top: 8, 
+        sx={{
+          position: 'absolute',
+          top: 8,
           right: 8,
           display: 'flex',
           gap: 0.5,
+          flexWrap: 'wrap',
+          maxWidth: '50%',
           opacity: 0,
           transition: 'opacity 0.2s ease',
           backgroundColor: event.color,
