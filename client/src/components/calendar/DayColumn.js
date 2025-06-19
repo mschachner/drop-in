@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
   Grid,
@@ -14,6 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import * as Icons from '@mui/icons-material';
 import { createHighlightColor, getTextColor, isWeekend } from './colorUtils';
+import useElementWidth from '../../hooks/useElementWidth';
 
 const DayColumn = ({
   date,
@@ -31,6 +32,12 @@ const DayColumn = ({
   activeEventId,
   darkMode
 }) => {
+  const containerRef = useRef(null);
+  const width = useElementWidth(containerRef);
+  const half = width / 2;
+  const timeBoxWidth = half - 16;
+  const actionsMaxWidth = half - 8;
+  const shouldWrapActions = actionsMaxWidth < 120;
   const handleSectionClick = (section, e) => {
     if (!isMobile) {
       handleDayClick(date, section, e);
@@ -131,6 +138,7 @@ const DayColumn = ({
         <Divider sx={{ mb: 2 }} />
         {/* Day Section */}
         <Box
+          ref={containerRef}
           sx={{
             flex: 1,
             cursor: { xs: 'default', sm: 'pointer' },
@@ -221,7 +229,7 @@ const DayColumn = ({
                           sx={{
                             position: 'absolute',
                             top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            width: { xs: '78px', sm: isUserJoining(a) ? '120px' : '78px' },
+                            width: `${timeBoxWidth}px`,
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
                             backgroundColor: 'rgba(255,255,255,0.235)',
@@ -237,7 +245,7 @@ const DayColumn = ({
                             fontFamily: 'Nunito, sans-serif',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
-                            maxWidth: 'calc(50% - 16px)',
+                            maxWidth: `${actionsMaxWidth}px`,
                             transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
                             zIndex: 2,
                             pointerEvents: 'none',
@@ -264,8 +272,8 @@ const DayColumn = ({
                             right: 0,
                             display: 'flex',
                             gap: 0.5,
-                            flexWrap: 'wrap',
-                            maxWidth: 'calc(50% - 8px)',
+                            flexWrap: shouldWrapActions ? 'wrap' : 'nowrap',
+                            maxWidth: `${actionsMaxWidth}px`,
                             opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
                             transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },
                             zIndex: 1,
@@ -498,7 +506,7 @@ const DayColumn = ({
                           sx={{
                             position: 'absolute',
                             top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            width: { xs: '78px', sm: isUserJoining(a) ? '120px' : '78px' },
+                            width: `${timeBoxWidth}px`,
                             height: { xs: '36px', sm: '28px' },
                             borderRadius: '8px',
                             backgroundColor: 'rgba(255,255,255,0.235)',
@@ -514,7 +522,7 @@ const DayColumn = ({
                             fontFamily: 'Nunito, sans-serif',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
-                            maxWidth: 'calc(50% - 16px)',
+                            maxWidth: `${actionsMaxWidth}px`,
                             transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
                             zIndex: 2,
                             pointerEvents: 'none',
@@ -541,8 +549,8 @@ const DayColumn = ({
                               right: 0,
                               display: 'flex',
                               gap: 0.5,
-                              flexWrap: 'wrap',
-                              maxWidth: 'calc(50% - 8px)',
+                              flexWrap: shouldWrapActions ? 'wrap' : 'nowrap',
+                              maxWidth: `${actionsMaxWidth}px`,
                               opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
                               transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },
                               zIndex: 1,
