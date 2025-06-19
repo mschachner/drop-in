@@ -66,7 +66,10 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
             ))}
             <Box
               component="label"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                setUserPreferences({ ...userPreferences, color: selectedColor });
+              }}
               sx={{
                 width: 32,
                 height: 32,
