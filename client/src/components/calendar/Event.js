@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useRef } from 'react';
 import { 
   Paper, 
   Typography, 
@@ -9,16 +9,25 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import * as Icons from '@mui/icons-material';
 import { getTextColor } from './colorUtils';
+import useElementWidth from '../../hooks/useElementWidth';
 
 const Event = memo(({ 
-  event, 
-  onEventClick, 
-  onDelete, 
-  isUserJoining, 
-  formatJoiners 
+  event,
+  onEventClick,
+  onDelete,
+  isUserJoining,
+  formatJoiners
 }) => {
+  const paperRef = useRef(null);
+  const width = useElementWidth(paperRef);
+  const half = width / 2;
+  const timeBoxWidth = half - 16;
+  const actionsMaxWidth = half - 8;
+  const shouldWrapActions = actionsMaxWidth < 120;
+
   return (
     <Paper
+      ref={paperRef}
       sx={{
         p: 1.5,
         mb: 1.5,
@@ -83,7 +92,7 @@ const Event = memo(({
             </Box>
             <Tooltip title={event.timeSlot} arrow placement="top">
               <Box sx={{
-                width: '78px',
+                width: `${timeBoxWidth}px`,
                 height: '40px',
                 borderRadius: '8px',
                 backgroundColor: 'rgba(255,255,255,0.235)',
@@ -92,7 +101,7 @@ const Event = memo(({
                 justifyContent: 'center',
                 flexShrink: 0,
                 padding: '0 8px',
-                maxWidth: 'calc(50% - 16px)',
+                maxWidth: `${actionsMaxWidth}px`,
                 overflow: 'hidden'
               }}>
                 <Typography variant="body2" sx={{
@@ -144,8 +153,8 @@ const Event = memo(({
           right: 8,
           display: 'flex',
           gap: 0.5,
-          flexWrap: 'wrap',
-          maxWidth: 'calc(50% - 8px)',
+          flexWrap: shouldWrapActions ? 'wrap' : 'nowrap',
+          maxWidth: `${actionsMaxWidth}px`,
           opacity: 0,
           transition: 'opacity 0.2s ease',
           backgroundColor: event.color,
