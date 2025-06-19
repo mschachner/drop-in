@@ -24,10 +24,12 @@ const Event = memo(({
   const actionsRef = useRef(null);
   const width = useElementWidth(paperRef);
   const actionsWidth = useChildrenWidth(actionsRef);
-  const ratio = useMediaQuery('(max-width:599px)') ? 0.25 : 0.5;
-  const portion = width * ratio;
-  const timeBoxWidth = portion - 16;
-  const actionsMaxWidth = portion - 8;
+  const isMobile = useMediaQuery('(max-width:599px)');
+  const timeRatio = isMobile ? 0.25 : 0.5;
+  const timeBoxWidth = width * timeRatio - 16;
+  const actionsMaxWidth = isMobile
+    ? width - timeBoxWidth - 8
+    : width * 0.5 - 8;
   const shouldWrapActions = actionsWidth > actionsMaxWidth;
 
   return (

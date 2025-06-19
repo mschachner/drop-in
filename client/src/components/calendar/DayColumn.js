@@ -298,10 +298,11 @@ const DayColumn = ({
 }) => {
   const containerRef = useRef(null);
   const width = useElementWidth(containerRef);
-  const ratio = isMobile ? 0.25 : 0.5;
-  const portion = width * ratio;
-  const timeBoxWidth = portion - 16;
-  const actionsMaxWidth = portion - 8;
+  const timeRatio = isMobile ? 0.25 : 0.5;
+  const timeBoxWidth = width * timeRatio - 16;
+  const actionsMaxWidth = isMobile
+    ? width - timeBoxWidth - 8
+    : width * 0.5 - 8;
   const handleSectionClick = (section, e) => {
     if (!isMobile) {
       handleDayClick(date, section, e);
