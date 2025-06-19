@@ -4,7 +4,8 @@ const useChildrenWidth = (ref) => {
   const [width, setWidth] = useState(0);
 
   useLayoutEffect(() => {
-    if (!ref.current) return;
+    const current = ref.current;
+    if (!current) return;
 
     const measure = () => {
       const node = ref.current;
@@ -12,7 +13,10 @@ const useChildrenWidth = (ref) => {
       const children = Array.from(node.children);
       const styles = window.getComputedStyle(node);
       const gap = parseFloat(styles.columnGap || styles.gap || 0);
-      const childrenWidth = children.reduce((acc, child) => acc + child.offsetWidth, 0);
+      const childrenWidth = children.reduce(
+        (acc, child) => acc + child.offsetWidth,
+        0
+      );
       const total = childrenWidth + gap * Math.max(children.length - 1, 0);
       setWidth(total);
     };
@@ -20,8 +24,8 @@ const useChildrenWidth = (ref) => {
     measure();
 
     const resizeObserver = new ResizeObserver(measure);
-    resizeObserver.observe(node);
-    Array.from(node.children).forEach(child => resizeObserver.observe(child));
+    resizeObserver.observe(current);
+    Array.from(current.children).forEach(child => resizeObserver.observe(child));
     window.addEventListener('resize', measure);
 
     return () => {
