@@ -237,7 +237,7 @@ const DayColumn = ({
                             fontFamily: 'Nunito, sans-serif',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
-                            textOverflow: 'ellipsis',
+                            maxWidth: '50%',
                             transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
                             zIndex: 2,
                             pointerEvents: 'none',
@@ -264,6 +264,8 @@ const DayColumn = ({
                             right: 0,
                             display: 'flex',
                             gap: 0.5,
+                            flexWrap: 'wrap',
+                            maxWidth: '50%',
                             opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
                             transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },
                             zIndex: 1,
@@ -512,7 +514,7 @@ const DayColumn = ({
                             fontFamily: 'Nunito, sans-serif',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
-                            textOverflow: 'ellipsis',
+                            maxWidth: '50%',
                             transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
                             zIndex: 2,
                             pointerEvents: 'none',
@@ -533,12 +535,14 @@ const DayColumn = ({
                           </Box>
                           <Box
                             className="event-actions"
-                            sx={{
+                          sx={{
                               position: 'absolute',
                               top: 0,
                               right: 0,
                               display: 'flex',
                               gap: 0.5,
+                              flexWrap: 'wrap',
+                              maxWidth: '50%',
                               opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
                               transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },
                               zIndex: 1,
