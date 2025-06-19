@@ -427,6 +427,7 @@ const DayColumn = ({
                 activeEventId={activeEventId}
                 darkMode={darkMode}
               />
+
             ))}
         </Box>
         {/* Evening Section */}
