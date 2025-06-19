@@ -10,8 +10,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import * as Icons from '@mui/icons-material';
 import { getTextColor } from './colorUtils';
 import useElementWidth from '../../hooks/useElementWidth';
+import useChildrenWidth from '../../hooks/useChildrenWidth';
 
-const Event = memo(({ 
+const Event = memo(({
   event,
   onEventClick,
   onDelete,
@@ -19,11 +20,13 @@ const Event = memo(({
   formatJoiners
 }) => {
   const paperRef = useRef(null);
+  const actionsRef = useRef(null);
   const width = useElementWidth(paperRef);
+  const actionsWidth = useChildrenWidth(actionsRef);
   const half = width / 2;
   const timeBoxWidth = half - 16;
   const actionsMaxWidth = half - 8;
-  const shouldWrapActions = actionsMaxWidth < 120;
+  const shouldWrapActions = actionsWidth > actionsMaxWidth;
 
   return (
     <Paper
@@ -147,6 +150,7 @@ const Event = memo(({
       </Box>
       <Box
         className="event-actions"
+        ref={actionsRef}
         sx={{
           position: 'absolute',
           top: 8,

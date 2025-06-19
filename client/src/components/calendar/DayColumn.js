@@ -15,6 +15,268 @@ import EditIcon from '@mui/icons-material/Edit';
 import * as Icons from '@mui/icons-material';
 import { createHighlightColor, getTextColor, isWeekend } from './colorUtils';
 import useElementWidth from '../../hooks/useElementWidth';
+import useChildrenWidth from '../../hooks/useChildrenWidth';
+
+const ColumnEvent = ({
+  availability,
+  timeBoxWidth,
+  actionsMaxWidth,
+  handleJoin,
+  handleEdit,
+  handleDelete,
+  handleEventClick,
+  isUserJoining,
+  formatJoiners,
+  isMobile,
+  activeEventId,
+  darkMode
+}) => {
+  const actionsRef = useRef(null);
+  const actionsWidth = useChildrenWidth(actionsRef);
+  const shouldWrapActions = actionsWidth > actionsMaxWidth;
+
+  const a = availability;
+
+  return (
+    <Paper
+      key={a._id}
+      sx={{
+        p: 1.5,
+        mb: 1.5,
+        backgroundColor: a.color,
+        color: getTextColor(a.color),
+        borderRadius: 2,
+        position: 'relative',
+        fontFamily: 'Nunito, sans-serif',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        willChange: 'transform, box-shadow',
+        '&.event-paper:hover .time-box': {
+          top: { xs: 0, sm: '-36px' },
+          backgroundColor: a.color,
+          '&::before': {
+            opacity: 0
+          }
+        },
+        '&:hover .event-actions': {
+          opacity: { xs: 1, sm: 1 }
+        }
+      }}
+      className="event-paper"
+      onClick={(e) => handleEventClick(a, e)}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5, position: 'relative', minHeight: '40px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {a.icon && (
+                <Box
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(255,255,255,0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  {Icons[a.icon] ? (
+                    React.createElement(Icons[a.icon], { fontSize: 'small' })
+                  ) : (
+                    <span style={{ fontSize: '1rem' }}>{a.icon}</span>
+                  )}
+                </Box>
+              )}
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 700,
+                  fontFamily: 'Nunito, sans-serif',
+                  wordBreak: 'break-word',
+                  lineHeight: 1.2,
+                  flex: 1,
+                  pr: 1,
+                  position: 'relative',
+                  zIndex: 3
+                }}
+              >
+                {a.name}
+              </Typography>
+            </Box>
+            <Box sx={{ position: 'relative', minHeight: '40px', display: 'flex', alignItems: 'center' }}>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
+                  width: `${timeBoxWidth}px`,
+                  height: { xs: '36px', sm: '28px' },
+                  borderRadius: '8px',
+                  backgroundColor: 'rgba(255,255,255,0.235)',
+                  backdropFilter: 'blur(4px)',
+                  color: getTextColor(a.color),
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  padding: '0 8px',
+                  fontWeight: 600,
+                  fontSize: { xs: '0.875rem', sm: '0.875rem' },
+                  fontFamily: 'Nunito, sans-serif',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  maxWidth: `${actionsMaxWidth}px`,
+                  transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
+                  zIndex: 2,
+                  pointerEvents: 'none',
+                  right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : 0,
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    inset: '-2px',
+                    backgroundColor: a.color,
+                    borderRadius: 'inherit',
+                    opacity: 0.6,
+                    zIndex: -1
+                  }
+                }}
+                className="time-box"
+              >
+                {a.timeSlot}
+              </Box>
+              <Box
+                className="event-actions"
+                ref={actionsRef}
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  display: 'flex',
+                  gap: 0.5,
+                  flexWrap: shouldWrapActions ? 'wrap' : 'nowrap',
+                  maxWidth: `${actionsMaxWidth}px`,
+                  opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
+                  transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },
+                  zIndex: 1,
+                  '&.event-paper:hover .event-actions': {
+                    opacity: { xs: 1, sm: 1 }
+                  }
+                }}
+              >
+                <IconButton
+                  size="small"
+                  sx={{
+                    color: getTextColor(a.color),
+                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,255,255,0.3)'
+                    },
+                    minWidth: isUserJoining(a) ? { xs: '80px', sm: '50px' } : { xs: '60px', sm: 'auto' },
+                    height: { xs: '36px', sm: '24px' },
+                    justifyContent: 'flex-start',
+                    gap: 0.5,
+                    fontSize: { xs: '0.875rem', sm: '0.75rem' },
+                    fontFamily: 'Nunito, sans-serif',
+                    padding: { xs: '0 12px', sm: '0 8px' },
+                    borderRadius: '8px',
+                    backdropFilter: 'blur(4px)'
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleJoin(a._id);
+                  }}
+                >
+                  {isUserJoining(a) ? (
+                    <>
+                      <span>Joined</span>
+                      <span style={{ fontSize: '1em' }}>✓</span>
+                    </>
+                  ) : (
+                    'Join'
+                  )}
+                </IconButton>
+                <IconButton
+                  size="small"
+                  sx={{
+                    color: getTextColor(a.color),
+                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,255,255,0.3)'
+                    },
+                    height: { xs: '36px', sm: '24px' },
+                    width: { xs: '36px', sm: '24px' },
+                    borderRadius: '8px',
+                    backdropFilter: 'blur(4px)',
+                    '& .MuiSvgIcon-root': {
+                      fontSize: { xs: '1.25rem', sm: '1rem' }
+                    }
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(a);
+                  }}
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  sx={{
+                    color: getTextColor(a.color),
+                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,255,255,0.3)'
+                    },
+                    height: { xs: '36px', sm: '24px' },
+                    width: { xs: '36px', sm: '24px' },
+                    borderRadius: '8px',
+                    backdropFilter: 'blur(4px)',
+                    '& .MuiSvgIcon-root': {
+                      fontSize: { xs: '1.25rem', sm: '1rem' }
+                    }
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(a._id);
+                  }}
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            </Box>
+          </Box>
+          <Typography
+            variant="body2"
+            sx={{
+              fontFamily: 'Nunito, sans-serif',
+              opacity: 0.9,
+              wordBreak: 'break-word',
+              lineHeight: 1.2
+            }}
+          >
+            {a.location}
+          </Typography>
+          {a.joiners && a.joiners.length > 0 && (
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: 'Nunito, sans-serif',
+                mt: 1,
+                fontSize: '0.75rem',
+                opacity: 0.8,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.5
+              }}
+            >
+              {formatJoiners(a.joiners)}
+            </Typography>
+          )}
+        </Box>
+      </Box>
+    </Paper>
+  );
+};
 
 const DayColumn = ({
   date,
@@ -37,7 +299,6 @@ const DayColumn = ({
   const half = width / 2;
   const timeBoxWidth = half - 16;
   const actionsMaxWidth = half - 8;
-  const shouldWrapActions = actionsMaxWidth < 120;
   const handleSectionClick = (section, e) => {
     if (!isMobile) {
       handleDayClick(date, section, e);
@@ -151,248 +412,22 @@ const DayColumn = ({
           {dayAvailabilities
             .filter(a => a.section !== 'evening')
             .map((a, idx) => (
-              <Paper
+              <ColumnEvent
                 key={idx}
-                sx={{
-                  p: 1.5,
-                  mb: 1.5,
-                  backgroundColor: a.color,
-                  color: getTextColor(a.color),
-                  borderRadius: 2,
-                  position: 'relative',
-                  fontFamily: 'Nunito, sans-serif',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                  '&:hover': {
-                    transform: { xs: 'none', sm: 'translateY(-2px)' },
-                    boxShadow: { xs: '0 2px 4px rgba(0,0,0,0.1)', sm: '0 4px 8px rgba(0,0,0,0.15)' },
-                    '& .event-actions': {
-                      opacity: { xs: 1, sm: 1 }
-                    }
-                  },
-                  className: 'event-paper',
-                  '&:hover .time-box': {
-                    top: { xs: 0, sm: '-36px' },
-                    backgroundColor: a.color,
-                    '&::before': {
-                      opacity: 0
-                    }
-                  },
-                  '&:hover .event-actions': {
-                    opacity: { xs: 1, sm: 1 }
-                  }
-                }}
-                onClick={(e) => handleEventClick(a, e)}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5, position: 'relative', minHeight: '40px' }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {a.icon && (
-                          <Box
-                            sx={{
-                              width: 32,
-                              height: 32,
-                              borderRadius: '50%',
-                              backgroundColor: 'rgba(255,255,255,0.3)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                            }}
-                          >
-                            {Icons[a.icon] ? (
-                              React.createElement(Icons[a.icon], { fontSize: 'small' })
-                            ) : (
-                              <span style={{ fontSize: '1rem' }}>{a.icon}</span>
-                            )}
-                          </Box>
-                        )}
-                        <Typography
-                          variant="subtitle1"
-                          sx={{
-                            fontWeight: 700,
-                            fontFamily: 'Nunito, sans-serif',
-                            wordBreak: 'break-word',
-                            lineHeight: 1.2,
-                            flex: 1,
-                            pr: 1,
-                            position: 'relative',
-                            zIndex: 3
-                          }}
-                        >
-                          {a.name}
-                        </Typography>
-                      </Box>
-                      <Box sx={{ position: 'relative', minHeight: '40px', display: 'flex', alignItems: 'center' }}>
-                        <Box
-                          sx={{
-                            position: 'absolute',
-                            top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            width: `${timeBoxWidth}px`,
-                            height: { xs: '36px', sm: '28px' },
-                            borderRadius: '8px',
-                            backgroundColor: 'rgba(255,255,255,0.235)',
-                            backdropFilter: 'blur(4px)',
-                            color: getTextColor(a.color),
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexShrink: 0,
-                            padding: '0 8px',
-                            fontWeight: 600,
-                            fontSize: { xs: '0.875rem', sm: '0.875rem' },
-                            fontFamily: 'Nunito, sans-serif',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            maxWidth: `${actionsMaxWidth}px`,
-                            transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
-                            zIndex: 2,
-                            pointerEvents: 'none',
-                            right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : 0,
-                            '&::before': {
-                              content: '""',
-                              position: 'absolute',
-                              inset: '-2px',
-                              backgroundColor: a.color,
-                              borderRadius: 'inherit',
-                              opacity: 0.6,
-                              zIndex: -1
-                            }
-                          }}
-                          className="time-box"
-                        >
-                          {a.timeSlot}
-                        </Box>
-                        <Box
-                          className="event-actions"
-                          sx={{
-                            position: 'absolute',
-                            top: 0,
-                            right: 0,
-                            display: 'flex',
-                            gap: 0.5,
-                            flexWrap: shouldWrapActions ? 'wrap' : 'nowrap',
-                            maxWidth: `${actionsMaxWidth}px`,
-                            opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
-                            transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },
-                            zIndex: 1,
-                            '&.event-paper:hover .event-actions': {
-                              opacity: { xs: 1, sm: 1 }
-                            }
-                          }}
-                        >
-                          <IconButton
-                            size="small"
-                            sx={{
-                              color: getTextColor(a.color),
-                              backgroundColor: 'rgba(255,255,255,0.2)',
-                              '&:hover': {
-                                backgroundColor: 'rgba(255,255,255,0.3)'
-                              },
-                              minWidth: isUserJoining(a) ? { xs: '80px', sm: '50px' } : { xs: '60px', sm: 'auto' },
-                              height: { xs: '36px', sm: '24px' },
-                              justifyContent: 'flex-start',
-                              gap: 0.5,
-                              fontSize: { xs: '0.875rem', sm: '0.75rem' },
-                              fontFamily: 'Nunito, sans-serif',
-                              padding: { xs: '0 12px', sm: '0 8px' },
-                              borderRadius: '8px',
-                              backdropFilter: 'blur(4px)'
-                            }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleJoin(a._id);
-                            }}
-                          >
-                            {isUserJoining(a) ? (
-                              <>
-                                <span>Joined</span>
-                                <span style={{ fontSize: '1em' }}>✓</span>
-                              </>
-                            ) : (
-                              'Join'
-                            )}
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            sx={{
-                              color: getTextColor(a.color),
-                              backgroundColor: 'rgba(255,255,255,0.2)',
-                              '&:hover': {
-                                backgroundColor: 'rgba(255,255,255,0.3)'
-                              },
-                              height: { xs: '36px', sm: '24px' },
-                              width: { xs: '36px', sm: '24px' },
-                              borderRadius: '8px',
-                              backdropFilter: 'blur(4px)',
-                              '& .MuiSvgIcon-root': {
-                                fontSize: { xs: '1.25rem', sm: '1rem' }
-                              }
-                            }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEdit(a);
-                            }}
-                          >
-                            <EditIcon fontSize="small" />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            sx={{
-                              color: getTextColor(a.color),
-                              backgroundColor: 'rgba(255,255,255,0.2)',
-                              '&:hover': {
-                                backgroundColor: 'rgba(255,255,255,0.3)'
-                              },
-                              height: { xs: '36px', sm: '24px' },
-                              width: { xs: '36px', sm: '24px' },
-                              borderRadius: '8px',
-                              backdropFilter: 'blur(4px)',
-                              '& .MuiSvgIcon-root': {
-                                fontSize: { xs: '1.25rem', sm: '1rem' }
-                              }
-                            }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDelete(a._id);
-                            }}
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Box>
-                      </Box>
-                    </Box>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontFamily: 'Nunito, sans-serif',
-                        opacity: 0.9,
-                        wordBreak: 'break-word',
-                        lineHeight: 1.2
-                      }}
-                    >
-                      {a.location}
-                    </Typography>
-                    {a.joiners && a.joiners.length > 0 && (
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontFamily: 'Nunito, sans-serif',
-                          mt: 1,
-                          fontSize: '0.75rem',
-                          opacity: 0.8,
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 0.5
-                        }}
-                      >
-                        {formatJoiners(a.joiners)}
-                      </Typography>
-                    )}
-                  </Box>
-                </Box>
-              </Paper>
+                availability={a}
+                timeBoxWidth={timeBoxWidth}
+                actionsMaxWidth={actionsMaxWidth}
+                handleJoin={handleJoin}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+                handleEventClick={handleEventClick}
+                isUserJoining={isUserJoining}
+                formatJoiners={formatJoiners}
+                isMobile={isMobile}
+                activeEventId={activeEventId}
+                darkMode={darkMode}
+              />
+
             ))}
         </Box>
         {/* Evening Section */}
@@ -425,252 +460,25 @@ const DayColumn = ({
             }}
             onClick={(e) => handleSectionClick('evening', e)}
           >
-            {dayAvailabilities
-              .filter(a => a.section === 'evening')
-              .map((a, idx) => (
-                <Paper
-                  key={idx}
-                  sx={{
-                    p: 1.5,
-                    mb: 1.5,
-                    backgroundColor: a.color,
-                    color: getTextColor(a.color),
-                    borderRadius: 2,
-                    position: 'relative',
-                    fontFamily: 'Nunito, sans-serif',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                    '&:hover': {
-                      transform: { xs: 'none', sm: 'translateY(-2px)' },
-                      boxShadow: { xs: '0 2px 4px rgba(0,0,0,0.1)', sm: '0 4px 8px rgba(0,0,0,0.15)' },
-                      '& .event-actions': {
-                        opacity: { xs: 1, sm: 1 }
-                      }
-                    },
-                    className: 'event-paper',
-                    '&:hover .time-box': {
-                      top: { xs: 0, sm: '-36px' },
-                      backgroundColor: a.color,
-                      '&::before': {
-                        opacity: 0
-                      }
-                    },
-                    '&:hover .event-actions': {
-                      opacity: { xs: 1, sm: 1 }
-                    }
-                  }}
-                  onClick={(e) => handleEventClick(a, e)}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5, position: 'relative', minHeight: '40px' }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          {a.icon && (
-                            <Box
-                              sx={{
-                                width: 32,
-                                height: 32,
-                                borderRadius: '50%',
-                                backgroundColor: 'rgba(255,255,255,0.3)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                              }}
-                            >
-                              {Icons[a.icon] ? (
-                                React.createElement(Icons[a.icon], { fontSize: 'small' })
-                              ) : (
-                                <span style={{ fontSize: '1rem' }}>{a.icon}</span>
-                              )}
-                            </Box>
-                          )}
-                          <Typography
-                            variant="subtitle1"
-                            sx={{
-                              fontWeight: 700,
-                              fontFamily: 'Nunito, sans-serif',
-                              wordBreak: 'break-word',
-                              lineHeight: 1.2,
-                              flex: 1,
-                              pr: 1,
-                              position: 'relative',
-                              zIndex: 3
-                            }}
-                          >
-                            {a.name}
-                          </Typography>
-                        </Box>
-                        <Box sx={{ position: 'relative', minHeight: '40px', display: 'flex', alignItems: 'center' }}>
-                          <Box
-                          sx={{
-                            position: 'absolute',
-                            top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                            width: `${timeBoxWidth}px`,
-                            height: { xs: '36px', sm: '28px' },
-                            borderRadius: '8px',
-                            backgroundColor: 'rgba(255,255,255,0.235)',
-                            backdropFilter: 'blur(4px)',
-                            color: getTextColor(a.color),
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexShrink: 0,
-                            padding: '0 8px',
-                            fontWeight: 600,
-                            fontSize: { xs: '0.875rem', sm: '0.875rem' },
-                            fontFamily: 'Nunito, sans-serif',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            maxWidth: `${actionsMaxWidth}px`,
-                            transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
-                            zIndex: 2,
-                            pointerEvents: 'none',
-                            right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : 0,
-                            '&::before': {
-                              content: '""',
-                              position: 'absolute',
-                              inset: '-2px',
-                              backgroundColor: a.color,
-                              borderRadius: 'inherit',
-                              opacity: 0.6,
-                              zIndex: -1
-                            }
-                          }}
-                            className="time-box"
-                          >
-                            {a.timeSlot}
-                          </Box>
-                          <Box
-                            className="event-actions"
-                          sx={{
-                              position: 'absolute',
-                              top: 0,
-                              right: 0,
-                              display: 'flex',
-                              gap: 0.5,
-                              flexWrap: shouldWrapActions ? 'wrap' : 'nowrap',
-                              maxWidth: `${actionsMaxWidth}px`,
-                              opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
-                              transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },
-                              zIndex: 1,
-                              '&.event-paper:hover .event-actions': {
-                                opacity: { xs: 1, sm: 1 }
-                              }
-                            }}
-                          >
-                            <IconButton
-                              size="small"
-                              sx={{
-                                color: getTextColor(a.color),
-                                backgroundColor: 'rgba(255,255,255,0.2)',
-                                '&:hover': {
-                                  backgroundColor: 'rgba(255,255,255,0.3)'
-                                },
-                                minWidth: isUserJoining(a) ? { xs: '80px', sm: '50px' } : { xs: '60px', sm: 'auto' },
-                                height: { xs: '36px', sm: '24px' },
-                                justifyContent: 'flex-start',
-                                gap: 0.5,
-                                fontSize: { xs: '0.875rem', sm: '0.75rem' },
-                                fontFamily: 'Nunito, sans-serif',
-                                padding: { xs: '0 12px', sm: '0 8px' },
-                                borderRadius: '8px',
-                                backdropFilter: 'blur(4px)'
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleJoin(a._id);
-                              }}
-                            >
-                              {isUserJoining(a) ? (
-                                <>
-                                  <span>Joined</span>
-                                  <span style={{ fontSize: '1em' }}>✓</span>
-                                </>
-                              ) : (
-                                'Join'
-                              )}
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              sx={{
-                                color: getTextColor(a.color),
-                                backgroundColor: 'rgba(255,255,255,0.2)',
-                                '&:hover': {
-                                  backgroundColor: 'rgba(255,255,255,0.3)'
-                                },
-                                height: { xs: '36px', sm: '24px' },
-                                width: { xs: '36px', sm: '24px' },
-                                borderRadius: '8px',
-                                backdropFilter: 'blur(4px)',
-                                '& .MuiSvgIcon-root': {
-                                  fontSize: { xs: '1.25rem', sm: '1rem' }
-                                }
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEdit(a);
-                              }}
-                            >
-                              <EditIcon fontSize="small" />
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              sx={{
-                                color: getTextColor(a.color),
-                                backgroundColor: 'rgba(255,255,255,0.2)',
-                                '&:hover': {
-                                  backgroundColor: 'rgba(255,255,255,0.3)'
-                                },
-                                height: { xs: '36px', sm: '24px' },
-                                width: { xs: '36px', sm: '24px' },
-                                borderRadius: '8px',
-                                backdropFilter: 'blur(4px)',
-                                '& .MuiSvgIcon-root': {
-                                  fontSize: { xs: '1.25rem', sm: '1rem' }
-                                }
-                              }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDelete(a._id);
-                              }}
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
-                          </Box>
-                        </Box>
-                      </Box>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontFamily: 'Nunito, sans-serif',
-                          opacity: 0.9,
-                          wordBreak: 'break-word',
-                          lineHeight: 1.2
-                        }}
-                      >
-                        {a.location}
-                      </Typography>
-                      {a.joiners && a.joiners.length > 0 && (
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            fontFamily: 'Nunito, sans-serif',
-                            mt: 1,
-                            fontSize: '0.75rem',
-                            opacity: 0.8,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 0.5
-                          }}
-                        >
-                          {formatJoiners(a.joiners)}
-                        </Typography>
-                      )}
-                    </Box>
-                  </Box>
-                </Paper>
-              ))}
+          {dayAvailabilities
+            .filter(a => a.section === 'evening')
+            .map((a, idx) => (
+              <ColumnEvent
+                key={idx}
+                availability={a}
+                timeBoxWidth={timeBoxWidth}
+                actionsMaxWidth={actionsMaxWidth}
+                handleJoin={handleJoin}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+                handleEventClick={handleEventClick}
+                isUserJoining={isUserJoining}
+                formatJoiners={formatJoiners}
+                isMobile={isMobile}
+                activeEventId={activeEventId}
+                darkMode={darkMode}
+              />
+            ))}
           </Box>
         </Box>
       </Box>
