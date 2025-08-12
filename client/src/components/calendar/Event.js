@@ -30,9 +30,10 @@ const Event = memo(({
   const actionsMaxWidth = isMobile
     ? width - preferredTimeWidth - 8
     : width * 0.5 - 8;
-  const timeBoxWidth = actionsWidth > 0
-    ? Math.min(preferredTimeWidth, actionsWidth)
-    : preferredTimeWidth;
+  const actionsContentWidth = actionsWidth > 0
+    ? Math.min(actionsWidth, actionsMaxWidth)
+    : Math.max(preferredTimeWidth - 8, 0);
+  const actionsContainerWidth = actionsContentWidth + 8;
   const shouldWrapActions = actionsWidth > actionsMaxWidth;
 
   return (
@@ -55,6 +56,9 @@ const Event = memo(({
           boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
           '& .event-actions': {
             opacity: 1
+          },
+          '& .event-time': {
+            transform: 'translateY(-32px)'
           }
         }
       }}
@@ -65,66 +69,39 @@ const Event = memo(({
     >
       <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              {event.icon && (
-                <Box
-                  sx={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: '50%',
-                    backgroundColor: 'rgba(255,255,255,0.3)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  {Icons[event.icon] ? (
-                    React.createElement(Icons[event.icon], { fontSize: 'small' })
-                  ) : (
-                    <span style={{ fontSize: '1rem' }}>{event.icon}</span>
-                  )}
-                </Box>
-              )}
-              <Typography
-                variant="subtitle1"
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+            {event.icon && (
+              <Box
                 sx={{
-                  fontWeight: 700,
-                  fontFamily: 'Nunito, sans-serif',
-                  wordBreak: 'break-word',
-                  lineHeight: 1.2,
-                  flex: 1,
-                  pr: 1
+                  width: 32,
+                  height: 32,
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(255,255,255,0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
-                {event.name}
-              </Typography>
-            </Box>
-            <Tooltip title={event.timeSlot} arrow placement="top">
-              <Box sx={{
-                width: `${timeBoxWidth}px`,
-                height: '28px',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(255,255,255,0.235)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                padding: '0 8px',
-                maxWidth: `${actionsMaxWidth}px`,
-                overflow: 'hidden'
-              }}>
-                <Typography variant="body2" sx={{
-                  fontWeight: 600,
-                  fontSize: '0.75rem',
-                  fontFamily: 'Nunito, sans-serif',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden'
-                }}>
-                  {event.timeSlot}
-                </Typography>
+                {Icons[event.icon] ? (
+                  React.createElement(Icons[event.icon], { fontSize: 'small' })
+                ) : (
+                  <span style={{ fontSize: '1rem' }}>{event.icon}</span>
+                )}
               </Box>
-            </Tooltip>
+            )}
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: 700,
+                fontFamily: 'Nunito, sans-serif',
+                wordBreak: 'break-word',
+                lineHeight: 1.2,
+                flex: 1,
+                pr: 1
+              }}
+            >
+              {event.name}
+            </Typography>
           </Box>
           <Typography 
             variant="body2" 
@@ -155,6 +132,40 @@ const Event = memo(({
           )}
         </Box>
       </Box>
+      <Tooltip title={event.timeSlot} arrow placement="top">
+        <Box
+          className="event-time"
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            width: `${actionsContainerWidth}px`,
+            height: '28px',
+            borderRadius: '8px',
+            backgroundColor: 'rgba(255,255,255,0.235)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0 8px',
+            overflow: 'hidden',
+            zIndex: 1,
+            transition: 'transform 0.2s ease'
+          }}
+        >
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: 600,
+              fontSize: '0.75rem',
+              fontFamily: 'Nunito, sans-serif',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden'
+            }}
+          >
+            {event.timeSlot}
+          </Typography>
+        </Box>
+      </Tooltip>
       <Box
         className="event-actions"
         ref={actionsRef}
@@ -165,6 +176,7 @@ const Event = memo(({
           display: 'flex',
           gap: 0.5,
           flexWrap: shouldWrapActions ? 'wrap' : 'nowrap',
+          width: `${actionsContentWidth}px`,
           maxWidth: `${actionsMaxWidth}px`,
           opacity: 0,
           transition: 'opacity 0.2s ease',
