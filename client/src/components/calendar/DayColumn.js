@@ -33,10 +33,10 @@ const ColumnEvent = ({
 }) => {
   const actionsRef = useRef(null);
   const actionsWidth = useChildrenWidth(actionsRef);
-  const shouldWrapActions = actionsWidth > actionsMaxWidth;
-  const effectiveTimeBoxWidth = actionsWidth > 0
-    ? Math.min(timeBoxWidth, actionsWidth)
-    : timeBoxWidth;
+  const containerWidth = actionsWidth > 0
+    ? Math.min(actionsWidth + 8, actionsMaxWidth)
+    : Math.min(timeBoxWidth, actionsMaxWidth);
+  const shouldWrapActions = actionsWidth + 8 > actionsMaxWidth;
 
   const a = availability;
 
@@ -61,7 +61,7 @@ const ColumnEvent = ({
             opacity: 0
           }
         },
-        '&:hover .event-actions': {
+          '&:hover .event-actions': {
           opacity: { xs: 1, sm: 1 }
         }
       }}
@@ -113,7 +113,7 @@ const ColumnEvent = ({
                   position: 'absolute',
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  width: `${effectiveTimeBoxWidth}px`,
+                  width: `${containerWidth}px`,
                   height: { xs: '36px', sm: '28px' },
                   borderRadius: '8px',
                   backgroundColor: 'rgba(255,255,255,0.235)',
@@ -157,6 +157,7 @@ const ColumnEvent = ({
                   display: 'flex',
                   gap: 0.5,
                   flexWrap: shouldWrapActions ? 'wrap' : 'nowrap',
+                  width: actionsWidth > 0 ? `${containerWidth}px` : 'auto',
                   maxWidth: `${actionsMaxWidth}px`,
                   opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
                   transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },

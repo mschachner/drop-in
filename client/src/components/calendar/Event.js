@@ -4,13 +4,11 @@ import {
   Typography,
   Box,
   IconButton,
-  Tooltip,
-  useMediaQuery
+  Tooltip
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import * as Icons from '@mui/icons-material';
 import { getTextColor } from './colorUtils';
-import useElementWidth from '../../hooks/useElementWidth';
 import useChildrenWidth from '../../hooks/useChildrenWidth';
 
 const Event = memo(({
@@ -20,25 +18,12 @@ const Event = memo(({
   isUserJoining,
   formatJoiners
 }) => {
-  const paperRef = useRef(null);
   const actionsRef = useRef(null);
-  const width = useElementWidth(paperRef);
   const actionsWidth = useChildrenWidth(actionsRef);
-  const isMobile = useMediaQuery('(max-width:599px)');
-  const timeRatio = isMobile ? 0.25 : 0.5;
-  const preferredTimeWidth = width * timeRatio - 16;
-  const actionsMaxWidth = isMobile
-    ? width - preferredTimeWidth - 8
-    : width * 0.5 - 8;
-  const actionsContentWidth = actionsWidth > 0
-    ? Math.min(actionsWidth, actionsMaxWidth)
-    : Math.max(preferredTimeWidth - 8, 0);
-  const actionsContainerWidth = actionsContentWidth + 8;
-  const shouldWrapActions = actionsWidth > actionsMaxWidth;
+  const actionsContainerWidth = actionsWidth > 0 ? actionsWidth + 8 : null;
 
   return (
     <Paper
-      ref={paperRef}
       sx={{
         p: 1.5,
         mb: 1.5,
@@ -139,16 +124,18 @@ const Event = memo(({
             position: 'absolute',
             top: 8,
             right: 8,
-            width: `${actionsContainerWidth}px`,
+            width: actionsContainerWidth ? `${actionsContainerWidth}px` : 'auto',
             height: '28px',
             borderRadius: '8px',
             backgroundColor: 'rgba(255,255,255,0.235)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '0 8px',
+            padding: '0 4px',
             overflow: 'hidden',
             zIndex: 1,
+            pointerEvents: 'none',
+            transform: 'translateY(0)',
             transition: 'transform 0.2s ease'
           }}
         >
@@ -175,14 +162,13 @@ const Event = memo(({
           right: 8,
           display: 'flex',
           gap: 0.5,
-          flexWrap: shouldWrapActions ? 'wrap' : 'nowrap',
-          width: `${actionsContentWidth}px`,
-          maxWidth: `${actionsMaxWidth}px`,
+          width: actionsContainerWidth ? `${actionsContainerWidth}px` : 'auto',
           opacity: 0,
           transition: 'opacity 0.2s ease',
           backgroundColor: event.color,
           padding: '0 4px',
-          borderRadius: '12px'
+          borderRadius: '12px',
+          zIndex: 2
         }}
       >
         <IconButton
