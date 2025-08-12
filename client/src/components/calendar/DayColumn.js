@@ -34,6 +34,9 @@ const ColumnEvent = ({
   const actionsRef = useRef(null);
   const actionsWidth = useChildrenWidth(actionsRef);
   const shouldWrapActions = actionsWidth > actionsMaxWidth;
+  const effectiveTimeBoxWidth = actionsWidth > 0
+    ? Math.min(timeBoxWidth, actionsWidth)
+    : timeBoxWidth;
 
   const a = availability;
 
@@ -52,8 +55,7 @@ const ColumnEvent = ({
         transition: 'all 0.2s ease',
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
         willChange: 'transform, box-shadow',
-        '&.event-paper:hover .time-box': {
-          top: { xs: 0, sm: '-36px' },
+        '&:hover .time-box': {
           backgroundColor: a.color,
           '&::before': {
             opacity: 0
@@ -109,8 +111,9 @@ const ColumnEvent = ({
               <Box
                 sx={{
                   position: 'absolute',
-                  top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
-                  width: `${timeBoxWidth}px`,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: `${effectiveTimeBoxWidth}px`,
                   height: { xs: '36px', sm: '28px' },
                   borderRadius: '8px',
                   backgroundColor: 'rgba(255,255,255,0.235)',
@@ -127,7 +130,6 @@ const ColumnEvent = ({
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   maxWidth: `${actionsMaxWidth}px`,
-                  transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
                   zIndex: 2,
                   pointerEvents: 'none',
                   right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : 0,
@@ -313,11 +315,11 @@ const DayColumn = ({
     <Grid
       item
       xs={12}
-      sm
+      md
       key={index}
       sx={{
-        borderRight: { sm: index < 6 ? `1px solid ${darkMode ? '#555' : '#e0e0e0'}` : 'none' },
-        borderBottom: { xs: index < 6 ? `1px solid ${darkMode ? '#555' : '#e0e0e0'}` : 'none', sm: 'none' },
+        borderRight: { md: index < 6 ? `1px solid ${darkMode ? '#555' : '#e0e0e0'}` : 'none' },
+        borderBottom: { xs: index < 6 ? `1px solid ${darkMode ? '#555' : '#e0e0e0'}` : 'none', md: 'none' },
         '&:last-child': {
           borderRight: 'none',
           borderBottom: 'none'
@@ -326,9 +328,9 @@ const DayColumn = ({
         flexDirection: 'column',
         minHeight: 0,
         overflow: 'hidden',
-        width: { xs: '100%', sm: 'auto' },
-        flex: { xs: 'none', sm: 1 },
-        height: { xs: 'auto', sm: '100%' }
+        width: { xs: '100%', md: 'auto' },
+        flex: { xs: 'none', md: 1 },
+        height: { xs: 'auto', md: '100%' }
       }}
     >
       <Box
@@ -342,7 +344,7 @@ const DayColumn = ({
           flexDirection: 'column',
           overflow: 'visible',
           minHeight: 0,
-          height: { xs: 'auto', sm: '100%' }
+          height: { xs: 'auto', md: '100%' }
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
