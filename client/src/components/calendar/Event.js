@@ -26,10 +26,13 @@ const Event = memo(({
   const actionsWidth = useChildrenWidth(actionsRef);
   const isMobile = useMediaQuery('(max-width:599px)');
   const timeRatio = isMobile ? 0.25 : 0.5;
-  const timeBoxWidth = width * timeRatio - 16;
+  const preferredTimeWidth = width * timeRatio - 16;
   const actionsMaxWidth = isMobile
-    ? width - timeBoxWidth - 8
+    ? width - preferredTimeWidth - 8
     : width * 0.5 - 8;
+  const timeBoxWidth = actionsWidth > 0
+    ? Math.min(preferredTimeWidth, actionsWidth)
+    : preferredTimeWidth;
   const shouldWrapActions = actionsWidth > actionsMaxWidth;
 
   return (
@@ -100,7 +103,7 @@ const Event = memo(({
             <Tooltip title={event.timeSlot} arrow placement="top">
               <Box sx={{
                 width: `${timeBoxWidth}px`,
-                height: '40px',
+                height: '28px',
                 borderRadius: '8px',
                 backgroundColor: 'rgba(255,255,255,0.235)',
                 display: 'flex',
