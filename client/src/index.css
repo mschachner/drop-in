@@ -1,13 +1,8 @@
 body {
   margin: 0;
-  /* Subtle dotted pattern */
-  background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-  background-size: 4px 4px;
 }
 
 html.dark body {
   background-color: #303030;
   color: #fff;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 4px 4px;
 }
