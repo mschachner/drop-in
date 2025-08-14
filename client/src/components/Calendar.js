@@ -47,8 +47,9 @@ const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [userPreferences, setUserPreferences] = useState(() => {
     const storedColor = localStorage.getItem('preferredColor');
+    const storedName = localStorage.getItem('userName');
     return {
-      name: '',
+      name: storedName || '',
       color: storedColor || '#66BB6A'
     };
   });
@@ -86,6 +87,10 @@ const Calendar = () => {
   useEffect(() => {
     localStorage.setItem('preferredColor', userPreferences.color);
   }, [userPreferences.color]);
+
+  useEffect(() => {
+    localStorage.setItem('userName', userPreferences.name);
+  }, [userPreferences.name]);
 
   useEffect(() => {
     localStorage.setItem('darkMode', darkMode);
