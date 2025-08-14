@@ -1,10 +1,19 @@
-import React from 'react';
-import { Paper, Grid, TextField, Box, Switch, FormControlLabel } from '@mui/material';
+import React, { useState } from 'react';
+import { Paper, Grid, TextField, Box, Switch, FormControlLabel, IconButton, Typography } from '@mui/material';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import EditIcon from '@mui/icons-material/Edit';
 import { COLORS, getTextColor } from './colorUtils';
 
 const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, setSelectedColor, darkMode, setDarkMode }) => {
+  const [isEditingName, setIsEditingName] = useState(!userPreferences.name);
+
+  const handleNameBlur = () => {
+    if (userPreferences.name.trim()) {
+      setIsEditingName(false);
+    }
+  };
+
   return (
     <Paper sx={{
       p: 2,
@@ -17,29 +26,62 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
     }}>
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} sm={4}>
-          <TextField
-            label="Your Name"
-            fullWidth
-            value={userPreferences.name}
-            onChange={(e) => setUserPreferences({ ...userPreferences, name: e.target.value })}
-            required
-            InputProps={{
-              sx: {
+          {isEditingName ? (
+            <TextField
+              label="Your Name"
+              fullWidth
+              value={userPreferences.name}
+              onChange={(e) => setUserPreferences({ ...userPreferences, name: e.target.value })}
+              onBlur={handleNameBlur}
+              autoFocus
+              required
+              InputProps={{
+                sx: {
+                  fontFamily: 'Nunito, sans-serif',
+                  backgroundColor: darkMode ? '#616161' : 'white',
+                  color: darkMode ? '#fff' : 'inherit',
+                  '& fieldset': {
+                    borderColor: darkMode ? '#bbb' : 'inherit'
+                  }
+                }
+              }}
+              InputLabelProps={{
+                sx: {
+                  fontFamily: 'Nunito, sans-serif',
+                  color: darkMode ? '#fff' : 'inherit'
+                }
+              }}
+            />
+          ) : (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
                 fontFamily: 'Nunito, sans-serif',
                 backgroundColor: darkMode ? '#616161' : 'white',
                 color: darkMode ? '#fff' : 'inherit',
-                '& fieldset': {
-                  borderColor: darkMode ? '#bbb' : 'inherit'
-                }
-              }
-            }}
-            InputLabelProps={{
-              sx: {
-                fontFamily: 'Nunito, sans-serif',
-                color: darkMode ? '#fff' : 'inherit'
-              }
-            }}
-          />
+                borderRadius: 1,
+                border: '1px solid',
+                borderColor: darkMode ? '#bbb' : 'rgba(0, 0, 0, 0.23)',
+                px: 1.75,
+                py: 1.5,
+                width: '100%'
+              }}
+            >
+              <Typography sx={{ fontFamily: 'Nunito, sans-serif', color: darkMode ? '#fff' : 'inherit' }}>
+                {userPreferences.name}
+              </Typography>
+              <IconButton
+                aria-label="edit name"
+                onClick={() => setIsEditingName(true)}
+                size="small"
+                sx={{ ml: 1, color: darkMode ? '#fff' : 'inherit' }}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          )}
         </Grid>
         <Grid item xs={12} sm={8}>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
