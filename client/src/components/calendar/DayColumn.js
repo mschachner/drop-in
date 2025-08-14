@@ -384,6 +384,11 @@ const DayColumn = ({
             size="small"
             color="primary"
             sx={{
+              width: 40,
+              height: 40,
+              minWidth: 40,
+              minHeight: 40,
+              flexShrink: 0,
               backgroundColor: userPreferences.color,
               color: getTextColor(userPreferences.color),
               transition: 'all 0.5s ease',
