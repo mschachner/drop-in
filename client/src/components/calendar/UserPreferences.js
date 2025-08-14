@@ -20,7 +20,7 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
       mb: 3,
       borderRadius: 2,
       fontFamily: 'Nunito, sans-serif',
-      width: 'fit-content',
+      width: { xs: '100%', sm: 600 },
       backgroundColor: darkMode ? '#424242' : 'white',
       color: darkMode ? '#fff' : 'inherit'
     }}>
@@ -62,7 +62,10 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                 width: '100%'
               }}
             >
-              <Typography sx={{ fontFamily: 'Nunito, sans-serif', color: darkMode ? '#fff' : 'inherit' }}>
+              <Typography
+                variant="h6"
+                sx={{ fontFamily: 'Nunito, sans-serif', color: darkMode ? '#fff' : 'inherit' }}
+              >
                 {userPreferences.name}
               </Typography>
               <IconButton
