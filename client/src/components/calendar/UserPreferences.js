@@ -57,15 +57,8 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between',
                 fontFamily: 'Nunito, sans-serif',
-                backgroundColor: darkMode ? '#616161' : 'white',
                 color: darkMode ? '#fff' : 'inherit',
-                borderRadius: 1,
-                border: '1px solid',
-                borderColor: darkMode ? '#bbb' : 'rgba(0, 0, 0, 0.23)',
-                px: 1.75,
-                py: 1.5,
                 width: '100%'
               }}
             >
@@ -95,6 +88,9 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                 sx={{
                   width: 32,
                   height: 32,
+                  minWidth: 32,
+                  minHeight: 32,
+                  flexShrink: 0,
                   backgroundColor: color.value,
                   borderRadius: '50%',
                   cursor: 'pointer',
@@ -115,6 +111,9 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
               sx={{
                 width: 32,
                 height: 32,
+                minWidth: 32,
+                minHeight: 32,
+                flexShrink: 0,
                 backgroundColor: selectedColor,
                 borderRadius: '50%',
                 cursor: 'pointer',
@@ -180,4 +179,4 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
   );
 };
 
-export default UserPreferences; 
+export default UserPreferences;
