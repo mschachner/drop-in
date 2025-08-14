@@ -6,12 +6,8 @@ const cors = require('cors');
 const app = express();
 
 // Enable CORS with proper preflight handling
-const allowedOrigins = [
-  'https://drop-in.up.railway.app',
-  'http://localhost:3000'
-];
 app.use(cors({
-  origin: allowedOrigins,
+  origin: ['https://drop-in.up.railway.app', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -24,6 +20,16 @@ app.options('*', cors());
 
 // Parse JSON bodies
 app.use(express.json());
+
+// Debug logging only in development
+if (process.env.NODE_ENV === 'development') {
+  console.log('Current working directory:', process.cwd());
+  console.log('Environment variables:', {
+    MONGO_URL: process.env.MONGO_URL ? 'Set (hidden)' : 'Not set',
+    PORT: process.env.PORT || 'Not set',
+    NODE_ENV: process.env.NODE_ENV || 'Not set'
+  });
+}
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
@@ -64,33 +70,6 @@ const availabilitySchema = new mongoose.Schema({
 });
 
 const Availability = mongoose.model('Availability', availabilitySchema);
-
-// Helper to handle join/unjoin logic and avoid duplication
-const modifyJoiners = async (req, res, action) => {
-  try {
-    const { name } = req.body;
-    const availability = await Availability.findById(req.params.id);
-
-    if (!availability) {
-      return res.status(404).json({ message: 'Event not found' });
-    }
-
-    if (action === 'join') {
-      if (!availability.joiners.includes(name)) {
-        availability.joiners.push(name);
-      }
-    } else {
-      availability.joiners = availability.joiners.filter(
-        joiner => joiner !== name
-      );
-    }
-
-    await availability.save();
-    res.json(availability);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
 
 // API Routes
 app.get('/api/availability', async (req, res) => {
@@ -137,13 +116,43 @@ app.delete('/api/availability/:id', async (req, res) => {
   }
 });
 
-app.post('/api/availability/:id/join', (req, res) =>
-  modifyJoiners(req, res, 'join')
-);
+app.post('/api/availability/:id/join', async (req, res) => {
+  try {
+    const { name } = req.body;
+    const availability = await Availability.findById(req.params.id);
+    
+    if (!availability) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
 
-app.post('/api/availability/:id/unjoin', (req, res) =>
-  modifyJoiners(req, res, 'unjoin')
-);
+    if (!availability.joiners.includes(name)) {
+      availability.joiners.push(name);
+      await availability.save();
+    }
+    
+    res.json(availability);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post('/api/availability/:id/unjoin', async (req, res) => {
+  try {
+    const { name } = req.body;
+    const availability = await Availability.findById(req.params.id);
+    
+    if (!availability) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    availability.joiners = availability.joiners.filter(joiner => joiner !== name);
+    await availability.save();
+    
+    res.json(availability);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.

@@ -308,8 +308,8 @@ const Calendar = () => {
   return (
     <Box sx={{
       p: 4,
-      height: { xs: 'calc(100dvh - 64px)', md: 'calc(100vh - 64px)' },
-      minHeight: { xs: 'calc(100dvh - 64px)', md: 'calc(100vh - 64px)' },
+      height: { xs: 'calc(100dvh - 64px)', sm: 'calc(100vh - 64px)' },
+      minHeight: { xs: 'calc(100dvh - 64px)', sm: 'calc(100vh - 64px)' },
       '--calendar-bg': pastelColor,
       backgroundColor: 'var(--calendar-bg)',
       color: darkMode ? '#fff' : 'inherit',
@@ -319,7 +319,7 @@ const Calendar = () => {
       willChange: 'background-color',
       display: 'flex',
       flexDirection: 'column',
-      overflow: { xs: 'auto', md: 'hidden' }
+      overflow: { xs: 'auto', sm: 'hidden' }
     }}>
       <Box sx={{ 
         display: 'flex', 
@@ -366,26 +366,26 @@ const Calendar = () => {
         setDarkMode={setDarkMode}
       />
 
-      <Paper sx={{
-        borderRadius: 2,
-        overflow: 'hidden',
+      <Paper sx={{ 
+        borderRadius: 2, 
+        overflow: 'hidden', 
         fontFamily: 'Nunito, sans-serif',
-        flex: { xs: 'none', md: 1 },
+        flex: { xs: 'none', sm: 1 },
         display: 'flex',
         flexDirection: 'column',
         minHeight: 0,
-        height: { xs: 'auto', md: 'auto' },
-        maxHeight: { xs: 'none', md: 'none' }
+        height: { xs: 'auto', sm: 'auto' },
+        maxHeight: { xs: 'none', sm: 'none' }
       }}>
-        <Grid
-          container
-          sx={{
-            flex: { xs: 'none', md: 1 },
-            flexDirection: { xs: 'column', md: 'row' },
+        <Grid 
+          container 
+          sx={{ 
+            flex: { xs: 'none', sm: 1 },
+            flexDirection: { xs: 'column', sm: 'row' },
             width: '100%',
-            minHeight: { md: 0 },
-            overflow: { xs: 'visible', md: 'hidden' },
-            height: { xs: 'auto', md: 'auto' }
+            minHeight: { sm: 0 },
+            overflow: { xs: 'visible', sm: 'hidden' },
+            height: { xs: 'auto', sm: 'auto' }
           }}
         >
           {getNextSevenDays().map((date, index) => {

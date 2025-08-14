@@ -4,11 +4,13 @@ import {
   Typography,
   Box,
   IconButton,
-  Tooltip
+  Tooltip,
+  useMediaQuery
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import * as Icons from '@mui/icons-material';
 import { getTextColor } from './colorUtils';
+import useElementWidth from '../../hooks/useElementWidth';
 import useChildrenWidth from '../../hooks/useChildrenWidth';
 
 const Event = memo(({
@@ -18,12 +20,21 @@ const Event = memo(({
   isUserJoining,
   formatJoiners
 }) => {
+  const paperRef = useRef(null);
   const actionsRef = useRef(null);
+  const width = useElementWidth(paperRef);
   const actionsWidth = useChildrenWidth(actionsRef);
-  const actionsContainerWidth = actionsWidth > 0 ? actionsWidth + 8 : null;
+  const isMobile = useMediaQuery('(max-width:599px)');
+  const timeRatio = isMobile ? 0.25 : 0.5;
+  const timeBoxWidth = width * timeRatio - 16;
+  const actionsMaxWidth = isMobile
+    ? width - timeBoxWidth - 8
+    : width * 0.5 - 8;
+  const shouldWrapActions = actionsWidth > actionsMaxWidth;
 
   return (
     <Paper
+      ref={paperRef}
       sx={{
         p: 1.5,
         mb: 1.5,
@@ -41,9 +52,6 @@ const Event = memo(({
           boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
           '& .event-actions': {
             opacity: 1
-          },
-          '& .event-time': {
-            transform: 'translateY(-32px)'
           }
         }
       }}
@@ -54,39 +62,66 @@ const Event = memo(({
     >
       <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-            {event.icon && (
-              <Box
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {event.icon && (
+                <Box
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(255,255,255,0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  {Icons[event.icon] ? (
+                    React.createElement(Icons[event.icon], { fontSize: 'small' })
+                  ) : (
+                    <span style={{ fontSize: '1rem' }}>{event.icon}</span>
+                  )}
+                </Box>
+              )}
+              <Typography
+                variant="subtitle1"
                 sx={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(255,255,255,0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
+                  fontWeight: 700,
+                  fontFamily: 'Nunito, sans-serif',
+                  wordBreak: 'break-word',
+                  lineHeight: 1.2,
+                  flex: 1,
+                  pr: 1
                 }}
               >
-                {Icons[event.icon] ? (
-                  React.createElement(Icons[event.icon], { fontSize: 'small' })
-                ) : (
-                  <span style={{ fontSize: '1rem' }}>{event.icon}</span>
-                )}
+                {event.name}
+              </Typography>
+            </Box>
+            <Tooltip title={event.timeSlot} arrow placement="top">
+              <Box sx={{
+                width: `${timeBoxWidth}px`,
+                height: '40px',
+                borderRadius: '8px',
+                backgroundColor: 'rgba(255,255,255,0.235)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                padding: '0 8px',
+                maxWidth: `${actionsMaxWidth}px`,
+                overflow: 'hidden'
+              }}>
+                <Typography variant="body2" sx={{
+                  fontWeight: 600,
+                  fontSize: '0.75rem',
+                  fontFamily: 'Nunito, sans-serif',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden'
+                }}>
+                  {event.timeSlot}
+                </Typography>
               </Box>
-            )}
-            <Typography
-              variant="subtitle1"
-              sx={{
-                fontWeight: 700,
-                fontFamily: 'Nunito, sans-serif',
-                wordBreak: 'break-word',
-                lineHeight: 1.2,
-                flex: 1,
-                pr: 1
-              }}
-            >
-              {event.name}
-            </Typography>
+            </Tooltip>
           </Box>
           <Typography 
             variant="body2" 
@@ -117,42 +152,6 @@ const Event = memo(({
           )}
         </Box>
       </Box>
-      <Tooltip title={event.timeSlot} arrow placement="top">
-        <Box
-          className="event-time"
-          sx={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            width: actionsContainerWidth ? `${actionsContainerWidth}px` : 'auto',
-            height: '28px',
-            borderRadius: '8px',
-            backgroundColor: 'rgba(255,255,255,0.235)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '0 4px',
-            overflow: 'hidden',
-            zIndex: 1,
-            pointerEvents: 'none',
-            transform: 'translateY(0)',
-            transition: 'transform 0.2s ease'
-          }}
-        >
-          <Typography
-            variant="body2"
-            sx={{
-              fontWeight: 600,
-              fontSize: '0.75rem',
-              fontFamily: 'Nunito, sans-serif',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden'
-            }}
-          >
-            {event.timeSlot}
-          </Typography>
-        </Box>
-      </Tooltip>
       <Box
         className="event-actions"
         ref={actionsRef}
@@ -162,13 +161,13 @@ const Event = memo(({
           right: 8,
           display: 'flex',
           gap: 0.5,
-          width: actionsContainerWidth ? `${actionsContainerWidth}px` : 'auto',
+          flexWrap: shouldWrapActions ? 'wrap' : 'nowrap',
+          maxWidth: `${actionsMaxWidth}px`,
           opacity: 0,
           transition: 'opacity 0.2s ease',
           backgroundColor: event.color,
           padding: '0 4px',
-          borderRadius: '12px',
-          zIndex: 2
+          borderRadius: '12px'
         }}
       >
         <IconButton
