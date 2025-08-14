@@ -20,7 +20,8 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
       mb: 3,
       borderRadius: 2,
       fontFamily: 'Nunito, sans-serif',
-      width: { xs: '100%', sm: 600 },
+      width: '100%',
+      maxWidth: 600,
       backgroundColor: darkMode ? '#424242' : 'white',
       color: darkMode ? '#fff' : 'inherit'
     }}>
@@ -80,7 +81,7 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
           )}
         </Grid>
         <Grid item xs={12} sm={8}>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
             {COLORS.map((color) => (
               <Box
                 key={color.value}
@@ -169,6 +170,7 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
               ml: { xs: 0, sm: 2 },
               mt: { xs: 1, sm: 0 },
               flexBasis: { xs: '100%', sm: 'auto' },
+              flexShrink: 0,
               alignItems: 'center',
               '& .MuiFormControlLabel-label': {
                 fontSize: 28
