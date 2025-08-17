@@ -10,8 +10,7 @@ import {
   TextField,
   Box,
   Alert,
-  Typography,
-  Divider
+  Typography
 } from '@mui/material';
 import { getTextColor } from './colorUtils';
 import IconPickerDialog from './IconPickerDialog';
