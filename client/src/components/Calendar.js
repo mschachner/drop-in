@@ -81,7 +81,7 @@ const Calendar = () => {
     return storedDark === 'true';
   });
   const [activeEventId, setActiveEventId] = useState(null);
-  const isMobile = useMediaQuery('(max-width:599px)');
+  const isMobile = useMediaQuery('(max-width:899px)');
 
 
   useEffect(() => {
@@ -385,12 +385,12 @@ const Calendar = () => {
         <Grid 
           container 
           sx={{ 
-            flex: { xs: 'none', sm: 1 },
-            flexDirection: { xs: 'column', sm: 'row' },
+            flex: { xs: 'none', md: 1 },
+            flexDirection: { xs: 'column', md: 'row' },
             width: '100%',
-            minHeight: { sm: 0 },
-            overflow: { xs: 'visible', sm: 'hidden' },
-            height: { xs: 'auto', sm: 'auto' }
+            minHeight: { md: 0 },
+            overflow: { xs: 'visible', md: 'hidden' },
+            height: { xs: 'auto', md: 'auto' }
           }}
         >
           {getNextSevenDays().map((date, index) => {

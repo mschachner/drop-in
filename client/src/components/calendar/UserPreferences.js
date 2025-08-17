@@ -21,7 +21,7 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
       borderRadius: 2,
       fontFamily: 'Nunito, sans-serif',
       width: '100%',
-      maxWidth: 600,
+      maxWidth: 'min(750px, calc(100% - 64px))',
       backgroundColor: darkMode ? '#424242' : 'white',
       color: darkMode ? '#fff' : 'inherit'
     }}>
@@ -81,13 +81,37 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
           )}
         </Grid>
         <Grid item xs={12} sm={8}>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
-            {COLORS.map((color) => (
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'nowrap' }}>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap', flex: 1 }}>
+              {COLORS.map((color) => (
+                <Box
+                  key={color.value}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setUserPreferences({ ...userPreferences, color: color.value });
+                  }}
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    minWidth: 32,
+                    minHeight: 32,
+                    flexShrink: 0,
+                    backgroundColor: color.value, 
+                    borderRadius: '50%',
+                    cursor: 'pointer',
+                    border: userPreferences.color === color.value ? `3px solid ${darkMode ? '#fff' : '#000'}` : 'none',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'scale(1.1)',
+                    }
+                  }}
+                />
+              ))}
               <Box
-                key={color.value}
+                component="label"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setUserPreferences({ ...userPreferences, color: color.value });
+                  setUserPreferences({ ...userPreferences, color: selectedColor });
                 }}
                 sx={{
                   width: 32,
@@ -95,88 +119,64 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                   minWidth: 32,
                   minHeight: 32,
                   flexShrink: 0,
-                  backgroundColor: color.value,
+                  backgroundColor: selectedColor,
                   borderRadius: '50%',
                   cursor: 'pointer',
-                  border: userPreferences.color === color.value ? `3px solid ${darkMode ? '#fff' : '#000'}` : 'none',
+                  border: userPreferences.color === selectedColor ? `3px solid ${darkMode ? '#fff' : '#000'}` : 'none',
                   transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'relative',
                   '&:hover': {
                     transform: 'scale(1.1)',
                   }
                 }}
-              />
-            ))}
-            <Box
-              component="label"
-              onClick={(e) => {
-                e.stopPropagation();
-                setUserPreferences({ ...userPreferences, color: selectedColor });
-              }}
-              sx={{
-                width: 32,
-                height: 32,
-                minWidth: 32,
-                minHeight: 32,
-                flexShrink: 0,
-                backgroundColor: selectedColor,
-                borderRadius: '50%',
-                cursor: 'pointer',
-                border: userPreferences.color === selectedColor ? `3px solid ${darkMode ? '#fff' : '#000'}` : 'none',
-                transition: 'all 0.3s ease',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-                '&:hover': {
-                  transform: 'scale(1.1)',
-                }
-              }}
-            >
-              <input
-                type="color"
-                value={selectedColor}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  const newColor = e.target.value;
-                  setSelectedColor(newColor);
-                  setUserPreferences({ ...userPreferences, color: newColor });
-                }}
-                style={{
-                  opacity: 0,
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  cursor: 'pointer',
-                  top: 0,
-                  left: 0
-                }}
-              />
-            <ColorLensIcon sx={{ color: getTextColor(selectedColor), fontSize: 20 }} />
-          </Box>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={darkMode}
-                onChange={(e) => setDarkMode(e.target.checked)}
-                color="primary"
-              />
-            }
-            label={
-              <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                <DarkModeIcon sx={{ fontSize: 28 }} />
+              >
+                <input
+                  type="color"
+                  value={selectedColor}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    const newColor = e.target.value;
+                    setSelectedColor(newColor);
+                    setUserPreferences({ ...userPreferences, color: newColor });
+                  }}
+                  style={{
+                    opacity: 0,
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    cursor: 'pointer',
+                    top: 0,
+                    left: 0
+                  }}
+                />
+                <ColorLensIcon sx={{ color: getTextColor(selectedColor), fontSize: 20 }} />
               </Box>
-            }
-            sx={{
-              ml: { xs: 0, sm: 2 },
-              mt: { xs: 1, sm: 0 },
-              flexBasis: { xs: '100%', sm: 'auto' },
-              flexShrink: 0,
-              alignItems: 'center',
-              '& .MuiFormControlLabel-label': {
-                fontSize: 28
-              }
-            }}
-          />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={darkMode}
+                    onChange={(e) => setDarkMode(e.target.checked)}
+                    color="primary"
+                  />
+                }
+                label={
+                  <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+                    <DarkModeIcon sx={{ fontSize: 28 }} />
+                  </Box>
+                }
+                sx={{
+                  ml: 1,
+                  flexShrink: 0,
+                  alignItems: 'center',
+                  '& .MuiFormControlLabel-label': {
+                    fontSize: 28
+                  }
+                }}
+              />
+            </Box>
           </Box>
         </Grid>
       </Grid>
