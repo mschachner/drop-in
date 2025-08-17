@@ -324,14 +324,53 @@ const Calendar = () => {
       willChange: 'background-color',
       display: 'flex',
       flexDirection: 'column',
-      overflow: { xs: 'auto', sm: 'hidden' }
+      overflow: { xs: 'auto', sm: 'hidden' },
+      '& .float-animation': {
+        animation: 'float 6s ease-in-out infinite'
+      },
+      '& .pulse-animation': {
+        animation: 'pulse 2s ease-in-out infinite'
+      },
+      '@keyframes float': {
+        '0%, 100%': { 
+          transform: 'translate(30px, -30px) scale(1)', 
+          opacity: 0.3 
+        },
+        '50%': { 
+          transform: 'translate(30px, -35px) scale(1.1)', 
+          opacity: 0.6 
+        }
+      },
+      '@keyframes pulse': {
+        '0%, 100%': { 
+          opacity: 0.7, 
+          transform: 'scale(1)' 
+        },
+        '50%': { 
+          opacity: 1, 
+          transform: 'scale(1.2)' 
+        }
+      }
     }}>
       <Box sx={{ 
         display: 'flex', 
         alignItems: 'center', 
-        mb: 2,
-        gap: 2
+        mb: 3,
+        gap: 2,
+        position: 'relative'
       }}>
+        {/* Subtle background accent */}
+        <Box sx={{
+          position: 'absolute',
+          top: -10,
+          left: -10,
+          right: -10,
+          bottom: -10,
+          background: `linear-gradient(135deg, ${userPreferences.color}08, transparent)`,
+          borderRadius: 3,
+          zIndex: 0
+        }} />
+        
         <Typography
           variant="h3"
           sx={{
@@ -340,12 +379,15 @@ const Calendar = () => {
             fontFamily: 'Courgette, cursive',
             letterSpacing: '-0.5px',
             userSelect: 'none',
-            transition: 'color 0.5s ease, transform 0.2s ease, text-shadow 0.2s ease',
+            transition: 'all 0.3s ease',
             textShadow: '1px 1px 3px rgba(0,0,0,0.25)',
             cursor: 'pointer',
+            position: 'relative',
+            zIndex: 1,
             '&:hover': {
               transform: 'scale(1.05)',
-              textShadow: '2px 2px 4px rgba(0,0,0,0.4)'
+              textShadow: '2px 2px 4px rgba(0,0,0,0.4)',
+              filter: 'brightness(1.1)'
             },
             '&:active': {
               transform: 'scale(0.95)'
@@ -355,6 +397,18 @@ const Calendar = () => {
         >
           Drop in!
         </Typography>
+        
+        {/* Floating accent dot */}
+        <Box sx={{
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          backgroundColor: userPreferences.color,
+          opacity: 0.7,
+          ml: 1
+        }} 
+        className="pulse-animation"
+        />
       </Box>
       
       {error && isMobile && (
@@ -372,7 +426,7 @@ const Calendar = () => {
       />
 
       <Paper sx={{ 
-        borderRadius: 2, 
+        borderRadius: 3, 
         overflow: 'hidden', 
         fontFamily: 'Nunito, sans-serif',
         flex: { xs: 'none', sm: 1 },
@@ -380,8 +434,35 @@ const Calendar = () => {
         flexDirection: 'column',
         minHeight: 0,
         height: { xs: 'auto', sm: 'auto' },
-        maxHeight: { xs: 'none', sm: 'none' }
+        maxHeight: { xs: 'none', sm: 'none' },
+        boxShadow: darkMode 
+          ? '0 15px 35px rgba(0,0,0,0.4)' 
+          : '0 15px 35px rgba(0,0,0,0.1)',
+        border: darkMode ? '1px solid #555' : '1px solid #e0e0e0',
+        position: 'relative'
       }}>
+        {/* Subtle decorative elements */}
+        <Box sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '2px',
+          background: `linear-gradient(90deg, transparent, ${userPreferences.color}, transparent)`,
+          opacity: 0.6
+        }} />
+        <Box sx={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: '60px',
+          height: '60px',
+          borderRadius: '50%',
+          background: `radial-gradient(circle, ${userPreferences.color}10, transparent)`,
+          transform: 'translate(30px, -30px)'
+        }} 
+        className="float-animation"
+        />
         <Grid 
           container 
           sx={{ 
