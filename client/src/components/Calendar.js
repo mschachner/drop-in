@@ -67,7 +67,8 @@ const Calendar = () => {
     timeSlot: '',
     location: '',
     section: 'day',
-    icon: ''
+    icon: '',
+    recurring: false
   });
   const [selectedColor, setSelectedColor] = useState(() => {
     const storedColor = localStorage.getItem('preferredColor');
@@ -129,7 +130,8 @@ const Calendar = () => {
       timeSlot: '',
       location: '',
       section: section,
-      icon: ''
+      icon: '',
+      recurring: false
     });
     setOpenDialog(true);
   }, [userPreferences.name, setError]);
@@ -203,7 +205,8 @@ const Calendar = () => {
       timeSlot: event.timeSlot,
       location: event.location,
       section: event.section,
-      icon: event.icon || ''
+      icon: event.icon || '',
+      recurring: event.recurring || false
     });
     setOpenEditDialog(true);
   }, [userPreferences.name, setError]);
@@ -234,6 +237,31 @@ const Calendar = () => {
       handleEditSubmit();
     }
   }, [newEvent, handleEditSubmit]);
+
+  const expandedAvailabilities = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const rangeEnd = new Date(today);
+    rangeEnd.setDate(rangeEnd.getDate() + 6);
+    const expanded = [];
+
+    availabilities.forEach(event => {
+      if (event.recurring) {
+        let occurrence = new Date(event.date);
+        occurrence.setHours(0, 0, 0, 0);
+        while (occurrence < today) {
+          occurrence.setDate(occurrence.getDate() + 7);
+        }
+        while (occurrence <= rangeEnd) {
+          expanded.push({ ...event, date: occurrence.toISOString() });
+          occurrence.setDate(occurrence.getDate() + 7);
+        }
+      } else {
+        expanded.push(event);
+      }
+    });
+    return expanded;
+  }, [availabilities]);
 
   const getNextSevenDays = () => {
     const days = [];
@@ -475,7 +503,7 @@ const Calendar = () => {
           }}
         >
           {getNextSevenDays().map((date, index) => {
-            const dayAvailabilities = availabilities.filter(a =>
+            const dayAvailabilities = expandedAvailabilities.filter(a =>
               new Date(a.date).toDateString() === date.toDateString()
             );
 

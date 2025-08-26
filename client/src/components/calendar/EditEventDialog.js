@@ -10,7 +10,9 @@ import {
   TextField,
   Box,
   Alert,
-  Typography
+  Typography,
+  FormControlLabel,
+  Checkbox
 } from '@mui/material';
 import { getTextColor } from './colorUtils';
 import IconPickerDialog from './IconPickerDialog';
@@ -374,11 +376,33 @@ const EditEventDialog = ({
               }
             }}
             InputLabelProps={{
-              sx: { 
-                fontFamily: 'Nunito, sans-serif', 
+              sx: {
+                fontFamily: 'Nunito, sans-serif',
                 color: darkMode ? '#ccc' : '#666',
                 fontWeight: 600
               }
+            }}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={newEvent.recurring || false}
+                onChange={(e) => setNewEvent({ ...newEvent, recurring: e.target.checked })}
+                sx={{
+                  color: darkMode ? '#ccc' : '#666',
+                  '&.Mui-checked': {
+                    color: userPreferences.color
+                  }
+                }}
+              />
+            }
+            label="Repeat weekly"
+            sx={{
+              mt: 1,
+              fontFamily: 'Nunito, sans-serif',
+              color: darkMode ? '#ccc' : '#666',
+              fontWeight: 600
             }}
           />
         </Box>
@@ -461,6 +485,7 @@ EditEventDialog.propTypes = {
     location: PropTypes.string,
     section: PropTypes.string,
     icon: PropTypes.string,
+    recurring: PropTypes.bool,
   }).isRequired,
   setNewEvent: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
