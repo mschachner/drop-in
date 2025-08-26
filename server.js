@@ -58,6 +58,10 @@ const availabilitySchema = new mongoose.Schema({
   name: String,
   color: String,
   icon: String,
+  recurring: {
+    type: Boolean,
+    default: false
+  },
   section: {
     type: String,
     enum: ['day', 'evening'],
