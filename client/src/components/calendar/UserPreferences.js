@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Paper, Grid, TextField, Box, Switch, FormControlLabel, IconButton, Typography } from '@mui/material';
+import { Paper, Grid, TextField, Box, IconButton, Typography, Fade } from '@mui/material';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import EditIcon from '@mui/icons-material/Edit';
 import { COLORS, getTextColor } from './colorUtils';
 
@@ -154,28 +155,106 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                 />
                 <ColorLensIcon sx={{ color: getTextColor(selectedColor), fontSize: 20 }} />
               </Box>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={darkMode}
-                    onChange={(e) => setDarkMode(e.target.checked)}
-                    color="primary"
-                  />
-                }
-                label={
-                  <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                    <DarkModeIcon sx={{ fontSize: 28 }} />
-                  </Box>
-                }
+              <Box
+                component="button"
+                type="button"
+                onClick={() => setDarkMode(!darkMode)}
                 sx={{
                   ml: 1,
                   flexShrink: 0,
+                  border: 'none',
+                  cursor: 'pointer',
+                  borderRadius: 999,
+                  px: 2.5,
+                  py: 1.2,
+                  display: 'flex',
                   alignItems: 'center',
-                  '& .MuiFormControlLabel-label': {
-                    fontSize: 28
+                  justifyContent: 'center',
+                  position: 'relative',
+                  minWidth: 150,
+                  background: darkMode
+                    ? `linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.2)), linear-gradient(135deg, ${userPreferences.color}33, ${userPreferences.color}66)`
+                    : `linear-gradient(135deg, ${userPreferences.color}80, ${userPreferences.color})`,
+                  color: darkMode ? '#FFF8E1' : getTextColor(userPreferences.color),
+                  boxShadow: darkMode
+                    ? '0 12px 30px rgba(0,0,0,0.45)'
+                    : '0 12px 30px rgba(0,0,0,0.18)',
+                  transition: 'background 0.5s ease, box-shadow 0.5s ease, transform 0.2s ease, color 0.5s ease',
+                  fontFamily: 'Nunito, sans-serif',
+                  fontWeight: 600,
+                  letterSpacing: '0.5px',
+                  overflow: 'hidden',
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    background: 'linear-gradient(120deg, rgba(255,255,255,0.15), transparent 55%)',
+                    opacity: darkMode ? 0.35 : 0.55,
+                    transition: 'opacity 0.4s ease',
+                    pointerEvents: 'none'
+                  },
+                  '&:hover': {
+                    transform: 'translateY(-1px) scale(1.02)',
+                    boxShadow: darkMode
+                      ? '0 18px 40px rgba(0,0,0,0.5)'
+                      : '0 18px 40px rgba(0,0,0,0.22)'
+                  },
+                  '&:active': {
+                    transform: 'scale(0.98)'
+                  },
+                  '&:focus-visible': {
+                    outline: `2px solid ${darkMode ? '#FFF8E1' : userPreferences.color}`,
+                    outlineOffset: 3
                   }
                 }}
-              />
+              >
+                <Box
+                  sx={{
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minHeight: 32,
+                    width: '100%'
+                  }}
+                >
+                  <Fade in={!darkMode} timeout={400} unmountOnExit>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        position: 'absolute',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        textTransform: 'none'
+                      }}
+                    >
+                      <DarkModeIcon sx={{ fontSize: 26, transition: 'transform 0.4s ease', transform: 'rotate(-10deg)' }} />
+                      <Typography sx={{ fontWeight: 700, fontSize: 16 }}>Dark Mode</Typography>
+                    </Box>
+                  </Fade>
+                  <Fade in={darkMode} timeout={400} unmountOnExit>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        position: 'absolute',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        textTransform: 'none'
+                      }}
+                    >
+                      <LightModeIcon sx={{ fontSize: 26, transition: 'transform 0.4s ease', transform: 'rotate(15deg)' }} />
+                      <Typography sx={{ fontWeight: 700, fontSize: 16 }}>Light Mode</Typography>
+                    </Box>
+                  </Fade>
+                </Box>
+              </Box>
             </Box>
           </Box>
         </Grid>
