@@ -165,13 +165,13 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                   border: 'none',
                   cursor: 'pointer',
                   borderRadius: 999,
-                  px: 2.5,
-                  py: 1.2,
+                  px: 2.25,
+                  py: 1.1,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   position: 'relative',
-                  minWidth: 150,
+                  minWidth: 72,
                   background: darkMode
                     ? `linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.2)), linear-gradient(135deg, ${userPreferences.color}33, ${userPreferences.color}66)`
                     : `linear-gradient(135deg, ${userPreferences.color}80, ${userPreferences.color})`,
@@ -179,7 +179,7 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                   boxShadow: darkMode
                     ? '0 12px 30px rgba(0,0,0,0.45)'
                     : '0 12px 30px rgba(0,0,0,0.18)',
-                  transition: 'background 0.5s ease, box-shadow 0.5s ease, transform 0.2s ease, color 0.5s ease',
+                  transition: 'background 0.5s ease, box-shadow 0.5s ease, color 0.5s ease',
                   fontFamily: 'Nunito, sans-serif',
                   fontWeight: 600,
                   letterSpacing: '0.5px',
@@ -197,13 +197,9 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                     pointerEvents: 'none'
                   },
                   '&:hover': {
-                    transform: 'translateY(-1px) scale(1.02)',
                     boxShadow: darkMode
-                      ? '0 18px 40px rgba(0,0,0,0.5)'
-                      : '0 18px 40px rgba(0,0,0,0.22)'
-                  },
-                  '&:active': {
-                    transform: 'scale(0.98)'
+                      ? '0 16px 34px rgba(0,0,0,0.48)'
+                      : '0 16px 34px rgba(0,0,0,0.2)'
                   },
                   '&:focus-visible': {
                     outline: `2px solid ${darkMode ? '#FFF8E1' : userPreferences.color}`,
@@ -226,7 +222,6 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: 1,
                         position: 'absolute',
                         left: '50%',
                         transform: 'translateX(-50%)',
@@ -234,7 +229,6 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                       }}
                     >
                       <DarkModeIcon sx={{ fontSize: 26, transition: 'transform 0.4s ease', transform: 'rotate(-10deg)' }} />
-                      <Typography sx={{ fontWeight: 700, fontSize: 16 }}>Dark Mode</Typography>
                     </Box>
                   </Fade>
                   <Fade in={darkMode} timeout={400} unmountOnExit>
@@ -242,7 +236,6 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: 1,
                         position: 'absolute',
                         left: '50%',
                         transform: 'translateX(-50%)',
@@ -250,7 +243,6 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                       }}
                     >
                       <LightModeIcon sx={{ fontSize: 26, transition: 'transform 0.4s ease', transform: 'rotate(15deg)' }} />
-                      <Typography sx={{ fontWeight: 700, fontSize: 16 }}>Light Mode</Typography>
                     </Box>
                   </Fade>
                 </Box>
