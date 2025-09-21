@@ -155,55 +155,29 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                 />
                 <ColorLensIcon sx={{ color: getTextColor(selectedColor), fontSize: 20 }} />
               </Box>
-              <Box
-                component="button"
-                type="button"
+              <IconButton
                 onClick={() => setDarkMode(!darkMode)}
+                aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
                 sx={{
                   ml: 1,
+                  width: 44,
+                  height: 44,
                   flexShrink: 0,
-                  border: 'none',
-                  cursor: 'pointer',
-                  borderRadius: 999,
-                  px: 2.25,
-                  py: 1.1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  borderRadius: '50%',
+                  backgroundColor: darkMode ? '#323232' : '#f4f4f4',
+                  color: darkMode ? '#FFE082' : getTextColor(userPreferences.color),
+                  border: `1px solid ${darkMode ? '#4a4a4a' : `${userPreferences.color}55`}`,
+                  boxShadow: darkMode ? '0 4px 12px rgba(0,0,0,0.35)' : '0 4px 12px rgba(0,0,0,0.18)',
+                  transition: 'background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease',
                   position: 'relative',
-                  minWidth: 72,
-                  background: darkMode
-                    ? `linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.2)), linear-gradient(135deg, ${userPreferences.color}33, ${userPreferences.color}66)`
-                    : `linear-gradient(135deg, ${userPreferences.color}80, ${userPreferences.color})`,
-                  color: darkMode ? '#FFF8E1' : getTextColor(userPreferences.color),
-                  boxShadow: darkMode
-                    ? '0 12px 30px rgba(0,0,0,0.45)'
-                    : '0 12px 30px rgba(0,0,0,0.18)',
-                  transition: 'background 0.5s ease, box-shadow 0.5s ease, color 0.5s ease',
-                  fontFamily: 'Nunito, sans-serif',
-                  fontWeight: 600,
-                  letterSpacing: '0.5px',
                   overflow: 'hidden',
-                  '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    background: 'linear-gradient(120deg, rgba(255,255,255,0.15), transparent 55%)',
-                    opacity: darkMode ? 0.35 : 0.55,
-                    transition: 'opacity 0.4s ease',
-                    pointerEvents: 'none'
-                  },
                   '&:hover': {
-                    boxShadow: darkMode
-                      ? '0 16px 34px rgba(0,0,0,0.48)'
-                      : '0 16px 34px rgba(0,0,0,0.2)'
+                    backgroundColor: darkMode ? '#3a3a3a' : '#ededed',
+                    boxShadow: darkMode ? '0 6px 14px rgba(0,0,0,0.38)' : '0 6px 14px rgba(0,0,0,0.22)'
                   },
-                  '&:focus-visible': {
-                    outline: `2px solid ${darkMode ? '#FFF8E1' : userPreferences.color}`,
-                    outlineOffset: 3
+                  '&:active': {
+                    backgroundColor: darkMode ? '#353535' : '#e4e4e4'
                   }
                 }}
               >
@@ -213,40 +187,38 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    minHeight: 32,
-                    width: '100%'
+                    width: '100%',
+                    height: '100%'
                   }}
                 >
-                  <Fade in={!darkMode} timeout={400} unmountOnExit>
+                  <Fade in={!darkMode} timeout={300} unmountOnExit>
                     <Box
                       sx={{
+                        position: 'absolute',
                         display: 'flex',
                         alignItems: 'center',
-                        position: 'absolute',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        textTransform: 'none'
+                        justifyContent: 'center',
+                        inset: 0
                       }}
                     >
-                      <DarkModeIcon sx={{ fontSize: 26, transition: 'transform 0.4s ease', transform: 'rotate(-10deg)' }} />
+                      <DarkModeIcon sx={{ fontSize: 24, transition: 'transform 0.4s ease', transform: 'rotate(-15deg)' }} />
                     </Box>
                   </Fade>
-                  <Fade in={darkMode} timeout={400} unmountOnExit>
+                  <Fade in={darkMode} timeout={300} unmountOnExit>
                     <Box
                       sx={{
+                        position: 'absolute',
                         display: 'flex',
                         alignItems: 'center',
-                        position: 'absolute',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        textTransform: 'none'
+                        justifyContent: 'center',
+                        inset: 0
                       }}
                     >
-                      <LightModeIcon sx={{ fontSize: 26, transition: 'transform 0.4s ease', transform: 'rotate(15deg)' }} />
+                      <LightModeIcon sx={{ fontSize: 24, transition: 'transform 0.4s ease', transform: 'rotate(12deg)' }} />
                     </Box>
                   </Fade>
                 </Box>
-              </Box>
+              </IconButton>
             </Box>
           </Box>
         </Grid>
