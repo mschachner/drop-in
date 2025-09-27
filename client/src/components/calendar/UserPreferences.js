@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Paper, Grid, TextField, Box, Switch, FormControlLabel, IconButton, Typography } from '@mui/material';
+import { Paper, Grid, TextField, Box, IconButton, Typography, Fade } from '@mui/material';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import EditIcon from '@mui/icons-material/Edit';
-import { COLORS, getTextColor } from './colorUtils';
+import { COLORS, getTextColor, createPastelColor, createDarkPastelColor } from './colorUtils';
 
 const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, setSelectedColor, darkMode, setDarkMode }) => {
   const [isEditingName, setIsEditingName] = useState(!userPreferences.name);
@@ -154,28 +155,74 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                 />
                 <ColorLensIcon sx={{ color: getTextColor(selectedColor), fontSize: 20 }} />
               </Box>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={darkMode}
-                    onChange={(e) => setDarkMode(e.target.checked)}
-                    color="primary"
-                  />
-                }
-                label={
-                  <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                    <DarkModeIcon sx={{ fontSize: 28 }} />
-                  </Box>
-                }
+              <IconButton
+                onClick={() => setDarkMode(!darkMode)}
+                aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
                 sx={{
                   ml: 1,
+                  width: 44,
+                  height: 44,
                   flexShrink: 0,
-                  alignItems: 'center',
-                  '& .MuiFormControlLabel-label': {
-                    fontSize: 28
+                  borderRadius: '50%',
+                  backgroundColor: darkMode
+                    ? '#323232'
+                    : createPastelColor(userPreferences.color || selectedColor || '#f4f4f4'),
+                  color: darkMode
+                    ? '#FFE082'
+                    : createDarkPastelColor(userPreferences.color || selectedColor || '#4a4a4a'),
+                  border: `1px solid ${darkMode ? '#4a4a4a' : `${userPreferences.color || selectedColor || '#000000'}55`}`,
+                  boxShadow: darkMode ? '0 4px 12px rgba(0,0,0,0.35)' : '0 4px 12px rgba(0,0,0,0.18)',
+                  transition: 'background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&:hover': {
+                    backgroundColor: darkMode ? '#3a3a3a' : '#ededed',
+                    boxShadow: darkMode ? '0 6px 14px rgba(0,0,0,0.38)' : '0 6px 14px rgba(0,0,0,0.22)'
+                  },
+                  '&:active': {
+                    backgroundColor: darkMode ? '#353535' : '#e4e4e4'
                   }
                 }}
-              />
+              >
+                <Box
+                  sx={{
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    height: '100%'
+                  }}
+                >
+                  <Fade in={!darkMode} timeout={300} unmountOnExit>
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        inset: 0
+                      }}
+                    >
+                      <DarkModeIcon sx={{ fontSize: 24, transition: 'transform 0.4s ease', transform: 'rotate(-15deg)' }} />
+                    </Box>
+                  </Fade>
+                  <Fade in={darkMode} timeout={300} unmountOnExit>
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        inset: 0
+                      }}
+                    >
+                      <LightModeIcon sx={{ fontSize: 24, transition: 'transform 0.4s ease', transform: 'rotate(12deg)' }} />
+                    </Box>
+                  </Fade>
+                </Box>
+              </IconButton>
             </Box>
           </Box>
         </Grid>
