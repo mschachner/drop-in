@@ -4,7 +4,7 @@ import ColorLensIcon from '@mui/icons-material/ColorLens';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import EditIcon from '@mui/icons-material/Edit';
-import { COLORS, getTextColor } from './colorUtils';
+import { COLORS, getTextColor, createPastelColor, createDarkPastelColor } from './colorUtils';
 
 const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, setSelectedColor, darkMode, setDarkMode }) => {
   const [isEditingName, setIsEditingName] = useState(!userPreferences.name);
@@ -165,9 +165,13 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                   height: 44,
                   flexShrink: 0,
                   borderRadius: '50%',
-                  backgroundColor: darkMode ? '#323232' : '#f4f4f4',
-                  color: darkMode ? '#FFE082' : getTextColor(userPreferences.color),
-                  border: `1px solid ${darkMode ? '#4a4a4a' : `${userPreferences.color}55`}`,
+                  backgroundColor: darkMode
+                    ? '#323232'
+                    : createPastelColor(userPreferences.color || selectedColor || '#f4f4f4'),
+                  color: darkMode
+                    ? '#FFE082'
+                    : createDarkPastelColor(userPreferences.color || selectedColor || '#4a4a4a'),
+                  border: `1px solid ${darkMode ? '#4a4a4a' : `${userPreferences.color || selectedColor || '#000000'}55`}`,
                   boxShadow: darkMode ? '0 4px 12px rgba(0,0,0,0.35)' : '0 4px 12px rgba(0,0,0,0.18)',
                   transition: 'background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease',
                   position: 'relative',
