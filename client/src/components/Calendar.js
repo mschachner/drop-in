@@ -247,13 +247,19 @@ const Calendar = () => {
 
     availabilities.forEach(event => {
       if (event.recurring) {
-        let occurrence = new Date(event.date);
-        occurrence.setHours(0, 0, 0, 0);
+        const originalDate = new Date(event.date);
+        originalDate.setHours(0, 0, 0, 0);
+        let occurrence = new Date(originalDate);
         while (occurrence < today) {
           occurrence.setDate(occurrence.getDate() + 7);
         }
         while (occurrence <= rangeEnd) {
-          expanded.push({ ...event, date: occurrence.toISOString() });
+          const isOriginalOccurrence = occurrence.getTime() === originalDate.getTime();
+          expanded.push({
+            ...event,
+            date: occurrence.toISOString(),
+            joiners: isOriginalOccurrence ? event.joiners : []
+          });
           occurrence.setDate(occurrence.getDate() + 7);
         }
       } else {
