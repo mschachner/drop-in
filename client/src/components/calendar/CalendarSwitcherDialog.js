@@ -31,6 +31,8 @@ const CalendarSwitcherDialog = ({
   const [defaultDarkMode, setDefaultDarkMode] = useState(false);
   const [validationError, setValidationError] = useState('');
 
+  const dialogDarkMode = createNew ? defaultDarkMode : darkMode;
+
   useEffect(() => {
     if (!open) return;
     setCalendarId(defaultCalendarId);
@@ -62,12 +64,53 @@ const CalendarSwitcherDialog = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Choose a calendar</DialogTitle>
-      <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth="sm"
+      PaperProps={{
+        sx: {
+          borderRadius: 4,
+          fontFamily: 'Nunito, sans-serif',
+          margin: { xs: '16px', sm: '32px' },
+          backgroundColor: dialogDarkMode ? '#424242' : 'white',
+          color: dialogDarkMode ? '#fff' : 'inherit',
+          boxShadow: dialogDarkMode
+            ? '0 25px 50px rgba(0,0,0,0.7)'
+            : '0 25px 50px rgba(0,0,0,0.2)',
+          border: dialogDarkMode ? '1px solid #555' : '1px solid #e0e0e0',
+          overflow: 'hidden'
+        }
+      }}
+    >
+      <Box sx={{ background: dialogDarkMode ? 'linear-gradient(135deg, #2b2b2b, #353535)' : 'linear-gradient(135deg, #f7fafc, #fff)' }}>
+        <DialogTitle
+          sx={{
+            fontFamily: 'Nunito, sans-serif',
+            fontWeight: 800,
+            fontSize: '1.75rem',
+            color: dialogDarkMode ? '#fff' : '#333',
+            p: 3,
+            pb: 1
+          }}
+        >
+          Choose a calendar
+        </DialogTitle>
+        <Typography
+          variant="body1"
+          sx={{
+            px: 3,
+            pb: 2,
+            color: dialogDarkMode ? '#ccc' : '#666',
+            fontFamily: 'Nunito, sans-serif',
+            fontWeight: 600
+          }}
+        >
           Enter an existing calendar ID or create a brand-new one.
         </Typography>
+      </Box>
+      <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, p: 3, pt: 2 }}>
         {error && <Alert severity="error">{error}</Alert>}
         <TextField
           label="Calendar ID"
@@ -80,14 +123,15 @@ const CalendarSwitcherDialog = ({
           InputProps={{
             sx: {
               fontFamily: 'Nunito, sans-serif',
-              backgroundColor: darkMode ? '#616161' : 'white',
-              color: darkMode ? '#fff' : 'inherit'
+              backgroundColor: dialogDarkMode ? '#616161' : 'white',
+              color: dialogDarkMode ? '#fff' : 'inherit',
+              borderRadius: 2
             }
           }}
           InputLabelProps={{
             sx: {
               fontFamily: 'Nunito, sans-serif',
-              color: darkMode ? '#fff' : 'inherit'
+              color: dialogDarkMode ? '#fff' : 'inherit'
             }
           }}
         />
@@ -99,10 +143,22 @@ const CalendarSwitcherDialog = ({
             />
           }
           label="Create new calendar"
+          sx={{
+            fontFamily: 'Nunito, sans-serif',
+            '& .MuiFormControlLabel-label': {
+              fontFamily: 'Nunito, sans-serif',
+              fontWeight: 600
+            }
+          }}
         />
         {createNew && (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Typography variant="subtitle2">Default appearance</Typography>
+            <Typography
+              variant="subtitle2"
+              sx={{ fontFamily: 'Nunito, sans-serif', fontWeight: 700, color: dialogDarkMode ? '#fff' : '#333' }}
+            >
+              Default appearance
+            </Typography>
             <ColorModePicker
               color={defaultColor}
               setColor={setDefaultColor}
@@ -114,9 +170,15 @@ const CalendarSwitcherDialog = ({
           </Box>
         )}
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button variant="contained" onClick={handleSubmit}>
+      <DialogActions sx={{ p: 3, pt: 1.5 }}>
+        <Button onClick={onClose} sx={{ textTransform: 'none', fontFamily: 'Nunito, sans-serif' }}>
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          sx={{ textTransform: 'none', fontFamily: 'Nunito, sans-serif', borderRadius: 2 }}
+        >
           {createNew ? 'Create calendar' : 'Load calendar'}
         </Button>
       </DialogActions>
