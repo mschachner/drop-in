@@ -137,6 +137,15 @@ app.post('/api/availability', async (req, res) => {
   }
 });
 
+app.get('/api/calendars', async (req, res) => {
+  try {
+    const calendars = await Calendar.find().sort({ calendarId: 1 });
+    res.json(calendars);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 app.get('/api/calendars/:calendarId', async (req, res) => {
   try {
     const calendar = await Calendar.findOne({ calendarId: req.params.calendarId });
@@ -144,6 +153,19 @@ app.get('/api/calendars/:calendarId', async (req, res) => {
       return res.status(404).json({ message: 'Calendar not found' });
     }
     res.json(calendar);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.delete('/api/calendars/:calendarId', async (req, res) => {
+  try {
+    const calendar = await Calendar.findOneAndDelete({ calendarId: req.params.calendarId });
+    if (!calendar) {
+      return res.status(404).json({ message: 'Calendar not found' });
+    }
+    await Availability.deleteMany({ calendarId: req.params.calendarId });
+    res.status(204).send();
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

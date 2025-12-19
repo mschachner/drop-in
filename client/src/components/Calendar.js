@@ -10,9 +10,11 @@ import {
   useMediaQuery
 } from '@mui/material';
 import useAvailabilities from '../hooks/useAvailabilities';
-import { createCalendar, getCalendar } from '../api/calendar';
+import { createCalendar, deleteCalendar, getCalendar, getCalendars } from '../api/calendar';
 import { createPastelColor, createDarkPastelColor } from './calendar/colorUtils';
 import CalendarSwitcherDialog from './calendar/CalendarSwitcherDialog';
+import AdminPasswordDialog from './calendar/AdminPasswordDialog';
+import AdminCalendarDialog from './calendar/AdminCalendarDialog';
 import UserPreferences from './calendar/UserPreferences';
 import AddEventDialog from './calendar/AddEventDialog';
 import EditEventDialog from './calendar/EditEventDialog';
@@ -85,7 +87,28 @@ const Calendar = () => {
   });
   const [darkMode, setDarkMode] = useState(false);
   const [activeEventId, setActiveEventId] = useState(null);
+  const [adminPasswordOpen, setAdminPasswordOpen] = useState(false);
+  const [adminDialogOpen, setAdminDialogOpen] = useState(false);
+  const [adminPasswordError, setAdminPasswordError] = useState('');
+  const [adminPasswordLoading, setAdminPasswordLoading] = useState(false);
+  const [adminCalendars, setAdminCalendars] = useState([]);
+  const [adminCalendarsLoading, setAdminCalendarsLoading] = useState(false);
+  const [adminCalendarsError, setAdminCalendarsError] = useState('');
+  const [adminBusyCalendarId, setAdminBusyCalendarId] = useState(null);
   const isMobile = useMediaQuery('(max-width:899px)');
+
+  const ADMIN_PASSWORD_HASH = 'edc254af2701b950236d95fff251d7a765a6f20df5cd93c917f11ac6d98814e2';
+
+  const hashPassword = useCallback(async (value) => {
+    if (!window.crypto?.subtle) {
+      throw new Error('Password verification is unavailable in this browser.');
+    }
+    const data = new TextEncoder().encode(value);
+    const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hashBuffer))
+      .map((byte) => byte.toString(16).padStart(2, '0'))
+      .join('');
+  }, []);
 
   const applyCalendarPreferences = useCallback((calendar) => {
     const storedColor = localStorage.getItem(`calendar.${calendar.calendarId}.preferredColor`);
@@ -166,6 +189,11 @@ const Calendar = () => {
     return () => clearTimeout(timer);
   }, [dialogError]);
 
+  useEffect(() => {
+    if (!adminPasswordOpen) return;
+    setAdminPasswordError('');
+  }, [adminPasswordOpen]);
+
   const handleCalendarSubmit = useCallback(async ({ calendarId: nextCalendarId, createNew, defaultColor, defaultDarkMode }) => {
     setCalendarDialogError(null);
     try {
@@ -195,6 +223,69 @@ const Calendar = () => {
     setCalendarDialogOpen(false);
     setCalendarDialogError(null);
   }, [calendarId]);
+
+  const loadAdminCalendars = useCallback(async () => {
+    setAdminCalendarsLoading(true);
+    setAdminCalendarsError('');
+    try {
+      const { data } = await getCalendars();
+      setAdminCalendars(data);
+    } catch (err) {
+      setAdminCalendarsError(err.response?.data?.message || 'Failed to load calendars');
+    } finally {
+      setAdminCalendarsLoading(false);
+    }
+  }, []);
+
+  const handleAdminPasswordSubmit = useCallback(async (password) => {
+    setAdminPasswordLoading(true);
+    setAdminPasswordError('');
+    try {
+      const hashed = await hashPassword(password);
+      if (hashed !== ADMIN_PASSWORD_HASH) {
+        setAdminPasswordError('Incorrect password.');
+        return;
+      }
+      setAdminPasswordOpen(false);
+      setAdminDialogOpen(true);
+      await loadAdminCalendars();
+    } catch (err) {
+      setAdminPasswordError(err.message || 'Unable to verify password.');
+    } finally {
+      setAdminPasswordLoading(false);
+    }
+  }, [hashPassword, loadAdminCalendars]);
+
+  const handleAdminOpenCalendar = useCallback(async (targetCalendarId) => {
+    await handleCalendarSubmit({
+      calendarId: targetCalendarId,
+      createNew: false
+    });
+    setAdminDialogOpen(false);
+  }, [handleCalendarSubmit]);
+
+  const handleAdminDeleteCalendar = useCallback(async (targetCalendarId) => {
+    if (!window.confirm(`Delete calendar "${targetCalendarId}"? This will remove all events.`)) {
+      return;
+    }
+    setAdminBusyCalendarId(targetCalendarId);
+    setAdminCalendarsError('');
+    try {
+      await deleteCalendar(targetCalendarId);
+      if (calendarId === targetCalendarId) {
+        setCalendarInfo(null);
+        setCalendarId('');
+        localStorage.removeItem('calendarId');
+        setCalendarDialogError('Calendar deleted. Please choose another.');
+        setCalendarDialogOpen(true);
+      }
+      await loadAdminCalendars();
+    } catch (err) {
+      setAdminCalendarsError(err.response?.data?.message || 'Failed to delete calendar');
+    } finally {
+      setAdminBusyCalendarId(null);
+    }
+  }, [calendarId, loadAdminCalendars]);
 
   const handleDayClick = useCallback((date, section) => {
     if (!calendarId) {
@@ -563,6 +654,29 @@ const Calendar = () => {
         darkMode={darkMode}
       />
 
+      <AdminPasswordDialog
+        open={adminPasswordOpen}
+        onClose={() => setAdminPasswordOpen(false)}
+        onSubmit={handleAdminPasswordSubmit}
+        error={adminPasswordError}
+        loading={adminPasswordLoading}
+        darkMode={darkMode}
+      />
+
+      <AdminCalendarDialog
+        open={adminDialogOpen}
+        onClose={() => setAdminDialogOpen(false)}
+        calendars={adminCalendars}
+        onOpenCalendar={handleAdminOpenCalendar}
+        onDeleteCalendar={handleAdminDeleteCalendar}
+        onRefresh={loadAdminCalendars}
+        loading={adminCalendarsLoading}
+        error={adminCalendarsError}
+        darkMode={darkMode}
+        busyCalendarId={adminBusyCalendarId}
+        activeCalendarId={calendarId}
+      />
+
       <UserPreferences
         userPreferences={userPreferences}
         setUserPreferences={setUserPreferences}
@@ -675,6 +789,29 @@ const Calendar = () => {
         darkMode={darkMode}
         isMobile={isMobile}
       />
+
+      <Button
+        onClick={() => setAdminPasswordOpen(true)}
+        variant="text"
+        sx={{
+          position: 'fixed',
+          bottom: 16,
+          right: 24,
+          textTransform: 'none',
+          fontFamily: 'Nunito, sans-serif',
+          fontWeight: 600,
+          fontSize: '0.9rem',
+          color: darkMode ? '#e0e0e0' : '#444',
+          opacity: 0.7,
+          zIndex: 10,
+          '&:hover': {
+            opacity: 1,
+            backgroundColor: darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'
+          }
+        }}
+      >
+        admin
+      </Button>
     </Box>
   );
 };
