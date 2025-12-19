@@ -1,6 +1,7 @@
 import axiosInstance from './axiosInstance';
 
-export const getAvailabilities = () => axiosInstance.get('/api/availability');
+export const getAvailabilities = (calendarId) =>
+  axiosInstance.get('/api/availability', { params: { calendarId } });
 
 export const createAvailability = (data) =>
   axiosInstance.post('/api/availability', data);

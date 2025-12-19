@@ -6,10 +6,13 @@ import {
   Grid,
   CircularProgress,
   Alert,
+  Button,
   useMediaQuery
 } from '@mui/material';
 import useAvailabilities from '../hooks/useAvailabilities';
-import { createPastelColor, createDarkPastelColor, COLORS } from './calendar/colorUtils';
+import { createCalendar, getCalendar } from '../api/calendar';
+import { createPastelColor, createDarkPastelColor } from './calendar/colorUtils';
+import CalendarSwitcherDialog from './calendar/CalendarSwitcherDialog';
 import UserPreferences from './calendar/UserPreferences';
 import AddEventDialog from './calendar/AddEventDialog';
 import EditEventDialog from './calendar/EditEventDialog';
@@ -41,16 +44,23 @@ const darkenColor = (hex) => {
 
 const Calendar = () => {
   const [dialogError, setDialogError] = useState(null);
+  const [calendarDialogError, setCalendarDialogError] = useState(null);
+  const [calendarDialogOpen, setCalendarDialogOpen] = useState(
+    () => !localStorage.getItem('calendarId')
+  );
+  const [calendarId, setCalendarId] = useState(
+    () => localStorage.getItem('calendarId') || ''
+  );
+  const [calendarInfo, setCalendarInfo] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [userPreferences, setUserPreferences] = useState(() => {
-    const storedColor = localStorage.getItem('preferredColor');
     const storedName = localStorage.getItem('userName');
     return {
       name: storedName || '',
-      color: storedColor || '#66BB6A'
+      color: '#66BB6A'
     };
   });
   const {
@@ -62,7 +72,7 @@ const Calendar = () => {
     updateAvailability,
     deleteAvailability,
     toggleJoin,
-  } = useAvailabilities(userPreferences.name);
+  } = useAvailabilities(userPreferences.name, calendarId);
   const [newEvent, setNewEvent] = useState({
     timeSlot: '',
     location: '',
@@ -71,31 +81,67 @@ const Calendar = () => {
     recurring: false
   });
   const [selectedColor, setSelectedColor] = useState(() => {
-    const storedColor = localStorage.getItem('preferredColor');
-    if (storedColor && !COLORS.find(c => c.value === storedColor)) {
-      return storedColor;
-    }
-    return '#008080';
+    return '#66BB6A';
   });
-  const [darkMode, setDarkMode] = useState(() => {
-    const storedDark = localStorage.getItem('darkMode');
-    return storedDark === 'true';
-  });
+  const [darkMode, setDarkMode] = useState(false);
   const [activeEventId, setActiveEventId] = useState(null);
   const isMobile = useMediaQuery('(max-width:899px)');
 
+  const applyCalendarPreferences = useCallback((calendar) => {
+    const storedColor = localStorage.getItem(`calendar.${calendar.calendarId}.preferredColor`);
+    const storedDark = localStorage.getItem(`calendar.${calendar.calendarId}.darkMode`);
+    const resolvedColor = storedColor || calendar.defaultColor || '#66BB6A';
+    const resolvedDarkMode = storedDark !== null
+      ? storedDark === 'true'
+      : calendar.defaultDarkMode || false;
+
+    setUserPreferences((prev) => ({ ...prev, color: resolvedColor }));
+    setSelectedColor(resolvedColor);
+    setDarkMode(resolvedDarkMode);
+  }, []);
+
+  const handleCalendarLoaded = useCallback((calendar) => {
+    setCalendarInfo(calendar);
+    setCalendarId(calendar.calendarId);
+    localStorage.setItem('calendarId', calendar.calendarId);
+    applyCalendarPreferences(calendar);
+    setCalendarDialogOpen(false);
+    setCalendarDialogError(null);
+  }, [applyCalendarPreferences]);
 
   useEffect(() => {
-    localStorage.setItem('preferredColor', userPreferences.color);
-  }, [userPreferences.color]);
+    if (!calendarId) return;
+    let isActive = true;
+    const loadCalendar = async () => {
+      try {
+        const { data } = await getCalendar(calendarId);
+        if (!isActive) return;
+        handleCalendarLoaded(data);
+      } catch (err) {
+        if (!isActive) return;
+        setCalendarDialogError(err.response?.data?.message || 'Failed to load calendar');
+        setCalendarDialogOpen(true);
+      }
+    };
+    loadCalendar();
+    return () => {
+      isActive = false;
+    };
+  }, [calendarId, handleCalendarLoaded]);
+
+  useEffect(() => {
+    if (!calendarId) return;
+    localStorage.setItem(`calendar.${calendarId}.preferredColor`, userPreferences.color);
+  }, [calendarId, userPreferences.color]);
 
   useEffect(() => {
     localStorage.setItem('userName', userPreferences.name);
   }, [userPreferences.name]);
 
   useEffect(() => {
-    localStorage.setItem('darkMode', darkMode);
-  }, [darkMode]);
+    if (!calendarId) return;
+    localStorage.setItem(`calendar.${calendarId}.darkMode`, darkMode);
+  }, [calendarId, darkMode]);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
@@ -120,7 +166,42 @@ const Calendar = () => {
     return () => clearTimeout(timer);
   }, [dialogError]);
 
+  const handleCalendarSubmit = useCallback(async ({ calendarId: nextCalendarId, createNew, defaultColor, defaultDarkMode }) => {
+    setCalendarDialogError(null);
+    try {
+      const response = createNew
+        ? await createCalendar({
+            calendarId: nextCalendarId,
+            defaultColor,
+            defaultDarkMode
+          })
+        : await getCalendar(nextCalendarId);
+      handleCalendarLoaded(response.data);
+    } catch (err) {
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
+      if (status === 404) {
+        setCalendarDialogError('Calendar not found. Try creating a new one.');
+      } else if (status === 409) {
+        setCalendarDialogError('That calendar ID already exists. Try loading it instead.');
+      } else {
+        setCalendarDialogError(message || 'Failed to load calendar');
+      }
+    }
+  }, [handleCalendarLoaded]);
+
+  const handleCalendarDialogClose = useCallback(() => {
+    if (!calendarId) return;
+    setCalendarDialogOpen(false);
+    setCalendarDialogError(null);
+  }, [calendarId]);
+
   const handleDayClick = useCallback((date, section) => {
+    if (!calendarId) {
+      setCalendarDialogError('Please choose a calendar first.');
+      setCalendarDialogOpen(true);
+      return;
+    }
     if (!userPreferences.name) {
       setError('Please enter your name first');
       return;
@@ -134,7 +215,7 @@ const Calendar = () => {
       recurring: false
     });
     setOpenDialog(true);
-  }, [userPreferences.name, setError]);
+  }, [calendarId, userPreferences.name, setError]);
 
   const handleSubmit = useCallback(async () => {
     if (!newEvent.timeSlot || !newEvent.location) {
@@ -148,6 +229,7 @@ const Calendar = () => {
         name: userPreferences.name,
         color: userPreferences.color,
         date: selectedDate.toISOString(),
+        calendarId
       };
       await addAvailability(eventData);
       setOpenDialog(false);
@@ -155,7 +237,7 @@ const Calendar = () => {
     } catch (err) {
       setError(err.message || 'Failed to add event');
     }
-  }, [newEvent, userPreferences, selectedDate, addAvailability, setError]);
+  }, [newEvent, userPreferences, selectedDate, calendarId, addAvailability, setError]);
 
   const handleKeyPress = useCallback((event) => {
     if (event.key === 'Enter' && newEvent.timeSlot && newEvent.location) {
@@ -443,12 +525,43 @@ const Calendar = () => {
         }} 
         className="pulse-animation"
         />
+        {calendarInfo && (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: 'auto', zIndex: 1 }}>
+            <Box sx={{
+              px: 2,
+              py: 0.5,
+              borderRadius: 999,
+              backgroundColor: darkMode ? '#424242' : '#fff',
+              boxShadow: darkMode ? '0 3px 10px rgba(0,0,0,0.35)' : '0 3px 10px rgba(0,0,0,0.12)'
+            }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                Calendar: {calendarInfo.calendarId}
+              </Typography>
+            </Box>
+            <Button
+              variant="outlined"
+              onClick={() => setCalendarDialogOpen(true)}
+              sx={{ borderRadius: 999, textTransform: 'none' }}
+            >
+              Switch calendar
+            </Button>
+          </Box>
+        )}
       </Box>
       
       {error && isMobile && (
         <Alert severity="error" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>{error}</Alert>
       )}
       {!isMobile && <ErrorTooltip message={error} />}
+
+      <CalendarSwitcherDialog
+        open={calendarDialogOpen}
+        onClose={handleCalendarDialogClose}
+        onSubmit={handleCalendarSubmit}
+        error={calendarDialogError}
+        defaultCalendarId={calendarId || 'Default'}
+        darkMode={darkMode}
+      />
 
       <UserPreferences
         userPreferences={userPreferences}

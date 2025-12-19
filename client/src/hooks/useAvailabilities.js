@@ -8,15 +8,20 @@ import {
   unjoinAvailability,
 } from '../api/availability';
 
-const useAvailabilities = (userName) => {
+const useAvailabilities = (userName, calendarId) => {
   const [availabilities, setAvailabilities] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(calendarId));
   const [error, setError] = useState(null);
 
   const fetchAvailabilities = useCallback(async () => {
     try {
       setLoading(true);
-      const { data } = await getAvailabilities();
+      if (!calendarId) {
+        setAvailabilities([]);
+        setLoading(false);
+        return;
+      }
+      const { data } = await getAvailabilities(calendarId);
       setAvailabilities(data);
       setError(null);
     } catch (err) {
@@ -24,7 +29,7 @@ const useAvailabilities = (userName) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [calendarId]);
 
   useEffect(() => {
     fetchAvailabilities();
