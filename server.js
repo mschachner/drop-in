@@ -41,9 +41,38 @@ if (!process.env.MONGO_URL) {
   process.exit(1);
 }
 
+// Define Calendar Schema
+const calendarSchema = new mongoose.Schema({
+  calendarId: {
+    type: String,
+    required: true,
+    unique: true,
+    match: [/^[a-z0-9]{1,20}$/i, 'Calendar ID must be alphanumeric and at most 20 characters']
+  },
+  defaultColor: {
+    type: String,
+    default: '#66BB6A'
+  },
+  defaultDarkMode: {
+    type: Boolean,
+    default: false
+  }
+});
+
+const Calendar = mongoose.model('Calendar', calendarSchema);
+
+const ensureDefaultCalendar = async () => {
+  await Calendar.findOneAndUpdate(
+    { calendarId: 'Default' },
+    { calendarId: 'Default' },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
+};
+
 mongoose.connect(process.env.MONGO_URL)
-  .then(() => {
+  .then(async () => {
     console.log('Successfully connected to MongoDB');
+    await ensureDefaultCalendar();
   })
   .catch((error) => {
     console.error('Error connecting to MongoDB:', error);
@@ -52,6 +81,11 @@ mongoose.connect(process.env.MONGO_URL)
 
 // Define Availability Schema
 const availabilitySchema = new mongoose.Schema({
+  calendarId: {
+    type: String,
+    default: 'Default',
+    index: true
+  },
   date: Date,
   timeSlot: String,
   location: String,
@@ -78,7 +112,8 @@ const Availability = mongoose.model('Availability', availabilitySchema);
 // API Routes
 app.get('/api/availability', async (req, res) => {
   try {
-    const availabilities = await Availability.find();
+    const calendarId = req.query.calendarId || 'Default';
+    const availabilities = await Availability.find({ calendarId });
     res.json(availabilities);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -87,9 +122,48 @@ app.get('/api/availability', async (req, res) => {
 
 app.post('/api/availability', async (req, res) => {
   try {
-    const availability = new Availability(req.body);
+    const availability = new Availability({
+      ...req.body,
+      calendarId: req.body.calendarId || 'Default'
+    });
     const savedAvailability = await availability.save();
     res.status(201).json(savedAvailability);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+app.get('/api/calendars/:calendarId', async (req, res) => {
+  try {
+    const calendar = await Calendar.findOne({ calendarId: req.params.calendarId });
+    if (!calendar) {
+      return res.status(404).json({ message: 'Calendar not found' });
+    }
+    res.json(calendar);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post('/api/calendars', async (req, res) => {
+  try {
+    const { calendarId, defaultColor, defaultDarkMode } = req.body;
+    if (!calendarId || !/^[a-z0-9]{1,20}$/i.test(calendarId)) {
+      return res.status(400).json({ message: 'Calendar ID must be alphanumeric and at most 20 characters' });
+    }
+
+    const existing = await Calendar.findOne({ calendarId });
+    if (existing) {
+      return res.status(409).json({ message: 'Calendar ID already exists' });
+    }
+
+    const calendar = new Calendar({
+      calendarId,
+      defaultColor,
+      defaultDarkMode
+    });
+    const savedCalendar = await calendar.save();
+    res.status(201).json(savedCalendar);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
