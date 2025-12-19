@@ -158,7 +158,7 @@ const ColumnEvent = ({
                   maxWidth: `${actionsMaxWidth}px`,
                   opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
                   transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },
-                  zIndex: 1,
+                  zIndex: 4,
                   '&.event-paper:hover .event-actions': {
                     opacity: { xs: 1, sm: 1 }
                   }
