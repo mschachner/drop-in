@@ -41,7 +41,10 @@ if (!process.env.MONGO_URL) {
   process.exit(1);
 }
 
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect(process.env.MONGO_URL, {
+  serverSelectionTimeoutMS: 5000,
+  family: 4,
+})
   .then(() => {
     console.log('Successfully connected to MongoDB');
   })
