@@ -100,7 +100,7 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                     backgroundColor: color.value, 
                     borderRadius: '50%',
                     cursor: 'pointer',
-                    border: userPreferences.color === color.value ? `3px solid ${darkMode ? '#fff' : '#000'}` : 'none',
+                    border: userPreferences.color === color.value ? `3px solid ${darkMode ? '#fff' : '#000'}` : '3px solid transparent',
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'scale(1.1)',
@@ -123,7 +123,7 @@ const UserPreferences = ({ userPreferences, setUserPreferences, selectedColor, s
                   backgroundColor: selectedColor,
                   borderRadius: '50%',
                   cursor: 'pointer',
-                  border: userPreferences.color === selectedColor ? `3px solid ${darkMode ? '#fff' : '#000'}` : 'none',
+                  border: userPreferences.color === selectedColor ? `3px solid ${darkMode ? '#fff' : '#000'}` : '3px solid transparent',
                   transition: 'all 0.3s ease',
                   display: 'flex',
                   alignItems: 'center',
