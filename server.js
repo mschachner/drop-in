@@ -6,13 +6,13 @@ const cors = require('cors');
 const app = express();
 
 // Enable CORS with proper preflight handling
+const corsOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',').map(s => s.trim())
+  : ['https://drop-in.up.railway.app', 'https://www.drop-in-cal.com', 'http://localhost:3000'];
+
 app.use(cors({
-  origin: [
-    'https://drop-in.up.railway.app',
-    'https://www.drop-in-cal.com',
-    'http://localhost:3000'
-  ],
-  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+  origin: corsOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   preflightContinue: false,
@@ -23,7 +23,7 @@ app.use(cors({
 app.options('*', cors());
 
 // Parse JSON bodies
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 // Debug logging only in development
 if (process.env.NODE_ENV === 'development') {

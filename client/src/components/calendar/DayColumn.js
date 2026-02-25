@@ -420,9 +420,9 @@ const DayColumn = ({
         >
           {dayAvailabilities
             .filter(a => a.section !== 'evening')
-            .map((a, idx) => (
+            .map((a) => (
               <ColumnEvent
-                key={idx}
+                key={a._id}
                 availability={a}
                 timeBoxWidth={timeBoxWidth}
                 actionsMaxWidth={actionsMaxWidth}
@@ -471,9 +471,9 @@ const DayColumn = ({
           >
           {dayAvailabilities
             .filter(a => a.section === 'evening')
-            .map((a, idx) => (
+            .map((a) => (
               <ColumnEvent
-                key={idx}
+                key={a._id}
                 availability={a}
                 timeBoxWidth={timeBoxWidth}
                 actionsMaxWidth={actionsMaxWidth}
