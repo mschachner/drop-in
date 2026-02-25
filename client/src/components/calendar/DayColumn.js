@@ -35,16 +35,15 @@ const ColumnEvent = ({
   const actionsWidth = useChildrenWidth(actionsRef);
   const shouldWrapActions = actionsWidth > actionsMaxWidth;
 
-  const a = availability;
+  const event = availability;
 
   return (
     <Paper
-      key={a._id}
       sx={{
         p: 1.5,
         mb: 1.5,
-        backgroundColor: a.color,
-        color: getTextColor(a.color),
+        backgroundColor: event.color,
+        color: getTextColor(event.color),
         borderRadius: 2,
         position: 'relative',
         fontFamily: 'Nunito, sans-serif',
@@ -54,7 +53,7 @@ const ColumnEvent = ({
         willChange: 'transform, box-shadow',
         '&.event-paper:hover .time-box': {
           top: { xs: 0, sm: '-36px' },
-          backgroundColor: a.color,
+          backgroundColor: event.color,
           '&::before': {
             opacity: 0
           }
@@ -64,13 +63,13 @@ const ColumnEvent = ({
         }
       }}
       className="event-paper"
-      onClick={(e) => handleEventClick(a, e)}
+      onClick={(e) => handleEventClick(event, e)}
     >
       <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5, position: 'relative', minHeight: '40px' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              {a.icon && (
+              {event.icon && (
                 <Box
                   sx={{
                     width: 32,
@@ -82,10 +81,10 @@ const ColumnEvent = ({
                     justifyContent: 'center'
                   }}
                 >
-                  {Icons[a.icon] ? (
-                    React.createElement(Icons[a.icon], { fontSize: 'small' })
+                  {Icons[event.icon] ? (
+                    React.createElement(Icons[event.icon], { fontSize: 'small' })
                   ) : (
-                    <span style={{ fontSize: '1rem' }}>{a.icon}</span>
+                    <span style={{ fontSize: '1rem' }}>{event.icon}</span>
                   )}
                 </Box>
               )}
@@ -102,20 +101,20 @@ const ColumnEvent = ({
                   zIndex: 3
                 }}
               >
-                {a.name}
+                {event.name}
               </Typography>
             </Box>
             <Box sx={{ position: 'relative', minHeight: '40px', display: 'flex', alignItems: 'center' }}>
               <Box
                 sx={{
                   position: 'absolute',
-                  top: { xs: 0, sm: activeEventId === a._id ? '-36px' : 0 },
+                  top: { xs: 0, sm: activeEventId === event._id ? '-36px' : 0 },
                   width: `${timeBoxWidth}px`,
                   height: { xs: '36px', sm: '28px' },
                   borderRadius: '8px',
                   backgroundColor: 'rgba(255,255,255,0.235)',
                   backdropFilter: 'blur(4px)',
-                  color: getTextColor(a.color),
+                  color: getTextColor(event.color),
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -130,12 +129,12 @@ const ColumnEvent = ({
                   transition: { xs: 'none', sm: 'top 0.3s cubic-bezier(0.4,0,0.2,1)' },
                   zIndex: 2,
                   pointerEvents: 'none',
-                  right: isMobile ? (isUserJoining(a) ? '180px' : '142px') : 0,
+                  right: isMobile ? (isUserJoining(event) ? '180px' : '142px') : 0,
                   '&::before': {
                     content: '""',
                     position: 'absolute',
                     inset: '-2px',
-                    backgroundColor: a.color,
+                    backgroundColor: event.color,
                     borderRadius: 'inherit',
                     opacity: 0.6,
                     zIndex: -1
@@ -143,7 +142,7 @@ const ColumnEvent = ({
                 }}
                 className="time-box"
               >
-                {a.timeSlot}
+                {event.timeSlot}
               </Box>
               <Box
                 className="event-actions"
@@ -156,7 +155,7 @@ const ColumnEvent = ({
                   gap: 0.5,
                   flexWrap: shouldWrapActions ? 'wrap' : 'nowrap',
                   maxWidth: `${actionsMaxWidth}px`,
-                  opacity: isMobile ? 1 : (activeEventId === a._id ? 1 : 0),
+                  opacity: isMobile ? 1 : (activeEventId === event._id ? 1 : 0),
                   transition: { xs: 'none', sm: 'opacity 0.3s cubic-bezier(0.4,0,0.2,1)' },
                   zIndex: 4,
                   '&.event-paper:hover .event-actions': {
@@ -167,14 +166,14 @@ const ColumnEvent = ({
                 <IconButton
                   size="small"
                   sx={{
-                    color: getTextColor(a.color),
+                    color: getTextColor(event.color),
                     backgroundColor: 'rgba(255,255,255,0.2)',
                     '&:hover': {
                       backgroundColor: 'rgba(255,255,255,0.3)'
                     },
-                    minWidth: isUserJoining(a) ? { xs: '80px', sm: '50px' } : { xs: '60px', sm: 'auto' },
+                    minWidth: isUserJoining(event) ? { xs: '80px', sm: '50px' } : { xs: '60px', sm: 'auto' },
                     height: { xs: '36px', sm: '24px' },
-                    justifyContent: isUserJoining(a)
+                    justifyContent: isUserJoining(event)
                       ? 'flex-start'
                       : { xs: 'center', sm: 'flex-start' },
                     gap: 0.5,
@@ -186,10 +185,10 @@ const ColumnEvent = ({
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleJoin(a._id);
+                    handleJoin(event._id);
                   }}
                 >
-                  {isUserJoining(a) ? (
+                  {isUserJoining(event) ? (
                     <>
                       <span>Joined</span>
                       <span style={{ fontSize: '1em' }}>✓</span>
@@ -201,7 +200,7 @@ const ColumnEvent = ({
                 <IconButton
                   size="small"
                   sx={{
-                    color: getTextColor(a.color),
+                    color: getTextColor(event.color),
                     backgroundColor: 'rgba(255,255,255,0.2)',
                     '&:hover': {
                       backgroundColor: 'rgba(255,255,255,0.3)'
@@ -216,7 +215,7 @@ const ColumnEvent = ({
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleEdit(a);
+                    handleEdit(event);
                   }}
                 >
                   <EditIcon fontSize="small" />
@@ -224,7 +223,7 @@ const ColumnEvent = ({
                 <IconButton
                   size="small"
                   sx={{
-                    color: getTextColor(a.color),
+                    color: getTextColor(event.color),
                     backgroundColor: 'rgba(255,255,255,0.2)',
                     '&:hover': {
                       backgroundColor: 'rgba(255,255,255,0.3)'
@@ -239,7 +238,7 @@ const ColumnEvent = ({
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDelete(a._id);
+                    handleDelete(event._id);
                   }}
                 >
                   <DeleteIcon fontSize="small" />
@@ -256,9 +255,9 @@ const ColumnEvent = ({
               lineHeight: 1.2
             }}
           >
-            {a.location}
+            {event.location}
           </Typography>
-          {a.joiners && a.joiners.length > 0 && (
+          {event.joiners && event.joiners.length > 0 && (
             <Typography
               variant="body2"
               sx={{
@@ -271,7 +270,7 @@ const ColumnEvent = ({
                 gap: 0.5
               }}
             >
-              {formatJoiners(a.joiners)}
+              {formatJoiners(event.joiners)}
             </Typography>
           )}
         </Box>
@@ -419,11 +418,11 @@ const DayColumn = ({
           onClick={(e) => handleSectionClick('day', e)}
         >
           {dayAvailabilities
-            .filter(a => a.section !== 'evening')
-            .map((a) => (
+            .filter(event => event.section !== 'evening')
+            .map((event) => (
               <ColumnEvent
-                key={a._id}
-                availability={a}
+                key={event._key || event._id}
+                availability={event}
                 timeBoxWidth={timeBoxWidth}
                 actionsMaxWidth={actionsMaxWidth}
                 handleJoin={handleJoin}
@@ -436,7 +435,6 @@ const DayColumn = ({
                 activeEventId={activeEventId}
                 darkMode={darkMode}
               />
-
             ))}
         </Box>
         {/* Evening Section */}
@@ -470,11 +468,11 @@ const DayColumn = ({
             onClick={(e) => handleSectionClick('evening', e)}
           >
           {dayAvailabilities
-            .filter(a => a.section === 'evening')
-            .map((a) => (
+            .filter(event => event.section === 'evening')
+            .map((event) => (
               <ColumnEvent
-                key={a._id}
-                availability={a}
+                key={event._key || event._id}
+                availability={event}
                 timeBoxWidth={timeBoxWidth}
                 actionsMaxWidth={actionsMaxWidth}
                 handleJoin={handleJoin}
