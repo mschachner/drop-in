@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import useAvailabilities from '../hooks/useAvailabilities';
 import { createCalendar, deleteCalendar, getCalendar, getCalendars } from '../api/calendar';
-import { createPastelColor, createDarkPastelColor } from './calendar/colorUtils';
+import { createPastelColor, createDarkPastelColor, darkenColor } from './calendar/colorUtils';
 import CalendarSwitcherDialog from './calendar/CalendarSwitcherDialog';
 import AdminPasswordDialog from './calendar/AdminPasswordDialog';
 import AdminCalendarDialog from './calendar/AdminCalendarDialog';
@@ -21,28 +21,6 @@ import EditEventDialog from './calendar/EditEventDialog';
 import ErrorTooltip from './ErrorTooltip';
 
 import DayColumn from "./calendar/DayColumn";
-// Function to convert hex to RGB
-const hexToRgb = (hex) => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
-};
-
-// Function to create a darker version of a color
-const darkenColor = (hex) => {
-  const rgb = hexToRgb(hex);
-  if (!rgb) return hex;
-  
-  // Darken by 30%
-  const darkenR = Math.round(rgb.r * 0.7);
-  const darkenG = Math.round(rgb.g * 0.7);
-  const darkenB = Math.round(rgb.b * 0.7);
-  
-  return `rgb(${darkenR}, ${darkenG}, ${darkenB})`;
-};
 
 const Calendar = () => {
   const [dialogError, setDialogError] = useState(null);
