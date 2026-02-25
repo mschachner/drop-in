@@ -18,8 +18,13 @@ import { getTextColor } from './colorUtils';
 import IconPickerDialog from './IconPickerDialog';
 import * as Icons from '@mui/icons-material';
 import ErrorTooltip from '../ErrorTooltip';
+import { SECTIONS } from '../../constants';
 
-const AddEventDialog = ({
+/**
+ * Shared dialog for creating and editing events.
+ * Pass `mode="create"` or `mode="edit"` to control title, subtitle, and button text.
+ */
+const EventFormDialog = ({
   open,
   onClose,
   selectedDate,
@@ -30,9 +35,12 @@ const AddEventDialog = ({
   dialogError,
   userPreferences,
   darkMode,
-  isMobile
+  isMobile,
+  mode = 'create'
 }) => {
   const [iconAnchorEl, setIconAnchorEl] = useState(null);
+
+  const isCreate = mode === 'create';
 
   const handleIconSelect = (icon) => {
     setNewEvent({ ...newEvent, icon });
@@ -43,7 +51,7 @@ const AddEventDialog = ({
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    
+
     if (date.toDateString() === today.toDateString()) {
       return 'Today';
     } else if (date.toDateString() === tomorrow.toDateString()) {
@@ -57,9 +65,15 @@ const AddEventDialog = ({
     setNewEvent({ ...newEvent, section });
   };
 
+  const title = isCreate ? 'Create New Event' : 'Edit Event';
+  const subtitle = isCreate ? formatDate(selectedDate) : 'Update your event details';
+  const submitLabel = isCreate ? 'Create Event' : 'Update Event';
+  const defaultIcon = isCreate ? <Icons.Add sx={{ fontSize: 'large' }} /> : <Icons.Edit sx={{ fontSize: 'large' }} />;
+  const iconLabel = isCreate ? 'Choose Icon' : 'Change Icon';
+
   return (
-    <Dialog 
-      open={open} 
+    <Dialog
+      open={open}
       onClose={onClose}
       maxWidth="sm"
       fullWidth
@@ -72,16 +86,16 @@ const AddEventDialog = ({
           top: { xs: '10%', sm: 'auto' },
           backgroundColor: darkMode ? '#424242' : 'white',
           color: darkMode ? '#fff' : 'inherit',
-          boxShadow: darkMode 
-            ? '0 25px 50px rgba(0,0,0,0.7)' 
+          boxShadow: darkMode
+            ? '0 25px 50px rgba(0,0,0,0.7)'
             : '0 25px 50px rgba(0,0,0,0.2)',
           border: darkMode ? '1px solid #555' : '1px solid #e0e0e0',
           overflow: 'hidden'
         }
       }}
     >
-      {/* Creative Header with Icon Picker */}
-      <Box sx={{ 
+      {/* Header with Icon Picker */}
+      <Box sx={{
         background: `linear-gradient(135deg, ${userPreferences.color}20, ${userPreferences.color}08)`,
         position: 'relative',
         overflow: 'hidden'
@@ -95,7 +109,7 @@ const AddEventDialog = ({
           height: 80,
           borderRadius: '50%',
           background: `radial-gradient(circle, ${userPreferences.color}15, transparent)`,
-          animation: 'pulse 3s ease-in-out infinite'
+          animation: 'eventFormPulse 3s ease-in-out infinite'
         }} />
         <Box sx={{
           position: 'absolute',
@@ -105,19 +119,19 @@ const AddEventDialog = ({
           height: 60,
           borderRadius: '50%',
           background: `radial-gradient(circle, ${userPreferences.color}10, transparent)`,
-          animation: 'pulse 3s ease-in-out infinite 1.5s'
+          animation: 'eventFormPulse 3s ease-in-out infinite 1.5s'
         }} />
-        
-        <Box sx={{ 
-          display: 'flex', 
-          alignItems: 'center', 
+
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
           justifyContent: 'space-between',
           p: 3,
           pb: 2
         }}>
           <Box sx={{ flex: 1 }}>
-            <DialogTitle sx={{ 
-              fontFamily: 'Nunito, sans-serif', 
+            <DialogTitle sx={{
+              fontFamily: 'Nunito, sans-serif',
               fontWeight: 800,
               fontSize: '1.75rem',
               color: darkMode ? '#fff' : '#333',
@@ -128,25 +142,25 @@ const AddEventDialog = ({
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              Create New Event
+              {title}
             </DialogTitle>
-            <Typography 
-              variant="body1" 
-              sx={{ 
+            <Typography
+              variant="body1"
+              sx={{
                 color: darkMode ? '#ccc' : '#666',
                 fontFamily: 'Nunito, sans-serif',
                 fontWeight: 600,
                 fontSize: '1.1rem'
               }}
             >
-              {formatDate(selectedDate)}
+              {subtitle}
             </Typography>
           </Box>
-          
-          {/* Icon Picker in Header */}
-          <Box sx={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
+
+          {/* Icon Picker */}
+          <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             ml: 2
           }}>
@@ -174,17 +188,15 @@ const AddEventDialog = ({
                 ) : (
                   <span style={{ fontSize: '1.5rem' }}>{newEvent.icon}</span>
                 )
-              ) : (
-                <Icons.Add sx={{ fontSize: 'large' }} />
-              )}
+              ) : defaultIcon}
             </IconButton>
-            <Typography variant="caption" sx={{ 
+            <Typography variant="caption" sx={{
               color: darkMode ? '#ccc' : '#666',
               fontFamily: 'Nunito, sans-serif',
               mt: 0.5,
               fontWeight: 500
             }}>
-              Choose Icon
+              {iconLabel}
             </Typography>
           </Box>
         </Box>
@@ -192,10 +204,10 @@ const AddEventDialog = ({
 
       <DialogContent sx={{ p: 3, pt: 2 }}>
         {dialogError && isMobile && (
-          <Alert 
-            severity="error" 
-            sx={{ 
-              mb: 2, 
+          <Alert
+            severity="error"
+            sx={{
+              mb: 2,
               fontFamily: 'Nunito, sans-serif',
               borderRadius: 3,
               '& .MuiAlert-icon': {
@@ -208,10 +220,10 @@ const AddEventDialog = ({
         )}
         {!isMobile && <ErrorTooltip message={dialogError} />}
 
-        {/* Time Section - Directly Clickable */}
+        {/* Section Picker */}
         <Box sx={{ mb: 2.5 }}>
-          <Typography variant="h6" sx={{ 
-            fontFamily: 'Nunito, sans-serif', 
+          <Typography variant="h6" sx={{
+            fontFamily: 'Nunito, sans-serif',
             fontWeight: 700,
             color: darkMode ? '#fff' : '#333',
             mb: 1.5,
@@ -220,104 +232,64 @@ const AddEventDialog = ({
             When is this happening?
           </Typography>
           <Box sx={{ display: 'flex', gap: 1.5 }}>
-            <Box
-              onClick={() => handleSectionChange('day')}
-              sx={{
-                flex: 1,
-                p: 2,
-                borderRadius: 3,
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                backgroundColor: newEvent.section === 'day' 
-                  ? userPreferences.color 
-                  : (darkMode ? '#61616130' : '#f8f9fa'),
-                border: `2px solid ${newEvent.section === 'day' ? userPreferences.color : (darkMode ? '#555' : '#e0e0e0')}`,
-                color: newEvent.section === 'day' ? getTextColor(userPreferences.color) : (darkMode ? '#fff' : '#333'),
-                textAlign: 'center',
-                position: 'relative',
-                overflow: 'hidden',
-                '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: newEvent.section === 'day' 
-                    ? `0 8px 25px ${userPreferences.color}50`
-                    : '0 4px 15px rgba(0,0,0,0.1)'
-                },
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  top: 0,
-                  left: '-100%',
-                  width: '100%',
-                  height: '100%',
-                  background: `linear-gradient(90deg, transparent, ${userPreferences.color}20, transparent)`,
-                  transition: 'left 0.5s ease',
-                },
-                '&:hover::before': {
-                  left: '100%'
-                }
-              }}
-            >
-              <Typography sx={{ 
-                fontFamily: 'Nunito, sans-serif', 
-                fontWeight: 700,
-                fontSize: '1.1rem'
-              }}>
-                Day
-              </Typography>
-            </Box>
-            
-            <Box
-              onClick={() => handleSectionChange('evening')}
-              sx={{
-                flex: 1,
-                p: 2,
-                borderRadius: 3,
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                backgroundColor: newEvent.section === 'evening' 
-                  ? userPreferences.color 
-                  : (darkMode ? '#61616130' : '#f8f9fa'),
-                border: `2px solid ${newEvent.section === 'evening' ? userPreferences.color : (darkMode ? '#555' : '#e0e0e0')}`,
-                color: newEvent.section === 'evening' ? getTextColor(userPreferences.color) : (darkMode ? '#fff' : '#333'),
-                textAlign: 'center',
-                position: 'relative',
-                overflow: 'hidden',
-                '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: newEvent.section === 'evening' 
-                    ? `0 8px 25px ${userPreferences.color}50`
-                    : '0 4px 15px rgba(0,0,0,0.1)'
-                },
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  top: 0,
-                  left: '-100%',
-                  width: '100%',
-                  height: '100%',
-                  background: `linear-gradient(90deg, transparent, ${userPreferences.color}20, transparent)`,
-                  transition: 'left 0.5s ease',
-                },
-                '&:hover::before': {
-                  left: '100%'
-                }
-              }}
-            >
-              <Typography sx={{ 
-                fontFamily: 'Nunito, sans-serif', 
-                fontWeight: 700,
-                fontSize: '1.1rem'
-              }}>
-                Evening
-              </Typography>
-            </Box>
+            {[
+              { key: SECTIONS.DAY, label: 'Day' },
+              { key: SECTIONS.EVENING, label: 'Evening' }
+            ].map(({ key, label }) => (
+              <Box
+                key={key}
+                onClick={() => handleSectionChange(key)}
+                sx={{
+                  flex: 1,
+                  p: 2,
+                  borderRadius: 3,
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  backgroundColor: newEvent.section === key
+                    ? userPreferences.color
+                    : (darkMode ? '#61616130' : '#f8f9fa'),
+                  border: `2px solid ${newEvent.section === key ? userPreferences.color : (darkMode ? '#555' : '#e0e0e0')}`,
+                  color: newEvent.section === key ? getTextColor(userPreferences.color) : (darkMode ? '#fff' : '#333'),
+                  textAlign: 'center',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: newEvent.section === key
+                      ? `0 8px 25px ${userPreferences.color}50`
+                      : '0 4px 15px rgba(0,0,0,0.1)'
+                  },
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: '-100%',
+                    width: '100%',
+                    height: '100%',
+                    background: `linear-gradient(90deg, transparent, ${userPreferences.color}20, transparent)`,
+                    transition: 'left 0.5s ease',
+                  },
+                  '&:hover::before': {
+                    left: '100%'
+                  }
+                }}
+              >
+                <Typography sx={{
+                  fontFamily: 'Nunito, sans-serif',
+                  fontWeight: 700,
+                  fontSize: '1.1rem'
+                }}>
+                  {label}
+                </Typography>
+              </Box>
+            ))}
           </Box>
         </Box>
 
         {/* Event Details */}
         <Box sx={{ mb: 2 }}>
-          <Typography variant="h6" sx={{ 
-            fontFamily: 'Nunito, sans-serif', 
+          <Typography variant="h6" sx={{
+            fontFamily: 'Nunito, sans-serif',
             fontWeight: 700,
             color: darkMode ? '#fff' : '#333',
             mb: 1.5,
@@ -325,7 +297,7 @@ const AddEventDialog = ({
           }}>
             Event Details
           </Typography>
-          
+
           <TextField
             autoFocus
             margin="dense"
@@ -335,7 +307,7 @@ const AddEventDialog = ({
             onChange={(e) => setNewEvent({ ...newEvent, timeSlot: e.target.value })}
             onKeyPress={handleKeyPress}
             sx={{ mb: 1.5 }}
-            placeholder={selectedDate ? (newEvent.section === 'evening' ? '6:00 PM' : '9:00 AM') : ''}
+            placeholder={selectedDate ? (newEvent.section === SECTIONS.EVENING ? '6:00 PM' : '9:00 AM') : ''}
             InputProps={{
               sx: {
                 fontFamily: 'Nunito, sans-serif',
@@ -356,14 +328,14 @@ const AddEventDialog = ({
               }
             }}
             InputLabelProps={{
-              sx: { 
-                fontFamily: 'Nunito, sans-serif', 
+              sx: {
+                fontFamily: 'Nunito, sans-serif',
                 color: darkMode ? '#ccc' : '#666',
                 fontWeight: 600
               }
             }}
           />
-          
+
           <TextField
             margin="dense"
             label="Where or what is it?"
@@ -424,10 +396,10 @@ const AddEventDialog = ({
       </DialogContent>
 
       <DialogActions sx={{ p: 3, pt: 1, gap: 2 }}>
-        <Button 
+        <Button
           onClick={onClose}
           variant="outlined"
-          sx={{ 
+          sx={{
             textTransform: 'none',
             fontFamily: 'Nunito, sans-serif',
             fontWeight: 600,
@@ -446,10 +418,10 @@ const AddEventDialog = ({
         >
           Cancel
         </Button>
-        <Button 
-          onClick={handleSubmit} 
-          variant="contained" 
-          sx={{ 
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          sx={{
             background: `linear-gradient(45deg, ${userPreferences.color}, ${userPreferences.color}dd)`,
             color: getTextColor(userPreferences.color),
             textTransform: 'none',
@@ -467,7 +439,7 @@ const AddEventDialog = ({
             }
           }}
         >
-          Create Event
+          {submitLabel}
         </Button>
       </DialogActions>
 
@@ -481,7 +453,7 @@ const AddEventDialog = ({
 
       <style>
         {`
-          @keyframes pulse {
+          @keyframes eventFormPulse {
             0%, 100% { opacity: 0.3; transform: scale(1); }
             50% { opacity: 0.6; transform: scale(1.1); }
           }
@@ -491,7 +463,7 @@ const AddEventDialog = ({
   );
 };
 
-AddEventDialog.propTypes = {
+EventFormDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   selectedDate: PropTypes.instanceOf(Date),
@@ -511,6 +483,7 @@ AddEventDialog.propTypes = {
   }).isRequired,
   darkMode: PropTypes.bool.isRequired,
   isMobile: PropTypes.bool.isRequired,
+  mode: PropTypes.oneOf(['create', 'edit']),
 };
 
-export default AddEventDialog;
+export default EventFormDialog;

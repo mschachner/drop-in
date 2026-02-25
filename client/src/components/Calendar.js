@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Paper, 
+import {
+  Box,
+  Typography,
+  Paper,
   Grid,
   CircularProgress,
   Alert,
@@ -10,39 +10,68 @@ import {
   useMediaQuery
 } from '@mui/material';
 import useAvailabilities from '../hooks/useAvailabilities';
-import { createCalendar, deleteCalendar, getCalendar, getCalendars } from '../api/calendar';
+import useCalendarSelection from '../hooks/useCalendarSelection';
+import useAdmin from '../hooks/useAdmin';
+import { deleteCalendar } from '../api/calendar';
 import { createPastelColor, createDarkPastelColor, darkenColor } from './calendar/colorUtils';
+import { DEFAULT_COLOR, SECTIONS, LOCAL_STORAGE_KEYS } from '../constants';
 import CalendarSwitcherDialog from './calendar/CalendarSwitcherDialog';
 import AdminPasswordDialog from './calendar/AdminPasswordDialog';
 import AdminCalendarDialog from './calendar/AdminCalendarDialog';
 import UserPreferences from './calendar/UserPreferences';
-import AddEventDialog from './calendar/AddEventDialog';
-import EditEventDialog from './calendar/EditEventDialog';
+import EventFormDialog from './calendar/EventFormDialog';
 import ErrorTooltip from './ErrorTooltip';
+import DayColumn from './calendar/DayColumn';
 
-import DayColumn from "./calendar/DayColumn";
+const getNextSevenDays = () => {
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() + i);
+    days.push(date);
+  }
+  return days;
+};
 
 const Calendar = () => {
   const [dialogError, setDialogError] = useState(null);
-  const [calendarDialogError, setCalendarDialogError] = useState(null);
-  const [calendarDialogOpen, setCalendarDialogOpen] = useState(
-    () => !localStorage.getItem('calendarId')
-  );
-  const [calendarId, setCalendarId] = useState(
-    () => localStorage.getItem('calendarId') || ''
-  );
-  const [calendarInfo, setCalendarInfo] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [userPreferences, setUserPreferences] = useState(() => {
-    const storedName = localStorage.getItem('userName');
+    const storedName = localStorage.getItem(LOCAL_STORAGE_KEYS.USER_NAME);
     return {
       name: storedName || '',
-      color: '#66BB6A'
+      color: DEFAULT_COLOR
     };
   });
+  const [newEvent, setNewEvent] = useState({
+    timeSlot: '',
+    location: '',
+    section: SECTIONS.DAY,
+    icon: '',
+    recurring: false
+  });
+  const [selectedColor, setSelectedColor] = useState(DEFAULT_COLOR);
+  const [darkMode, setDarkMode] = useState(false);
+  const [activeEventId, setActiveEventId] = useState(null);
+  const isMobile = useMediaQuery('(max-width:899px)');
+
+  // --- Calendar selection ---
+  const {
+    calendarId,
+    calendarInfo,
+    calendarDialogOpen,
+    calendarDialogError,
+    setCalendarDialogOpen,
+    setCalendarDialogError,
+    handleCalendarSubmit,
+    handleCalendarDialogClose,
+    clearCalendar,
+  } = useCalendarSelection({ setUserPreferences, setSelectedColor, setDarkMode });
+
+  // --- Availabilities ---
   const {
     availabilities,
     loading,
@@ -53,102 +82,30 @@ const Calendar = () => {
     deleteAvailability,
     toggleJoin,
   } = useAvailabilities(userPreferences.name, calendarId);
-  const [newEvent, setNewEvent] = useState({
-    timeSlot: '',
-    location: '',
-    section: 'day',
-    icon: '',
-    recurring: false
-  });
-  const [selectedColor, setSelectedColor] = useState(() => {
-    return '#66BB6A';
-  });
-  const [darkMode, setDarkMode] = useState(false);
-  const [activeEventId, setActiveEventId] = useState(null);
-  const [adminPasswordOpen, setAdminPasswordOpen] = useState(false);
-  const [adminDialogOpen, setAdminDialogOpen] = useState(false);
-  const [adminPasswordError, setAdminPasswordError] = useState('');
-  const [adminPasswordLoading, setAdminPasswordLoading] = useState(false);
-  const [adminCalendars, setAdminCalendars] = useState([]);
-  const [adminCalendarsLoading, setAdminCalendarsLoading] = useState(false);
-  const [adminCalendarsError, setAdminCalendarsError] = useState('');
-  const [adminBusyCalendarId, setAdminBusyCalendarId] = useState(null);
-  const isMobile = useMediaQuery('(max-width:899px)');
 
-  const ADMIN_PASSWORD_HASH = 'edc254af2701b950236d95fff251d7a765a6f20df5cd93c917f11ac6d98814e2';
+  // --- Admin ---
+  const admin = useAdmin();
 
-  const hashPassword = useCallback(async (value) => {
-    if (!window.crypto?.subtle) {
-      throw new Error('Password verification is unavailable in this browser.');
-    }
-    const data = new TextEncoder().encode(value);
-    const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(hashBuffer))
-      .map((byte) => byte.toString(16).padStart(2, '0'))
-      .join('');
-  }, []);
-
-  const applyCalendarPreferences = useCallback((calendar) => {
-    const storedColor = localStorage.getItem(`calendar.${calendar.calendarId}.preferredColor`);
-    const storedDark = localStorage.getItem(`calendar.${calendar.calendarId}.darkMode`);
-    const resolvedColor = storedColor || calendar.defaultColor || '#66BB6A';
-    const resolvedDarkMode = storedDark !== null
-      ? storedDark === 'true'
-      : calendar.defaultDarkMode || false;
-
-    setUserPreferences((prev) => ({ ...prev, color: resolvedColor }));
-    setSelectedColor(resolvedColor);
-    setDarkMode(resolvedDarkMode);
-  }, []);
-
-  const handleCalendarLoaded = useCallback((calendar) => {
-    setCalendarInfo(calendar);
-    setCalendarId(calendar.calendarId);
-    localStorage.setItem('calendarId', calendar.calendarId);
-    applyCalendarPreferences(calendar);
-    setCalendarDialogOpen(false);
-    setCalendarDialogError(null);
-  }, [applyCalendarPreferences]);
-
+  // --- Persist user preferences to localStorage ---
   useEffect(() => {
     if (!calendarId) return;
-    let isActive = true;
-    const loadCalendar = async () => {
-      try {
-        const { data } = await getCalendar(calendarId);
-        if (!isActive) return;
-        handleCalendarLoaded(data);
-      } catch (err) {
-        if (!isActive) return;
-        setCalendarDialogError(err.response?.data?.message || 'Failed to load calendar');
-        setCalendarDialogOpen(true);
-      }
-    };
-    loadCalendar();
-    return () => {
-      isActive = false;
-    };
-  }, [calendarId, handleCalendarLoaded]);
-
-  useEffect(() => {
-    if (!calendarId) return;
-    localStorage.setItem(`calendar.${calendarId}.preferredColor`, userPreferences.color);
+    localStorage.setItem(LOCAL_STORAGE_KEYS.preferredColor(calendarId), userPreferences.color);
   }, [calendarId, userPreferences.color]);
 
   useEffect(() => {
-    localStorage.setItem('userName', userPreferences.name);
+    localStorage.setItem(LOCAL_STORAGE_KEYS.USER_NAME, userPreferences.name);
   }, [userPreferences.name]);
 
   useEffect(() => {
     if (!calendarId) return;
-    localStorage.setItem(`calendar.${calendarId}.darkMode`, darkMode);
+    localStorage.setItem(LOCAL_STORAGE_KEYS.darkMode(calendarId), darkMode);
   }, [calendarId, darkMode]);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
-
+  // --- Auto-clear errors ---
   useEffect(() => {
     if (error === 'Please enter your name first' && userPreferences.name) {
       setError(null);
@@ -167,104 +124,36 @@ const Calendar = () => {
     return () => clearTimeout(timer);
   }, [dialogError]);
 
-  useEffect(() => {
-    if (!adminPasswordOpen) return;
-    setAdminPasswordError('');
-  }, [adminPasswordOpen]);
-
-  const handleCalendarSubmit = useCallback(async ({ calendarId: nextCalendarId, createNew, defaultColor, defaultDarkMode }) => {
-    setCalendarDialogError(null);
-    try {
-      const response = createNew
-        ? await createCalendar({
-            calendarId: nextCalendarId,
-            defaultColor,
-            defaultDarkMode
-          })
-        : await getCalendar(nextCalendarId);
-      handleCalendarLoaded(response.data);
-    } catch (err) {
-      const status = err.response?.status;
-      const message = err.response?.data?.message;
-      if (status === 404) {
-        setCalendarDialogError('Calendar not found. Try creating a new one.');
-      } else if (status === 409) {
-        setCalendarDialogError('That calendar ID already exists. Try loading it instead.');
-      } else {
-        setCalendarDialogError(message || 'Failed to load calendar');
-      }
-    }
-  }, [handleCalendarLoaded]);
-
-  const handleCalendarDialogClose = useCallback(() => {
-    if (!calendarId) return;
-    setCalendarDialogOpen(false);
-    setCalendarDialogError(null);
-  }, [calendarId]);
-
-  const loadAdminCalendars = useCallback(async () => {
-    setAdminCalendarsLoading(true);
-    setAdminCalendarsError('');
-    try {
-      const { data } = await getCalendars();
-      setAdminCalendars(data);
-    } catch (err) {
-      setAdminCalendarsError(err.response?.data?.message || 'Failed to load calendars');
-    } finally {
-      setAdminCalendarsLoading(false);
-    }
-  }, []);
-
-  const handleAdminPasswordSubmit = useCallback(async (password) => {
-    setAdminPasswordLoading(true);
-    setAdminPasswordError('');
-    try {
-      const hashed = await hashPassword(password);
-      if (hashed !== ADMIN_PASSWORD_HASH) {
-        setAdminPasswordError('Incorrect password.');
-        return;
-      }
-      setAdminPasswordOpen(false);
-      setAdminDialogOpen(true);
-      await loadAdminCalendars();
-    } catch (err) {
-      setAdminPasswordError(err.message || 'Unable to verify password.');
-    } finally {
-      setAdminPasswordLoading(false);
-    }
-  }, [hashPassword, loadAdminCalendars]);
-
+  // --- Admin calendar actions ---
   const handleAdminOpenCalendar = useCallback(async (targetCalendarId) => {
     await handleCalendarSubmit({
       calendarId: targetCalendarId,
       createNew: false
     });
-    setAdminDialogOpen(false);
-  }, [handleCalendarSubmit]);
+    admin.closeAdminDialog();
+  }, [handleCalendarSubmit, admin]);
 
   const handleAdminDeleteCalendar = useCallback(async (targetCalendarId) => {
     if (!window.confirm(`Delete calendar "${targetCalendarId}"? This will remove all events.`)) {
       return;
     }
-    setAdminBusyCalendarId(targetCalendarId);
-    setAdminCalendarsError('');
+    admin.setAdminBusyCalendarId(targetCalendarId);
     try {
       await deleteCalendar(targetCalendarId);
       if (calendarId === targetCalendarId) {
-        setCalendarInfo(null);
-        setCalendarId('');
-        localStorage.removeItem('calendarId');
+        clearCalendar();
         setCalendarDialogError('Calendar deleted. Please choose another.');
         setCalendarDialogOpen(true);
       }
-      await loadAdminCalendars();
+      await admin.loadAdminCalendars();
     } catch (err) {
-      setAdminCalendarsError(err.response?.data?.message || 'Failed to delete calendar');
+      // error is shown in admin dialog
     } finally {
-      setAdminBusyCalendarId(null);
+      admin.setAdminBusyCalendarId(null);
     }
-  }, [calendarId, loadAdminCalendars]);
+  }, [calendarId, admin, clearCalendar, setCalendarDialogError, setCalendarDialogOpen]);
 
+  // --- Event handlers ---
   const handleDayClick = useCallback((date, section) => {
     if (!calendarId) {
       setCalendarDialogError('Please choose a calendar first.');
@@ -284,7 +173,7 @@ const Calendar = () => {
       recurring: false
     });
     setOpenDialog(true);
-  }, [calendarId, userPreferences.name, setError]);
+  }, [calendarId, userPreferences.name, setError, setCalendarDialogError, setCalendarDialogOpen]);
 
   const handleSubmit = useCallback(async () => {
     if (!newEvent.timeSlot || !newEvent.location) {
@@ -389,6 +278,9 @@ const Calendar = () => {
     }
   }, [newEvent, handleEditSubmit]);
 
+  // Expand recurring events into individual occurrences within the visible week.
+  // Each copy gets a unique `_key` since copies share the original's `_id`.
+  // Joiners are only shown on the original occurrence date.
   const expandedAvailabilities = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -409,26 +301,19 @@ const Calendar = () => {
           expanded.push({
             ...event,
             date: occurrence.toISOString(),
-            joiners: isOriginalOccurrence ? event.joiners : []
+            joiners: isOriginalOccurrence ? event.joiners : [],
+            _key: `${event._id}-${occurrence.toISOString()}`
           });
           occurrence.setDate(occurrence.getDate() + 7);
         }
       } else {
-        expanded.push(event);
+        expanded.push({ ...event, _key: event._id });
       }
     });
     return expanded;
   }, [availabilities]);
 
-  const getNextSevenDays = () => {
-    const days = [];
-    for (let i = 0; i < 7; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() + i);
-      days.push(date);
-    }
-    return days;
-  };
+  const days = useMemo(() => getNextSevenDays(), []);
 
   const pastelColor = useMemo(
     () =>
@@ -448,7 +333,6 @@ const Calendar = () => {
       .toString(16)
       .padStart(6, '0')}`;
 
-    // Always apply the random color and show it in the palette icon
     setSelectedColor(randomColor);
     setUserPreferences((prev) => ({ ...prev, color: randomColor }));
   }, []);
@@ -517,29 +401,29 @@ const Calendar = () => {
         animation: 'pulse 2s ease-in-out infinite'
       },
       '@keyframes float': {
-        '0%, 100%': { 
-          transform: 'translate(30px, -30px) scale(1)', 
-          opacity: 0.3 
+        '0%, 100%': {
+          transform: 'translate(30px, -30px) scale(1)',
+          opacity: 0.3
         },
-        '50%': { 
-          transform: 'translate(30px, -35px) scale(1.1)', 
-          opacity: 0.6 
+        '50%': {
+          transform: 'translate(30px, -35px) scale(1.1)',
+          opacity: 0.6
         }
       },
       '@keyframes pulse': {
-        '0%, 100%': { 
-          opacity: 0.7, 
-          transform: 'scale(1)' 
+        '0%, 100%': {
+          opacity: 0.7,
+          transform: 'scale(1)'
         },
-        '50%': { 
-          opacity: 1, 
-          transform: 'scale(1.2)' 
+        '50%': {
+          opacity: 1,
+          transform: 'scale(1.2)'
         }
       }
     }}>
-      <Box sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
         mb: 3,
         gap: 2,
         position: 'relative'
@@ -555,7 +439,7 @@ const Calendar = () => {
           borderRadius: 3,
           zIndex: 0
         }} />
-        
+
         <Typography
           variant="h3"
           sx={{
@@ -582,7 +466,7 @@ const Calendar = () => {
         >
           Drop in!
         </Typography>
-        
+
         {/* Floating accent dot */}
         <Box sx={{
           width: '8px',
@@ -591,7 +475,7 @@ const Calendar = () => {
           backgroundColor: userPreferences.color,
           opacity: 0.7,
           ml: 1
-        }} 
+        }}
         className="pulse-animation"
         />
         {calendarInfo && (
@@ -617,7 +501,7 @@ const Calendar = () => {
           </Box>
         )}
       </Box>
-      
+
       {error && isMobile && (
         <Alert severity="error" sx={{ mb: 2, fontFamily: 'Nunito, sans-serif' }}>{error}</Alert>
       )}
@@ -633,25 +517,25 @@ const Calendar = () => {
       />
 
       <AdminPasswordDialog
-        open={adminPasswordOpen}
-        onClose={() => setAdminPasswordOpen(false)}
-        onSubmit={handleAdminPasswordSubmit}
-        error={adminPasswordError}
-        loading={adminPasswordLoading}
+        open={admin.adminPasswordOpen}
+        onClose={admin.closeAdminPassword}
+        onSubmit={admin.handleAdminPasswordSubmit}
+        error={admin.adminPasswordError}
+        loading={admin.adminPasswordLoading}
         darkMode={darkMode}
       />
 
       <AdminCalendarDialog
-        open={adminDialogOpen}
-        onClose={() => setAdminDialogOpen(false)}
-        calendars={adminCalendars}
+        open={admin.adminDialogOpen}
+        onClose={admin.closeAdminDialog}
+        calendars={admin.adminCalendars}
         onOpenCalendar={handleAdminOpenCalendar}
         onDeleteCalendar={handleAdminDeleteCalendar}
-        onRefresh={loadAdminCalendars}
-        loading={adminCalendarsLoading}
-        error={adminCalendarsError}
+        onRefresh={admin.loadAdminCalendars}
+        loading={admin.adminCalendarsLoading}
+        error={admin.adminCalendarsError}
         darkMode={darkMode}
-        busyCalendarId={adminBusyCalendarId}
+        busyCalendarId={admin.adminBusyCalendarId}
         activeCalendarId={calendarId}
       />
 
@@ -664,9 +548,9 @@ const Calendar = () => {
         setDarkMode={setDarkMode}
       />
 
-      <Paper sx={{ 
-        borderRadius: 3, 
-        overflow: 'hidden', 
+      <Paper sx={{
+        borderRadius: 3,
+        overflow: 'hidden',
         fontFamily: 'Nunito, sans-serif',
         flex: { xs: 'none', sm: 1 },
         display: 'flex',
@@ -674,8 +558,8 @@ const Calendar = () => {
         minHeight: 0,
         height: { xs: 'auto', sm: 'auto' },
         maxHeight: { xs: 'none', sm: 'none' },
-        boxShadow: darkMode 
-          ? '0 15px 35px rgba(0,0,0,0.4)' 
+        boxShadow: darkMode
+          ? '0 15px 35px rgba(0,0,0,0.4)'
           : '0 15px 35px rgba(0,0,0,0.1)',
         border: darkMode ? '1px solid #555' : '1px solid #e0e0e0',
         position: 'relative'
@@ -699,12 +583,12 @@ const Calendar = () => {
           borderRadius: '50%',
           background: `radial-gradient(circle, ${userPreferences.color}10, transparent)`,
           transform: 'translate(30px, -30px)'
-        }} 
+        }}
         className="float-animation"
         />
-        <Grid 
-          container 
-          sx={{ 
+        <Grid
+          container
+          sx={{
             flex: { xs: 'none', md: 1 },
             flexDirection: { xs: 'column', md: 'row' },
             width: '100%',
@@ -713,7 +597,7 @@ const Calendar = () => {
             height: { xs: 'auto', md: 'auto' }
           }}
         >
-          {getNextSevenDays().map((date, index) => {
+          {days.map((date, index) => {
             const dayAvailabilities = expandedAvailabilities.filter(a =>
               new Date(a.date).toDateString() === date.toDateString()
             );
@@ -741,7 +625,7 @@ const Calendar = () => {
         </Grid>
       </Paper>
 
-      <AddEventDialog
+      <EventFormDialog
         open={openDialog}
         onClose={handleDialogClose}
         selectedDate={selectedDate}
@@ -753,8 +637,9 @@ const Calendar = () => {
         userPreferences={userPreferences}
         darkMode={darkMode}
         isMobile={isMobile}
+        mode="create"
       />
-      <EditEventDialog
+      <EventFormDialog
         open={openEditDialog}
         onClose={handleEditDialogClose}
         selectedDate={selectedDate}
@@ -766,10 +651,11 @@ const Calendar = () => {
         userPreferences={userPreferences}
         darkMode={darkMode}
         isMobile={isMobile}
+        mode="edit"
       />
 
       <Button
-        onClick={() => setAdminPasswordOpen(true)}
+        onClick={admin.openAdminPassword}
         variant="text"
         sx={{
           position: 'fixed',
