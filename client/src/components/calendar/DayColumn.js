@@ -185,7 +185,7 @@ const ColumnEvent = ({
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleJoin(event._id);
+                    handleJoin(event._id, event.date);
                   }}
                 >
                   {isUserJoining(event) ? (

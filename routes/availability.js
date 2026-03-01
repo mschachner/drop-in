@@ -70,9 +70,24 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// For recurring events, clear stale joiners when the occurrence week has changed.
+const resetStaleJoiners = (availability, occurrenceDate) => {
+  if (availability.recurring && occurrenceDate) {
+    const week = new Date(occurrenceDate);
+    week.setHours(0, 0, 0, 0);
+    const storedWeek = availability.joinersWeek
+      ? new Date(availability.joinersWeek).setHours(0, 0, 0, 0)
+      : null;
+    if (!storedWeek || week.getTime() !== storedWeek) {
+      availability.joiners = [];
+      availability.joinersWeek = week;
+    }
+  }
+};
+
 router.post('/:id/join', async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, occurrenceDate } = req.body;
     if (!name) {
       return res.status(400).json({ message: 'Name is required' });
     }
@@ -81,6 +96,7 @@ router.post('/:id/join', async (req, res) => {
       return res.status(404).json({ message: 'Event not found' });
     }
 
+    resetStaleJoiners(availability, occurrenceDate);
     if (!availability.joiners.includes(name)) {
       availability.joiners.push(name);
       await availability.save();
@@ -93,7 +109,7 @@ router.post('/:id/join', async (req, res) => {
 
 router.post('/:id/unjoin', async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, occurrenceDate } = req.body;
     if (!name) {
       return res.status(400).json({ message: 'Name is required' });
     }
@@ -102,6 +118,7 @@ router.post('/:id/unjoin', async (req, res) => {
       return res.status(404).json({ message: 'Event not found' });
     }
 
+    resetStaleJoiners(availability, occurrenceDate);
     availability.joiners = availability.joiners.filter(joiner => joiner !== name);
     await availability.save();
     res.json(availability);

@@ -52,12 +52,12 @@ const useAvailabilities = (userName, calendarId) => {
     setAvailabilities((prev) => prev.filter((a) => a._id !== id));
   };
 
-  const toggleJoin = async (event) => {
+  const toggleJoin = async (event, occurrenceDate) => {
     const isJoining = !(event.joiners || []).includes(userName);
     if (isJoining) {
-      await joinAvailability(event._id, userName);
+      await joinAvailability(event._id, userName, occurrenceDate);
     } else {
-      await unjoinAvailability(event._id, userName);
+      await unjoinAvailability(event._id, userName, occurrenceDate);
     }
     setAvailabilities((prev) =>
       prev.map((a) =>

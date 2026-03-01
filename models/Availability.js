@@ -42,6 +42,10 @@ const availabilitySchema = new mongoose.Schema({
   joiners: {
     type: [String],
     default: []
+  },
+  joinersWeek: {
+    type: Date,
+    default: null
   }
 });
 

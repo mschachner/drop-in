@@ -12,8 +12,8 @@ export const updateAvailability = (id, data) =>
 export const deleteAvailability = (id) =>
   axiosInstance.delete(`/api/availability/${id}`);
 
-export const joinAvailability = (id, name) =>
-  axiosInstance.post(`/api/availability/${id}/join`, { name });
+export const joinAvailability = (id, name, occurrenceDate) =>
+  axiosInstance.post(`/api/availability/${id}/join`, { name, occurrenceDate });
 
-export const unjoinAvailability = (id, name) =>
-  axiosInstance.post(`/api/availability/${id}/unjoin`, { name });
+export const unjoinAvailability = (id, name, occurrenceDate) =>
+  axiosInstance.post(`/api/availability/${id}/unjoin`, { name, occurrenceDate });

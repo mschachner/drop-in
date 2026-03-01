@@ -215,7 +215,7 @@ const Calendar = () => {
     return event?.joiners?.includes(userPreferences.name) || false;
   }, [userPreferences.name]);
 
-  const handleJoin = useCallback(async (eventId) => {
+  const handleJoin = useCallback(async (eventId, occurrenceDate) => {
     if (!userPreferences.name) {
       setError('Please enter your name first');
       return;
@@ -223,7 +223,7 @@ const Calendar = () => {
 
     try {
       const event = availabilities.find(a => a._id === eventId);
-      await toggleJoin(event);
+      await toggleJoin(event, occurrenceDate);
     } catch (err) {
       setError(err.message || 'Failed to update event');
     }
@@ -280,7 +280,7 @@ const Calendar = () => {
 
   // Expand recurring events into individual occurrences within the visible week.
   // Each copy gets a unique `_key` since copies share the original's `_id`.
-  // Joiners are only shown on the original occurrence date.
+  // Only one occurrence per recurring event is visible (weekly recurrence, 7-day view).
   const expandedAvailabilities = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -297,11 +297,9 @@ const Calendar = () => {
           occurrence.setDate(occurrence.getDate() + 7);
         }
         while (occurrence <= rangeEnd) {
-          const isOriginalOccurrence = occurrence.getTime() === originalDate.getTime();
           expanded.push({
             ...event,
             date: occurrence.toISOString(),
-            joiners: isOriginalOccurrence ? event.joiners : [],
             _key: `${event._id}-${occurrence.toISOString()}`
           });
           occurrence.setDate(occurrence.getDate() + 7);
